@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1 · 2026-11-01: the atlas goes flat
+
+- The atlas map is now 2D (SVG, `components/explorer/AtlasMap2D.tsx`): open states in orange, every other state in grey, white borders. Rajasthan carries a pulsing "Rajasthan" marker on the India map; the opened state is drawn alone in orange with its pins. Hovering a pin shows its name and summary in the tooltip.
+- three.js is no longer loaded on the home page. The 3D scenes in `components/explorer/gl/` and `lib/geo/relief.ts` are unused and can be deleted (kept for now in case the 3D view comes back). The zoom and reset tools went with them; "India map" (back) and the breadcrumbs remain.
+- Places can put their label under the pin (`labelBelow`), used for Mount Abu beside Udaipur.
+
 ## 0.4.0 · 2026-11-01: v5, the atlas home page
 
 ### What changed

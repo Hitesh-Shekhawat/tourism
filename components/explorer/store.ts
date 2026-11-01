@@ -17,6 +17,8 @@ type ExplorerState = {
   /** State under the pointer on the India map, and place under the pointer on a state map. */
   hover: string | null;
   hoverPlace: string | null;
+  /** The pointer is on a pin itself (not the place list), so the photo preview may show. */
+  pinHover: boolean;
   interest: Interest | null;
   /** A scene transition is running. */
   busy: boolean;
@@ -31,6 +33,7 @@ export const useExplorer = create<ExplorerState>((set) => ({
   placeId: null,
   hover: null,
   hoverPlace: null,
+  pinHover: false,
   interest: null,
   busy: false,
   renderer: "pending",

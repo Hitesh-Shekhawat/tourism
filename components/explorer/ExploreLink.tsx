@@ -12,7 +12,7 @@ export function ExploreLink({ state, place, interest, className = "", children, 
   return (
     <button
       type="button"
-      className={`text-left ${className}`}
+      className={`text-left ${className.includes("block") ? "w-full" : ""} ${className}`}
       aria-label={label}
       onClick={() => {
         if (interest !== undefined) useExplorer.getState().set({ interest });

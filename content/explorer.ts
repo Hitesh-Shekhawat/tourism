@@ -37,6 +37,8 @@ export type Place = {
   interests: Interest[];
   /** Set when the place has a destination page (content/destinations.ts). */
   destinationSlug?: string;
+  /** Put the map label under the pin, where a neighbour's label would collide above it. */
+  labelBelow?: boolean;
 };
 
 export const places: Place[] = [
@@ -142,6 +144,7 @@ export const places: Place[] = [
     ],
     image: "placeMountAbu",
     interests: ["hills", "spiritual"],
+    labelBelow: true,
   },
   {
     id: "bikaner",

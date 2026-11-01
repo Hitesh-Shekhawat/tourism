@@ -1,66 +1,35 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { Component, useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
+import { Photo } from "@/components/ui/Photo";
 import { Deva, SectionHead } from "@/components/ui/bits";
-import { getPlace, interests, isOpenState, openStates, placesIn } from "@/content/explorer";
+import { getPlace, interests, isOpenState, openStates, placeLinks, placesIn } from "@/content/explorer";
 import { INDIA_GEO, loadGeo } from "@/lib/geo/projection";
 import { getLenis } from "@/lib/smooth";
+import { AtlasMap2D } from "./AtlasMap2D";
 import { DestinationCard } from "./DestinationCard";
-import { MapFallback2D } from "./MapFallback2D";
-import { cameraControls, goTo, readUrl, scrollToAtlas, syncFromUrl, useExplorer } from "./store";
-
-// three.js, R3F and the scenes: one chunk, fetched only as the atlas comes near the viewport
-const ExplorerCanvas = dynamic(() => import("./gl/ExplorerCanvas"), { ssr: false });
-
-class GlBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
-  state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  componentDidCatch() {
-    useExplorer.getState().set({ renderer: "2d" });
-  }
-  render() {
-    return this.state.failed ? null : this.props.children;
-  }
-}
-
-const hasWebGl = () => {
-  try {
-    const c = document.createElement("canvas");
-    return !!(c.getContext("webgl2") || c.getContext("webgl"));
-  } catch {
-    return false;
-  }
-};
+import { goTo, readUrl, scrollToAtlas, syncFromUrl, useExplorer } from "./store";
 
 /**
- * Home · the atlas (§ flow: India map → Explore → state → place → itinerary). A 3D map of India's
- * states; choosing one replaces India with that state's own map, its places pinned where they are.
- * All navigation is DOM as well as 3D: breadcrumbs, a state list, a place list and the place card,
- * so it works by keyboard, by screen reader and (as SVG) without WebGL.
+ * Home · the atlas (§ flow: India map → Explore → state → place → itinerary). A flat map of India's
+ * states, open ones in orange; choosing one replaces India with that state's own map, its places
+ * pinned where they are. All navigation is DOM as well as map: breadcrumbs, a state list, a place
+ * list and the place card, so it works by keyboard and screen reader.
  */
 export function IndiaExplorer() {
   const stage = useRef<HTMLDivElement>(null);
   const tip = useRef<HTMLDivElement>(null);
-  const [near, setNear] = useState(false);
-  const [active, setActive] = useState(false);
   const [stateNames, setStateNames] = useState<{ id: string; name: string }[]>([]);
-  const { started, stateId, placeId, hover, hoverPlace, busy, renderer, interest } = useExplorer(
-    useShallow((s) => ({ started: s.started, stateId: s.stateId, placeId: s.placeId, hover: s.hover, hoverPlace: s.hoverPlace, busy: s.busy, renderer: s.renderer, interest: s.interest })),
+  const { started, stateId, placeId, hover, hoverPlace, pinHover, busy, interest } = useExplorer(
+    useShallow((s) => ({ started: s.started, stateId: s.stateId, placeId: s.placeId, hover: s.hover, hoverPlace: s.hoverPlace, pinHover: s.pinHover, busy: s.busy, interest: s.interest })),
   );
 
   // Where the visitor is comes from the URL: on load (a shared link) and on back / forward
   useEffect(() => {
-    if (!hasWebGl()) useExplorer.getState().set({ renderer: "2d" });
     syncFromUrl();
-    if (readUrl().state) {
-      setNear(true);
-      // a shared link: open on the map (after Lenis has started, so it does not pull the page back)
-      setTimeout(() => scrollToAtlas(true), 120);
-    }
+    // a shared link: open on the map (after Lenis has started, so it does not pull the page back)
+    if (readUrl().state) setTimeout(() => scrollToAtlas(true), 120);
     window.addEventListener("popstate", syncFromUrl);
     void loadGeo(INDIA_GEO)
       .then((g) => setStateNames(g.features.map((f) => ({ id: f.properties.id, name: f.properties.name })).sort((a, b) => a.name.localeCompare(b.name))))
@@ -68,25 +37,19 @@ export function IndiaExplorer() {
     return () => window.removeEventListener("popstate", syncFromUrl);
   }, []);
 
-  // Load the 3D chunk ahead of the section; render frames only while it is on screen
-  useEffect(() => {
-    const el = stage.current!;
-    const ahead = new IntersectionObserver(([e]) => e.isIntersecting && setNear(true), { rootMargin: "900px 0px" });
-    const seen = new IntersectionObserver(([e]) => setActive(e.isIntersecting), { rootMargin: "80px 0px" });
-    ahead.observe(el);
-    seen.observe(el);
-    return () => {
-      ahead.disconnect();
-      seen.disconnect();
-    };
-  }, []);
-
-  // The state tooltip follows the pointer
+  // The tooltip follows the pointer
   useEffect(() => {
     const el = stage.current!;
     const move = (e: PointerEvent) => {
       const r = el.getBoundingClientRect();
-      if (tip.current) tip.current.style.transform = `translate(${e.clientX - r.left + 16}px, ${e.clientY - r.top + 16}px)`;
+      const t = tip.current;
+      if (!t) return;
+      // beside the pointer, flipped to the other side near the stage's right and bottom edges
+      let x = e.clientX - r.left + 18;
+      let y = e.clientY - r.top + 18;
+      if (x + t.offsetWidth > r.width - 8) x = e.clientX - r.left - 18 - t.offsetWidth;
+      if (y + t.offsetHeight > r.height - 8) y = Math.max(8, e.clientY - r.top - 18 - t.offsetHeight);
+      t.style.transform = `translate(${x}px, ${y}px)`;
     };
     el.addEventListener("pointermove", move, { passive: true });
     return () => el.removeEventListener("pointermove", move);
@@ -115,6 +78,7 @@ export function IndiaExplorer() {
   const place = placeId ? getPlace(placeId) : undefined;
   const list = stateId ? placesIn(stateId) : [];
   const hoverName = hover ? (stateNames.find((s) => s.id === hover)?.name ?? hover) : null;
+  const hoverPin = stateId && pinHover && hoverPlace && hoverPlace !== placeId ? getPlace(hoverPlace) : undefined;
 
   return (
     <section id="explore" aria-labelledby="explore-title" className="atlas">
@@ -125,25 +89,15 @@ export function IndiaExplorer() {
             Where in India would you like to go?
           </h2>
           <p className="measure text-ink-muted lg:col-span-4 lg:col-start-9" data-reveal>
-            Turn the map, choose a state and step inside it. We're starting with Rajasthan, where every place on the map is one we plan journeys to.
+            Choose a state and step inside it. We're starting with Rajasthan, where every place on the map is one we plan journeys to.
           </p>
         </div>
       </div>
 
-      <div ref={stage} className="atlas-stage" data-view={stateId ? "state" : "india"} data-started={started ? "" : undefined} data-pointer={hover || hoverPlace ? "" : undefined}>
+      <div ref={stage} className="atlas-stage" data-view={stateId ? "state" : "india"} data-started={started ? "" : undefined} data-place={placeId ? "" : undefined} data-pointer={hover || hoverPlace ? "" : undefined}>
         <div className="atlas-canvas" aria-hidden="true">
-          {renderer !== "2d" && near && (
-            <GlBoundary>
-              <ExplorerCanvas active={active} />
-            </GlBoundary>
-          )}
-          {renderer === "2d" && <MapFallback2D />}
+          <AtlasMap2D />
         </div>
-        {renderer === "pending" && (
-          <p className="atlas-loading" role="status">
-            Drawing the map…
-          </p>
-        )}
 
         {/* Where you are, and the way back */}
         <nav aria-label="Atlas" className="atlas-crumbs">
@@ -173,33 +127,14 @@ export function IndiaExplorer() {
           </ol>
         </nav>
 
-        {started && (
+        {stateId && (
           <div className="atlas-tools" role="group" aria-label="Map view">
-            {stateId && (
-              <button type="button" className="atlas-back" onClick={() => goTo(null)} disabled={busy}>
-                <svg viewBox="0 0 16 16" aria-hidden="true">
-                  <path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" strokeWidth="1.6" />
-                </svg>
-                India map
-              </button>
-            )}
-            {stateId && renderer === "3d" && (
-              <>
-                <button type="button" className="atlas-tool" onClick={() => cameraControls.zoom(1)} aria-label="Zoom in">
-                  +
-                </button>
-                <button type="button" className="atlas-tool" onClick={() => cameraControls.zoom(-1)} aria-label="Zoom out">
-                  −
-                </button>
-              </>
-            )}
-            {renderer === "3d" && (
-              <button type="button" className="atlas-tool" onClick={() => cameraControls.reset()} aria-label="Reset the view">
-                <svg viewBox="0 0 16 16" aria-hidden="true">
-                  <path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5v2.8h2.8" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
-              </button>
-            )}
+            <button type="button" className="atlas-back" onClick={() => goTo(null)} disabled={busy}>
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+              </svg>
+              India map
+            </button>
           </div>
         )}
 
@@ -304,10 +239,40 @@ export function IndiaExplorer() {
 
         {place && !busy && <DestinationCard key={place.id} place={place} />}
 
-        {/* Hover tooltip (India) */}
-        <div ref={tip} className="atlas-tip" hidden={!hoverName || !!stateId} aria-hidden="true">
-          <span className="font-display text-lg leading-none">{hoverName}</span>
-          <span className="atlas-tip-note">{hover && isOpenState(hover) ? "Explore →" : "Coming soon"}</span>
+        {/* Preview photos for this state's pins, fetched ahead so the hover card opens with its image */}
+        {stateId && (
+          <div className="atlas-preload" aria-hidden="true">
+            {list.map((p) => (
+              <div key={p.id} className="relative aspect-[16/9] w-[232px]">
+                <Photo k={p.image} fill sizes="232px" compact decorative priority />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Hover: a state's name on the India map; a photo card for a pin on a state map */}
+        <div ref={tip} className={`atlas-tip ${hoverPin ? "atlas-tip-card" : ""}`} hidden={stateId ? !hoverPin : !hoverName} aria-hidden="true">
+          {hoverPin ? (
+            <>
+              <div className="relative aspect-[16/9] overflow-hidden bg-dune">
+                <Photo k={hoverPin.image} fill sizes="232px" compact decorative />
+              </div>
+              <div className="p-3">
+                <p className="flex items-baseline gap-2 text-ivory">
+                  <span className="font-display text-[1.125rem] leading-none">{hoverPin.name}</span>
+                  <Deva className="text-xs text-dune">{hoverPin.devanagari}</Deva>
+                </p>
+                <p className="atlas-tip-text mt-1.5">{hoverPin.summary}</p>
+                <p className="mt-2 border-t border-ivory/15 pt-2 text-[0.75rem] font-semibold text-ivory/90">{hoverPin.attractions.map((a) => a.name).join(" · ")}</p>
+                <p className="atlas-tip-note mt-2">{placeLinks(hoverPin).itinerary ? "Itinerary ready · click for details" : "Click for details"}</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <span className="font-display text-lg leading-none">{hoverName}</span>
+              <span className="atlas-tip-note">{hover && isOpenState(hover) ? "Explore →" : "Coming soon"}</span>
+            </>
+          )}
         </div>
 
         <p className="sr-only" aria-live="polite">

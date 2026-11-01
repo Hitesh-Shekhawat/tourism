@@ -435,6 +435,7 @@ html[data-motion="reduced"] .trend-card {
   display: grid;
   gap: 2px;
   padding: 8px 12px;
+  border-radius: 8px;
   pointer-events: none;
   background: var(--color-ink);
   color: var(--color-ivory);
@@ -519,54 +520,141 @@ html[data-motion="reduced"] .trend-card {
   color: var(--color-terracotta-deep);
 }
 
-/* 2D fallback */
+/* The map (SVG): open states orange, the rest grey */
 .atlas-svg {
   position: absolute;
-  inset: 8% 4% 4%;
+  inset: 6% 4% 4%;
   width: 92%;
-  height: 88%;
+  height: 90%;
+  overflow: visible;
+  transition: inset 700ms var(--ease-out), width 700ms var(--ease-out), height 700ms var(--ease-out);
+}
+@media (min-width: 1024px) {
+  /* keep the map clear of the panels: the state list on the left, the place card on the right */
+  .atlas-stage[data-view="state"] .atlas-svg {
+    inset: 6% 3% 4% 360px;
+    width: calc(97% - 360px);
+  }
+  .atlas-stage[data-view="state"][data-place] .atlas-svg {
+    inset: 6% 440px 4% 3%;
+    width: calc(97% - 440px);
+  }
+}
+@media (max-width: 1023px) {
+  .atlas-stage[data-view="state"] .atlas-svg {
+    inset: 64px 3% auto;
+    height: calc(56% - 64px);
+  }
+  .atlas-stage[data-started][data-view="india"] .atlas-svg {
+    height: 70%;
+  }
+}
+.atlas-svg-enter {
+  animation: atlas-svg-in 650ms var(--ease-out) both;
+}
+@keyframes atlas-svg-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
 }
 .atlas-svg-state {
-  fill: #e3cfab;
-  stroke: #7a4a2c;
-  stroke-width: 1;
-  stroke-opacity: 0.55;
+  fill: #d4d1cc;
+  stroke: #fff;
+  stroke-width: 1.2;
+  stroke-linejoin: round;
   fill-rule: evenodd;
   cursor: pointer;
-  transition: fill 200ms;
-}
-.atlas-svg-state.is-open {
-  fill: #d49a6a;
+  transition: fill 200ms var(--ease-out);
 }
 .atlas-svg-state.is-hover,
 .atlas-svg-state:hover {
-  fill: #c4733f;
+  fill: #b9b5ae;
+}
+.atlas-svg-state.is-active {
+  fill: #e8772e;
+}
+.atlas-svg-state.is-active.is-hover,
+.atlas-svg-state.is-active:hover {
+  fill: #d1631d;
 }
 .atlas-stage[data-view="state"] .atlas-svg-state {
-  fill: #e2c9a0;
+  stroke-width: 2;
   cursor: default;
+  filter: drop-shadow(0 12px 18px rgb(30 26 22 / 0.18));
 }
-.atlas-svg-pin {
+.atlas-stage[data-view="state"] .atlas-svg-state:hover {
+  fill: #e8772e;
+}
+.atlas-svg-pin,
+.atlas-svg-label {
   cursor: pointer;
 }
-.atlas-svg-pin circle {
-  fill: var(--color-terracotta);
-  stroke: var(--color-ivory);
-  stroke-width: 3;
+.atlas-svg-pin {
+  animation: atlas-pin-in 500ms var(--ease-out) both;
 }
-.atlas-svg-pin text {
-  font-size: 22px;
+@keyframes atlas-pin-in {
+  from {
+    opacity: 0;
+    transform-box: fill-box;
+    translate: 0 -14px;
+  }
+}
+.atlas-svg-pin circle,
+.atlas-svg-label circle {
+  fill: var(--color-maroon);
+  stroke: #fff;
+  stroke-width: 3;
+  transition: r 200ms var(--ease-out), fill 200ms;
+}
+.atlas-svg-halo {
+  fill: var(--color-maroon) !important;
+  stroke: none !important;
+  opacity: 0.18;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: atlas-halo 2s var(--ease-out) infinite;
+}
+@keyframes atlas-halo {
+  from {
+    transform: scale(0.5);
+    opacity: 0.35;
+  }
+  to {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+.atlas-svg-pin text,
+.atlas-svg-label text {
+  font-size: 24px;
   font-weight: 600;
   fill: var(--color-ink);
   paint-order: stroke;
-  stroke: var(--color-ivory);
-  stroke-width: 5px;
+  stroke: #fff;
+  stroke-width: 6px;
+  stroke-linejoin: round;
 }
-.atlas-svg-pin.is-on circle {
-  fill: #e3893e;
+.atlas-svg-label text {
+  font-size: 22px;
+}
+.atlas-svg-pin.is-on circle:not(.atlas-svg-halo) {
+  r: 14px;
+  fill: var(--color-ink);
 }
 .atlas-svg-pin.is-dim {
-  opacity: 0.4;
+  opacity: 0.35;
+}
+html[data-motion="reduced"] .atlas-svg-enter,
+html[data-motion="reduced"] .atlas-svg-pin,
+html[data-motion="reduced"] .atlas-svg-halo {
+  animation: none;
+}
+.atlas-tip-text {
+  max-width: 240px;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: rgb(247 241 230 / 0.85);
 }
 
 /* Itinerary gallery: an uneven grid, never a uniform one */
@@ -624,4 +712,35 @@ html[data-motion="reduced"] .trend-card {
     font-size: 0.875rem;
     padding: 5px 10px;
   }
+}
+
+/* Pin hover: a small photo card that follows the pointer (fades only: transform is its position) */
+.atlas-tip-card {
+  display: block;
+  width: 232px;
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgb(176 141 87 / 0.5);
+  box-shadow: 0 16px 32px -16px rgb(30 26 22 / 0.6);
+  animation: atlas-fade 260ms var(--ease-out) both;
+}
+@keyframes atlas-fade {
+  from {
+    opacity: 0;
+  }
+}
+.atlas-tip-card .atlas-tip-text {
+  max-width: none;
+  font-size: 0.75rem;
+}
+html[data-motion="reduced"] .atlas-tip-card {
+  animation: none;
+}
+.atlas-preload {
+  position: absolute;
+  left: -10000px;
+  top: 0;
+  width: 232px;
+  pointer-events: none;
 }
