@@ -35,7 +35,7 @@ export function Services() {
       <div className="wrap grid gap-14 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-5">
           <div className="lg:sticky lg:top-[calc(var(--header-h)+40px)]">
-            <SectionHead n="04" label={whyUs.label} />
+            <SectionHead n="05" label={whyUs.label} />
             <h2 id="why-title" className="t-h1 mt-8 max-w-[12ch]" data-reveal>
               {whyUs.title}
             </h2>

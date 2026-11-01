@@ -2,6 +2,7 @@ import { journal } from "./journal";
 
 /** Journal appears in the nav only once there is at least one article (§5.I). */
 export const nav = [
+  { href: "/#explore", label: "Atlas" },
   { href: "/destinations", label: "Destinations" },
   { href: "/experiences", label: "Experiences" },
   { href: "/journeys", label: "Journeys" },

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Discover } from "@/components/homepage/Discover";
+import { IndiaExplorer } from "@/components/explorer/IndiaExplorer";
 import { FeaturedTours } from "@/components/homepage/FeaturedTours";
 import { FinalCta } from "@/components/homepage/FinalCta";
 import { Gallery } from "@/components/homepage/Gallery";
-import { Hero } from "@/components/homepage/Hero";
 import { HomeMotion } from "@/components/homepage/HomeMotion";
+import { LookingFor } from "@/components/homepage/LookingFor";
 import { Packages } from "@/components/homepage/Packages";
+import { TrendingPlaces } from "@/components/homepage/TrendingPlaces";
 import { Services } from "@/components/homepage/Services";
 import { TravellerStories } from "@/components/homepage/TravellerStories";
 import { JsonLd } from "@/components/ui/JsonLd";
@@ -22,18 +23,20 @@ export const metadata: Metadata = {
 };
 
 /**
- * The home page (v4): hero + quick enquiry, featured journeys (horizontal on desktop), destinations and
- * experiences, services, packages, traveller stories (once real), gallery and the closing enquiry.
- * The original scroll story lives on at /story. All text is server-rendered; motion is progressive.
+ * The home page (v5, the atlas): trending places, "what are you looking for?", the interactive 3D atlas
+ * (India → state → place → itinerary), then featured journeys, services, packages, traveller stories
+ * (once real), gallery and the closing enquiry. The v4 Hero and Discover sections are kept in
+ * components/homepage but no longer placed. The scroll story lives on at /story.
  */
 export default function Home() {
   return (
     <>
       <JsonLd data={travelAgencyLd()} />
       <HomeMotion />
-      <Hero />
+      <TrendingPlaces />
+      <LookingFor />
+      <IndiaExplorer />
       <FeaturedTours />
-      <Discover />
       <Services />
       <Packages />
       <TravellerStories />

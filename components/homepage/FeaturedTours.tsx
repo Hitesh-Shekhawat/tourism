@@ -65,7 +65,7 @@ export function FeaturedTours() {
       <div className="home-tours-pin">
         <div className="home-tours-track">
           <div className="home-tours-intro">
-            <SectionHead n="02" label={featured.label} />
+            <SectionHead n="04" label={featured.label} />
             <h2 id="ft-title" className="t-h1 mt-8 max-w-[11ch]" data-reveal>
               {featured.title}
             </h2>

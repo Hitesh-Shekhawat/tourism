@@ -118,6 +118,19 @@ export const assets = {
   storyFounder: a("our-story-founder-portrait.jpg", "4:5", "Our story", "The founder (real person, signed release)", "Open shade", "Natural, unposed", "{{FOUNDER_NAME}}, founder of {{BRAND_NAME}}"),
   storyTeam: a("our-story-team-on-trip.jpg", "3:2", "Our story", "The real team or a real guide on a real trip (releases signed)", "Daylight", "Candid", "The {{BRAND_NAME}} team on the road in Rajasthan"),
 
+  /* Home: trending places + the atlas (destination cards and the map's information card) */
+  placeJaipur: a("place-jaipur-hawa-mahal.jpg", "4:5", "Home · Trending places and the atlas card", "Hawa Mahal's façade of latticed windows", "Morning", "Pink sandstone, graphic", "The latticed façade of Hawa Mahal, Jaipur"),
+  placeUdaipur: a("place-udaipur-pichola-dawn.jpg", "4:5", "Home · Trending places and the atlas card", "Lake Pichola at dawn, palaces on the shore", "Dawn", "Still water, soft light", "Lake Pichola at dawn, Udaipur"),
+  placeJaisalmer: a("place-jaisalmer-fort-walls.jpg", "4:5", "Home · Trending places and the atlas card", "Jaisalmer Fort's bastions rising from the town", "Late afternoon", "Honey-gold stone", "The bastions of Jaisalmer Fort"),
+  placeJodhpur: a("place-jodhpur-old-city-lane.jpg", "4:5", "Home · Trending places and the atlas card", "A lane in Jodhpur's old city", "Morning", "Indigo walls, quiet", "A lane in Jodhpur's old city"),
+  placePushkar: a("place-pushkar-lake-ghats.jpg", "4:5", "Home · Trending places and the atlas card", "Temples and ghats around Pushkar Lake", "Dawn", "Devotional, calm", "Temples and ghats around Pushkar Lake"),
+  placeMountAbu: a("place-mount-abu-nakki-lake.jpg", "4:5", "Home · Trending places and the atlas card", "Nakki Lake among the Aravalli hills at Mount Abu", "Morning", "Green hills, cool air", "Nakki Lake in the hills at Mount Abu"),
+  placeBikaner: a("place-bikaner-junagarh.jpg", "4:5", "Home · the atlas card", "Junagarh Fort's red sandstone façade", "Morning", "Rich red stone", "The red sandstone façade of Junagarh Fort, Bikaner"),
+
+  /* Itineraries: Jaipur and Udaipur (hero + gallery reuse the photos above) */
+  itinJaipurHero: a("itinerary-jaipur-amer-sunrise.jpg", "21:9", "Itinerary · Jaipur hero", "Amer Fort above Maota Lake at sunrise", "Sunrise", "Warm, wide", "Amer Fort above Maota Lake at sunrise"),
+  itinUdaipurHero: a("itinerary-udaipur-palaces-pichola.jpg", "21:9", "Itinerary · Udaipur hero", "Udaipur's palaces reflected on Lake Pichola", "Golden hour", "Serene, reflective", "Udaipur's palaces reflected on Lake Pichola"),
+
   /* 404 */
   notFound: a("404-dune-horizon.jpg", "21:9", "404 page", "A lone set of footprints over a dune", "Late afternoon", "Minimal, wry", "Footprints leading over a dune"),
 } satisfies Record<string, Asset>;

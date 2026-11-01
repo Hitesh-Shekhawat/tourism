@@ -18,6 +18,14 @@ import udaipurPalaces from "../assets/Palaces_reflecting_on_Lake_Pichola_a786880
 import peacockGate from "../assets/Peacock_gate_courtyard_at_palace_30e72e41.jpg";
 import udaipurCityPalace from "../assets/Udaipur_City_Palace_overlooking_…_23c33c31.jpg";
 import udaipurBoat from "../assets/Wooden_boat_gliding_on_lake_a9e14c09.jpg";
+import hawaMahal from "../assets/Hawa_Mahal_facade_in_Jaipur_bcf5064a.jpg";
+import picholaDawn from "../assets/Dawn_view_of_Lake_Pichola_44d2a75d.jpg";
+import jaisalmerWalls from "../assets/Jaisalmer_Fort_walls_rising_ac9f32da.jpg";
+import pushkarGhats from "../assets/Pushkar_Lake_temples_and_ghats_61400b8e.jpg";
+import jodhpurLane from "../assets/Alleyway_in_Jodhpur_old_city_26158c32.jpg";
+// Wikimedia Commons (credited in content/credits.ts)
+import nakkiLake from "../assets/Nakki_Lake_Mount_Abu_commons.jpg";
+import junagarhInterior from "../assets/Junagarh_Fort_painted_interior_commons.jpg";
 
 type ImageSource = string | StaticImageData;
 
@@ -65,10 +73,20 @@ export const imageSources: Partial<Record<AssetKey, ImageSource>> = {
   galPalace: jaipurCourtyard,
   galCamp: tharCamp,
   galCamel: camelTrek,
+  placeJaipur: hawaMahal,
+  placeUdaipur: picholaDawn,
+  placeJaisalmer: jaisalmerWalls,
+  placeJodhpur: jodhpurLane,
+  placePushkar: pushkarGhats,
+  placeMountAbu: nakkiLake,
+  placeBikaner: junagarhInterior,
+  itinJaipurHero: amerFortMorning,
+  itinUdaipurHero: udaipurPalaces,
 };
 
 export const imagePositions: Partial<Record<AssetKey, string>> = {
   expAarti: "38% center",
   trailJaisalmer: "76% center",
   tourDesert: "62% center",
+  placeMountAbu: "25% 20%",
 };

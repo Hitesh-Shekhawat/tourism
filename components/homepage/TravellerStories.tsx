@@ -28,7 +28,7 @@ export function TravellerStories() {
     <section id="stories" aria-labelledby="stories-title" className="section-y overflow-hidden bg-sandstone">
       <div className="wrap flex flex-wrap items-end justify-between gap-8">
         <div>
-          <SectionHead n="06" label={storiesCopy.label} />
+          <SectionHead n="07" label={storiesCopy.label} />
           <h2 id="stories-title" className="t-h1 mt-8" data-reveal>
             {storiesCopy.title}
           </h2>

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./story.css";
 @import "./home.css";
+@import "./explorer.css";
 
 /* ── Design tokens (§3) ─────────────────────────────────────────────────────────────── */
 @theme {

@@ -9,6 +9,7 @@ import { Photo } from "@/components/ui/Photo";
 import { Arrow, Copy, Deva, SectionHead, TrailDivider } from "@/components/ui/bits";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { getExperience } from "@/content/experiences";
+import { getItinerary } from "@/content/itineraries";
 import { toursThrough } from "@/content/tours";
 import { breadcrumbLd, touristDestinationLd } from "@/lib/seo";
 
@@ -18,6 +19,7 @@ import type { Destination } from "@/content/destinations";
 export function DestinationDetail({ d }: { d: Destination }) {
   const exps = d.experienceSlugs.map(getExperience).filter((e) => !!e);
   const journeys = toursThrough(d.name);
+  const itinerary = getItinerary(d.slug);
 
   return (
     <>
@@ -27,6 +29,11 @@ export function DestinationDetail({ d }: { d: Destination }) {
 
       <PageHero image={d.heroImage} title={d.name} deva={d.devanagari} label="Destination" crumbs={[{ name: "Destinations", href: "/destinations" }, { name: d.name }]}>
         <p className="measure mt-6 max-w-[48ch] text-[1.125rem] text-ivory/90">{d.descriptor}.</p>
+        {itinerary && (
+          <Link href={`/destinations/${d.slug}/itinerary`} className="btn mt-8 bg-ivory text-ink hover:bg-sandstone">
+            {itinerary.title} <Arrow />
+          </Link>
+        )}
       </PageHero>
 
       <section className="grain section-y">

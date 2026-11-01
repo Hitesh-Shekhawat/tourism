@@ -84,7 +84,7 @@ export const travellerStories: TravellerStory[] = [];
 /** The stories section (and its number in the sequence) only exists once there is something real to show. */
 export const hasStories = travellerStories.length > 0 || reviews.length > 0;
 const n = (k: number) => String(hasStories ? k : k - 1).padStart(2, "0");
-export const sectionNo = { gallery: n(7), closing: n(8) };
+export const sectionNo = { gallery: n(8), closing: n(9) };
 
 export const storiesCopy = {
   label: "Traveller stories",

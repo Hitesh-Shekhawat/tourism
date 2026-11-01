@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.0 · 2026-11-01: v5, the atlas home page
+
+### What changed
+- **Home page flow:** header → trending places (with the `<h1>`) → "What are you looking for?" → the interactive 3D atlas → featured journeys, services, packages, stories, gallery, closing enquiry → footer. The v4 `Hero` and `Discover` sections are no longer placed (their files remain).
+- **The atlas** (`components/explorer/`): a 3D map of India's states from real boundaries (DataMeet, CC BY 4.0; `scripts/build-geo.mjs` → `public/geo/`). Hover lifts a state and shows its name; choosing one highlights it, flies the camera in, fades India out and raises that state as its own object (GSAP). Rajasthan is open, with seven pins at their real coordinates (Jaipur, Udaipur, Jaisalmer, Jodhpur, Pushkar, Mount Abu, Bikaner), hover previews and a place card. Every other state opens as a map with a "coming soon" note. Orbit, zoom, pan and reset on state maps.
+- **URLs and history:** `/?state=rajasthan&place=jaipur` (pushState), so links can be shared and the browser's back button walks back out through the map without a reload.
+- **Itineraries:** `/destinations/jaipur/itinerary` and `/destinations/udaipur/itinerary` from `content/itineraries.ts` (day by day, sights, culture, gallery, practical notes, enquiry, TouristTrip JSON-LD, in the sitemap). Other places show their card and "itinerary coming soon"; their itinerary URLs 404 instead of showing an empty plan.
+- **Data apart from rendering:** geometry in `public/geo`, projection and relief in `lib/geo/`, places and open states in `content/explorer.ts`. Opening another state means adding it to `openStates` and giving it places.
+- **Performance and fallbacks:** three.js and the scenes are one lazy chunk, fetched as the atlas nears the viewport and not rendering while it is off screen; state geometry is fetched only when that state opens. Without WebGL (or if the context is lost) the same atlas renders as SVG. All navigation also works through DOM controls (breadcrumbs, state list, place list, card), by keyboard and screen reader.
+- Photos: five unused photos from `assets/` now on the trending cards and place cards; Mount Abu (public domain) and Bikaner (CC BY 4.0) from Wikimedia Commons, credited in `content/credits.ts`.
+- Nav: "Atlas" links to `/#explore`. Header is transparent over the itinerary heroes.
+
+### Honest limits
+The relief on state maps is stylised (an Aravalli ridge and dune ripples, `lib/geo/relief.ts`), not survey elevation data, and is credited as such. Lakshadweep's islands are too small for the India view at this simplification and do not appear there.
+
 ## 0.3.0 · 2026-10-31: v4, editorial home page; the story moves to /story
 
 ### What changed

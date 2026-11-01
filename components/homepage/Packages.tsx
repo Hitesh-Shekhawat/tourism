@@ -21,7 +21,7 @@ export function Packages() {
       <div className="wrap">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-7">
-            <SectionHead n="05" label={packagesCopy.label} dark />
+            <SectionHead n="06" label={packagesCopy.label} dark />
             <h2 id="pkg-title" className="t-h1 mt-8 max-w-[13ch]" data-reveal>
               {packagesCopy.title}
             </h2>

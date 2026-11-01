@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { business, isPlaceholder } from "@/content/business";
 import type { Destination } from "@/content/destinations";
+import type { Itinerary } from "@/content/itineraries";
 import { siteUrl } from "@/content/site";
 import type { Tour } from "@/content/tours";
 
@@ -61,6 +62,23 @@ export function touristTripLd(t: Tour) {
     ...(t.priceFromINR && {
       offers: { "@type": "Offer", price: t.priceFromINR, priceCurrency: "INR", description: t.priceBasis ?? "per person", url: abs(`/journeys/${t.slug}`) },
     }),
+  };
+}
+
+export function itineraryLd(it: Itinerary) {
+  const url = abs(`/destinations/${it.slug}/itinerary`);
+  return {
+    "@context": "https://schema.org",
+    "@type": "TouristTrip",
+    name: `${it.title}: a ${it.name} itinerary`,
+    description: it.lede,
+    url,
+    provider: { "@id": abs("/#agency") },
+    itinerary: {
+      "@type": "ItemList",
+      numberOfItems: it.days.length,
+      itemListElement: it.days.map((d, i) => ({ "@type": "ListItem", position: i + 1, item: { "@type": "TouristAttraction", name: `Day ${i + 1}: ${d.title}`, description: d.summary } })),
+    },
   };
 }
 
