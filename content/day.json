@@ -1,0 +1,85 @@
+{
+  "$comment": "The scroll spine for the home page: one day from 05:30 to 21:30. Chapters run top to bottom; each names its hour, place and palette. Pins are desktop lengths in viewport heights. Palettes are interpolated in OKLCH as the page scrolls; every palette must pass the contrast test (npm run check:contrast). frameSequences is the manifest the frame engine reads; never hard-code frame counts or paths.",
+  "day": { "start": "05:30", "end": "21:30" },
+  "chapters": [
+    { "id": "threshold", "n": "00", "time": "05:30", "place": "Jaipur", "placeDeva": "जयपुर", "title": "Through the jharokha", "palette": "predawn", "pin": 2.2 },
+    { "id": "intro", "n": "01", "time": "06:15", "place": "Amer", "placeDeva": "आमेर", "title": "A Land of Stories", "palette": "dawn" },
+    { "id": "hours", "n": "02", "time": "08:00", "place": "Six cities", "placeDeva": "छह नगर", "title": "Hours of Rajasthan", "palette": "morning", "pin": 3.0 },
+    {
+      "id": "trail", "n": "03", "time": "11:00", "place": "The Golden Trail", "placeDeva": "स्वर्ण पथ", "title": "The Golden Trail", "palette": "noon", "pin": 4.2,
+      "stops": [
+        { "id": "jaipur", "time": "11:00", "palette": "noon" },
+        { "id": "amber", "time": "11:40", "palette": "noon" },
+        { "id": "udaipur", "time": "13:00", "palette": "lake" },
+        { "id": "jodhpur", "time": "14:30", "palette": "indigo" },
+        { "id": "jaisalmer", "time": "16:00", "palette": "golden" }
+      ]
+    },
+    {
+      "id": "thar", "n": "04", "time": "16:30", "place": "Jaisalmer", "placeDeva": "जैसलमेर", "title": "Into the Thar", "palette": "golden", "pin": 3.8,
+      "frames": { "sequence": "thar", "from": 16, "to": 60, "introFrom": 1, "introSeconds": 1.2 },
+      "panels": [
+        { "id": "camp", "from": 0.08, "to": 0.36 },
+        { "id": "ridge", "from": 0.38, "to": 0.62 },
+        { "id": "stars", "from": 0.68, "to": 0.96 }
+      ]
+    },
+    { "id": "ganjifa", "n": "05", "time": "18:10", "place": "Ganjifa", "placeDeva": "गंजीफ़ा", "title": "Signature Experiences", "palette": "sunset", "pin": 3.2 },
+    { "id": "journeys", "n": "06", "time": "19:00", "place": "Dusk", "placeDeva": "गोधूलि", "title": "Featured Journeys", "palette": "dusk", "pin": 2.4 },
+    { "id": "plan", "n": "07", "time": "19:45", "place": "How we plan", "placeDeva": "योजना", "title": "How we plan", "palette": "dusk" },
+    { "id": "stories", "n": "08", "time": "20:30", "place": "Around the fire", "placeDeva": "अलाव", "title": "Guest stories", "palette": "night" },
+    { "id": "starlight", "n": "09", "time": "21:30", "place": "Under the stars", "placeDeva": "तारों के नीचे", "title": "Starlight", "palette": "night" }
+  ],
+  "palettes": {
+    "predawn": { "paper": "#ECE6DF", "ink": "#1E1A16", "muted": "#544B45", "accent": "#8F3F1F", "sky": "#3A3950" },
+    "dawn": { "paper": "#F6ECE1", "ink": "#1E1A16", "muted": "#5A5047", "accent": "#97452A", "sky": "#E7B48E" },
+    "morning": { "paper": "#F7F1E6", "ink": "#1E1A16", "muted": "#5C5248", "accent": "#A14D2A", "sky": "#CFDFE4" },
+    "noon": { "paper": "#F1E8D6", "ink": "#1E1A16", "muted": "#564C42", "accent": "#8F3F1F", "sky": "#BCD5DF" },
+    "lake": { "paper": "#EDEEE9", "ink": "#1B1E20", "muted": "#4D5457", "accent": "#2F4A6D", "sky": "#B7D2DB" },
+    "indigo": { "paper": "#E7EAEE", "ink": "#172033", "muted": "#454E63", "accent": "#2F4A6D", "sky": "#8EA8C8" },
+    "golden": { "paper": "#F3E4C6", "ink": "#241B10", "muted": "#5A472C", "accent": "#8A3C1D", "sky": "#EFC57D" },
+    "sunset": { "paper": "#EED4B8", "ink": "#2A140C", "muted": "#5A3825", "accent": "#7A2D14", "sky": "#D8774A" },
+    "dusk": { "paper": "#382632", "ink": "#F7F1E6", "muted": "#D8C8BE", "accent": "#E4B98C", "sky": "#47324E" },
+    "night": { "paper": "#12141F", "ink": "#F7F1E6", "muted": "#C9C2B8", "accent": "#D9B47A", "sky": "#0B0D17" }
+  },
+  "frameSequences": {
+    "dunes": {
+      "status": "ready",
+      "count": 150,
+      "ext": "webp",
+      "pad": 4,
+      "fit": "cover",
+      "poster": 104,
+      "desktop": { "dir": "/frames/dunes/desktop", "w": 1920, "h": 1080 },
+      "mobile": { "dir": "/frames/dunes/mobile", "w": 900, "h": 1600 },
+      "credit": "Procedurally rendered Thar day cycle (scripts/render-dunes.mjs). Not photography.",
+      "hours": "Frames 1–95 run 05:30–16:30 (time-lapse intro); frames 95–150 run 16:30–21:00 (scroll range). Frame 104 ≈ 17:15 golden hour; sunset ≈ frame 113."
+    },
+    "thar": {
+      "status": "ready",
+      "rev": 1,
+      "count": 60,
+      "ext": "webp",
+      "pad": 4,
+      "fit": "cover",
+      "poster": 22,
+      "desktop": { "dir": "/frames/thar/desktop", "w": 1920, "h": 1080 },
+      "mobile": { "dir": "/frames/thar/mobile", "w": 900, "h": 1600 },
+      "credit": "A slow push into assets/Camel_trek_across_sand_dunes (an AI-generated image), graded to blue hour from frame ~22 on (scripts/photo-frames.mjs).",
+      "hours": "Frames 1–16 play as the intro; 16–60 are the scroll range, golden hour into night."
+    },
+    "hero-aerial": {
+      "status": "ready",
+      "rev": 2,
+      "count": 60,
+      "ext": "webp",
+      "pad": 4,
+      "fit": "cover",
+      "poster": 1,
+      "desktop": { "dir": "/frames/hero-aerial/desktop", "w": 1920, "h": 1080 },
+      "mobile": { "dir": "/frames/hero-aerial/mobile", "w": 900, "h": 1600 },
+      "credit": "A slow push into assets/Amer_Fort_at_sunrise (scripts/photo-frames.mjs). Replace with the owner's own drone footage when it exists.",
+      "brief": "Drone clip, 10–14 s, shot at first light (05:45–06:30) over Jaipur's walled city or Amer Fort. One slow, level push forward (no yaw, no orbit), starting low over rooftops and rising gently to reveal the fort or the city against the dawn sky. Warm low sun from frame left. 4K (3840×2160), 25 or 30 fps, no identifiable faces, no text or logos, no stabiliser warping. Owned by the business (or licensed in writing). Convert with: scripts/video-to-frames.sh <clip> hero-aerial 150"
+    }
+  }
+}

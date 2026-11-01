@@ -1,0 +1,33 @@
+import type { Tour } from "./types";
+
+export const theGoldenTrail: Tour = {
+  slug: "the-golden-trail",
+  title: "The Golden Trail",
+  summary: "Pink Jaipur, lake-lit Udaipur, blue Jodhpur and golden Jaisalmer, with time to stay in each.",
+  durationNights: 9,
+  durationDays: 10,
+  route: ["Jaipur", "Udaipur", "Jodhpur", "Jaisalmer"],
+  bestSeason: "October to March",
+  idealFor: ["First visits", "Couples", "Photographers"],
+  regions: ["Eastern Rajasthan", "Mewar & the lakes", "Marwar & the Thar"],
+  styles: ["First visit", "Heritage & architecture"],
+  heroImage: "tourGoldenTrail",
+  gallery: ["tourGoldenTrailG1", "tourGoldenTrailG2"],
+  itinerary: [
+    { day: 1, title: "Jaipur: arrival", description: "Met on arrival and driven to your hotel. The rest of the day is yours to settle in.", overnight: "Jaipur" },
+    { day: 2, title: "Jaipur: Amber and the old city", description: "Amber Fort at opening, then the City Palace and Jantar Mantar in the afternoon.", overnight: "Jaipur" },
+    { day: 3, title: "Jaipur: bazaars and craft", description: "A slow morning in the bazaars, or a visit to the block printers of Bagru.", overnight: "Jaipur" },
+    { day: 4, title: "Jaipur to Udaipur", description: "Drive or fly south to Udaipur. Evening on the ghats.", overnight: "Udaipur" },
+    { day: 5, title: "Udaipur: the lake", description: "A boat on Lake Pichola at first light, then the City Palace.", overnight: "Udaipur" },
+    { day: 6, title: "Udaipur to Jodhpur, via Ranakpur", description: "Through the Aravalli hills, stopping at the marble Jain temple at Ranakpur.", overnight: "Jodhpur" },
+    { day: 7, title: "Jodhpur: Mehrangarh and the blue city", description: "Mehrangarh in the morning; an afternoon walk through the old city to the clock tower.", overnight: "Jodhpur" },
+    { day: 8, title: "Jodhpur to Jaisalmer", description: "West into the Thar. Sunset from the fort's ramparts.", overnight: "Jaisalmer" },
+    { day: 9, title: "Jaisalmer: fort, havelis and dunes", description: "The fort's lanes and the merchant havelis, then out to the dunes for sunset.", overnight: "Jaisalmer" },
+    { day: 10, title: "Departure", description: "Transfer to Jaisalmer or Jodhpur for your onward journey." },
+  ],
+  inclusions: ["Private air-conditioned car and driver throughout", "Nine nights' accommodation with breakfast", "Arrival and departure transfers", "On-trip support by phone and WhatsApp"],
+  exclusions: ["International and domestic flights", "Monument entry fees", "Lunches and dinners unless stated", "Tips and personal expenses"],
+  featured: true,
+  draft: true,
+  seo: { title: "The Golden Trail: 10 days through Rajasthan", description: "Jaipur, Udaipur, Jodhpur and Jaisalmer over ten unhurried days, planned privately around you." },
+};

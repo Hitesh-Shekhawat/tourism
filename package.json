@@ -1,0 +1,42 @@
+{
+  "name": "tour",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-contrast.mjs && next build && node scripts/check-placeholders.mjs",
+    "start": "next start",
+    "lint": "tsc --noEmit",
+    "check:contrast": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-contrast.mjs",
+    "placeholders": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/list-placeholders.mjs",
+    "assets:brief": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/asset-brief.mjs",
+    "frames:dunes": "node scripts/render-dunes.mjs",
+    "frames:placeholder": "node scripts/placeholder-frames.mjs",
+    "arch:svg": "node scripts/make-jharokha.mjs"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "gsap": "3.13.0",
+    "lenis": "1.3.8",
+    "next": "^15.5.28",
+    "next-view-transitions": "^0.3.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-hook-form": "^7.66.0",
+    "three": "^0.184.0",
+    "zod": "^4.1.12",
+    "zustand": "^5.0.16"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.16",
+    "@types/node": "^20.19.43",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.184.0",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.1.16",
+    "typescript": "5.9"
+  }
+}

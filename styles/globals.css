@@ -1,0 +1,584 @@
+@import "tailwindcss";
+@import "./story.css";
+@import "./home.css";
+
+/* ── Design tokens (§3) ─────────────────────────────────────────────────────────────── */
+@theme {
+  --color-ivory: #f7f1e6;
+  --color-sandstone: #ede2cf;
+  --color-dune: #d9c3a0;
+  --color-ink: #1e1a16;
+  --color-ink-muted: #5c5248; /* 6.8:1 on ivory, 5.9:1 on sandstone */
+  /* Brief value #B5562F measures 4.31:1 on ivory (fails AA); nudged darker to 5.17:1 / 4.54:1 on sandstone. */
+  --color-terracotta: #a14d2a;
+  --color-terracotta-deep: #8f3f1f;
+  --color-maroon: #5e1a1a;
+  --color-brass: #b08d57; /* decorative only (rules, ornaments): 2.75:1 on ivory */
+  --color-brass-text: #78603b; /* brass for small numerals: 5.3:1 on ivory, 4.6:1 on sandstone */
+  --color-indigo: #2f4a6d;
+
+  /* Time-of-day layer (§3.1): set on <html> by the story engine; static defaults below for every other page */
+  --color-paper: var(--paper);
+  --color-fg: var(--ink);
+  --color-fg-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-sky: var(--sky);
+
+  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-instrument), system-ui, sans-serif;
+  --font-deva: var(--font-tiro), "Noto Serif Devanagari", serif;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --radius-xs: 2px;
+
+  --breakpoint-xs: 30rem;
+}
+
+:root {
+  --paper: #f7f1e6;
+  --ink: #1e1a16;
+  --muted: #5c5248;
+  --accent: #a14d2a;
+  --sky: #cfdfe4;
+  --gutter: clamp(20px, 5vw, 80px);
+  --section-y: clamp(72px, 14vw, 200px);
+  --header-h: 76px;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.028'/%3E%3C/svg%3E");
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 16px);
+  }
+  /* Scrollbars hidden site-wide (page, sheet, drawer, menu, HUD list); scrolling still
+     works with wheel, touch, keys and Lenis. */
+  * {
+    scrollbar-width: none;
+  }
+  *::-webkit-scrollbar {
+    display: none;
+  }
+  html:not(.lenis) {
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html:not(.lenis) {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    font-feature-settings: "kern", "liga";
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+    font-weight: 500;
+  }
+  p, li, dd {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+  .on-dark :focus-visible,
+  .on-dark:focus-visible {
+    outline-color: var(--color-ivory);
+  }
+  ::selection {
+    background: var(--color-dune);
+    color: var(--color-ink);
+  }
+  [lang="hi"] {
+    font-family: var(--font-deva);
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+}
+
+/* ── Type scale (§3.2) ──────────────────────────────────────────────────────────────── */
+@utility t-display {
+  font-family: var(--font-display);
+  font-weight: 450;
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 144, "SOFT" var(--soft, 100);
+}
+@utility t-h1 {
+  font-family: var(--font-display);
+  font-weight: 450;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.015em;
+  font-variation-settings: "opsz" 144, "SOFT" var(--soft, 100);
+}
+@utility t-h2 {
+  font-family: var(--font-display);
+  font-weight: 450;
+  font-size: clamp(2rem, 3.8vw, 3.5rem);
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  font-variation-settings: "opsz" 144, "SOFT" var(--soft, 100);
+}
+@utility t-h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.375rem, 2vw, 1.75rem);
+  line-height: 1.15;
+}
+/* Fraunces italic is its own next/font family (true italic, not synthesised) */
+@utility serif-italic {
+  font-family: var(--font-fraunces-italic), var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+}
+@utility t-small {
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+@utility t-label {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+@utility measure {
+  max-width: 62ch;
+}
+@utility tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+/* Times and prices (§3.2): Fraunces, tabular old-style figures */
+@utility numerals {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums oldstyle-nums;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────────────────────────── */
+@utility wrap {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+@utility section-y {
+  padding-block: var(--section-y);
+}
+@utility grain {
+  background-color: var(--paper);
+  background-image: var(--grain);
+}
+@utility hairline {
+  border-color: color-mix(in srgb, var(--color-brass) 70%, transparent);
+}
+
+/* ── Components ─────────────────────────────────────────────────────────────────────── */
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 52px;
+    padding: 0 1.75rem;
+    border-radius: var(--radius-xs);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.25;
+    padding-block: 0.5rem;
+    text-align: center;
+    transition: background-color 200ms var(--ease-out), color 200ms var(--ease-out), border-color 200ms var(--ease-out);
+    cursor: pointer;
+  }
+  .btn .arrow {
+    transition: transform 200ms var(--ease-out);
+  }
+  .btn:hover .arrow,
+  .btn:focus-visible .arrow {
+    transform: translateX(4px);
+  }
+  .btn-primary {
+    background: var(--color-terracotta);
+    color: var(--color-ivory);
+  }
+  .btn-primary:hover,
+  .btn-primary:active {
+    background: var(--color-terracotta-deep);
+  }
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .btn-secondary {
+    border: 1px solid currentColor;
+    color: var(--color-ink);
+  }
+  .btn-secondary:hover {
+    background: var(--color-ink);
+    color: var(--color-ivory);
+  }
+  .on-dark .btn-secondary {
+    color: var(--color-ivory);
+  }
+  .on-dark .btn-secondary:hover {
+    background: var(--color-ivory);
+    color: var(--color-maroon);
+  }
+
+  /* Text link: underline draws in from the left */
+  .link {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    padding-bottom: 2px;
+    transition: background-size 400ms var(--ease-out);
+  }
+  .link:hover,
+  .link:focus-visible {
+    background-size: 100% 1px;
+  }
+  .link-underlined {
+    background-size: 100% 1px;
+  }
+  .link-underlined:hover {
+    animation: relink 600ms var(--ease-out);
+  }
+  @keyframes relink {
+    0% { background-size: 100% 1px; background-position: 100% 100%; }
+    45% { background-size: 0% 1px; background-position: 100% 100%; }
+    46% { background-position: 0 100%; }
+    100% { background-size: 100% 1px; background-position: 0 100%; }
+  }
+  .prose-link {
+    color: var(--color-terracotta);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .prose-link:hover {
+    color: var(--color-terracotta-deep);
+  }
+
+  /* Owner placeholders (§4): impossible to miss, impossible to ship (scripts/check-placeholders.mjs) */
+  .ph {
+    border: 1px dashed var(--color-terracotta-deep);
+    background: color-mix(in srgb, var(--color-dune) 35%, transparent);
+    color: var(--color-ink);
+    padding: 1rem 1.125rem;
+    border-radius: var(--radius-xs);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  .ph-inline {
+    border-bottom: 1px dashed currentColor;
+    background: color-mix(in srgb, var(--color-dune) 30%, transparent);
+    padding: 0 0.2em;
+    font-family: ui-monospace, "Cascadia Mono", Menlo, monospace;
+    font-size: 0.85em;
+    word-break: break-word;
+  }
+  .on-dark .ph-inline {
+    background: rgb(30 26 22 / 0.45);
+    color: var(--color-ivory);
+  }
+  .on-dark .ph {
+    border-color: var(--color-dune);
+    background: color-mix(in srgb, var(--color-ivory) 10%, transparent);
+    color: var(--color-ivory);
+  }
+
+  /* Drop cap on intro paragraphs */
+  .dropcap::first-letter {
+    float: left;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 4.6em;
+    line-height: 0.78;
+    padding: 0.08em 0.12em 0 0;
+    color: var(--color-terracotta);
+  }
+
+  /* Underline form field (§3.3) */
+  .field {
+    position: relative;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 1.35rem 0 0.4rem;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-dune);
+    border-radius: 0;
+    color: inherit;
+    font: inherit;
+    outline: none;
+    transition: border-color 200ms var(--ease-out);
+    appearance: none;
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 6rem;
+  }
+  .field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%235c5248' stroke-width='1.4'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px bottom 16px;
+    padding-right: 1.5rem;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-bottom-color: var(--color-terracotta);
+    box-shadow: 0 1px 0 0 var(--color-terracotta);
+  }
+  .field label {
+    position: absolute;
+    left: 0;
+    top: 1.3rem;
+    color: var(--color-ink-muted);
+    pointer-events: none;
+    transform-origin: 0 0;
+    transition: transform 200ms var(--ease-out), color 200ms var(--ease-out);
+  }
+  /* Floating label stays visible once focused or filled */
+  .field:focus-within label,
+  .field input:not(:placeholder-shown) + label,
+  .field textarea:not(:placeholder-shown) + label,
+  .field.filled label {
+    transform: translateY(-1.1rem) scale(0.78);
+  }
+  .field:focus-within label {
+    color: var(--color-terracotta-deep);
+  }
+  .field[data-invalid="true"] input,
+  .field[data-invalid="true"] select,
+  .field[data-invalid="true"] textarea {
+    border-bottom-color: var(--color-terracotta-deep);
+  }
+  .on-dark .field input,
+  .on-dark .field select,
+  .on-dark .field textarea {
+    border-bottom-color: color-mix(in srgb, var(--color-ivory) 45%, transparent);
+  }
+  .on-dark .field label {
+    color: color-mix(in srgb, var(--color-ivory) 80%, transparent);
+  }
+  .on-dark .field:focus-within label {
+    color: var(--color-ivory);
+  }
+  .on-dark .field input:focus,
+  .on-dark .field select:focus,
+  .on-dark .field textarea:focus {
+    border-bottom-color: var(--color-ivory);
+    box-shadow: 0 1px 0 0 var(--color-ivory);
+  }
+  .on-dark .field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23f7f1e6' stroke-width='1.4'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  }
+  .on-dark .field option {
+    color: var(--color-ink);
+  }
+
+  /* details/summary accordion */
+  .acc summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .acc summary::-webkit-details-marker {
+    display: none;
+  }
+  .acc .acc-icon {
+    transition: transform 300ms var(--ease-out);
+  }
+  .acc[open] .acc-icon {
+    transform: rotate(45deg);
+  }
+}
+
+/* Lenis (desktop only) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ── Motion (§9): reveal states. Content is visible without JS and under reduced motion. ─ */
+.js [data-reveal]:not(.is-in) {
+  opacity: 0;
+  transform: translateY(24px);
+}
+[data-reveal] {
+  transition: opacity 900ms var(--ease-out), transform 900ms var(--ease-out);
+  transition-delay: var(--d, 0ms);
+}
+/* The clip sits on the child: IntersectionObserver ignores fully clipped targets, so the parent is observed */
+.js [data-reveal-mask]:not(.is-in) > * {
+  clip-path: inset(100% 0 0 0);
+}
+[data-reveal-mask] > * {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1200ms var(--ease-out);
+  transition-delay: var(--d, 0ms);
+}
+
+/* Masked line rise for headings */
+.rise-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.rise-line > span {
+  display: block;
+  animation: rise 900ms cubic-bezier(0.215, 0.61, 0.355, 1) both; /* ≈ power3.out */
+  animation-delay: calc(150ms + var(--i, 0) * 80ms);
+}
+@keyframes rise {
+  from { transform: translateY(105%); }
+  to { transform: none; }
+}
+
+.hover-zoom img,
+.hover-zoom .photo-inner {
+  transition: transform 1200ms var(--ease-out);
+}
+.hover-zoom:hover img,
+.hover-zoom:hover .photo-inner,
+.hover-zoom:focus-within img {
+  transform: scale(1.03);
+}
+.caption-line {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 700ms var(--ease-out);
+}
+.hover-zoom:hover .caption-line,
+.hover-zoom:focus-within .caption-line {
+  transform: scaleX(1);
+}
+
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+.kenburns {
+  animation: kenburns 24s linear both;
+}
+
+/* View transitions (§6) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 260ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-group(*) {
+  animation-duration: 500ms;
+  animation-timing-function: var(--ease-out);
+}
+
+/* OS reduced motion without JS; with JS, html[data-motion="reduced"] (story.css) also honours the session's Motion toggle */
+@media (prefers-reduced-motion: reduce) {
+  html:not(.js) *,
+  html:not(.js) *::before,
+  html:not(.js) *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+  }
+  html:not([data-motion="desktop"]):not([data-motion="compact"])::view-transition-group(*),
+  html:not([data-motion="desktop"]):not([data-motion="compact"])::view-transition-old(*),
+  html:not([data-motion="desktop"]):not([data-motion="compact"])::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* ── Splash (html.splash is set pre-paint with JS; <Splash> lifts it once the page and its 3D are ready) ── */
+.splash-screen {
+  display: none;
+}
+html.splash .splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: var(--color-ivory);
+  color: var(--color-ink, #1e1a16);
+  transition: opacity 500ms var(--ease-out), visibility 500ms;
+  /* if the script never runs, never trap the page behind the splash */
+  animation: splash-cap 0s 9s forwards;
+}
+html.splash-out .splash-screen {
+  opacity: 0;
+  visibility: hidden;
+}
+/* Pages without 3D: a brief beat of the logo, lifted by CSS alone so first paint never waits on hydration */
+html.splash-quick .splash-screen {
+  animation: splash-cap 450ms 600ms var(--ease-out) forwards;
+}
+.splash-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+.splash-arch {
+  width: 4.5rem;
+  height: 5.85rem;
+  overflow: visible;
+  animation: splash-breathe 1.8s 1s ease-in-out infinite alternate;
+}
+.splash-arch path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: splash-draw 900ms var(--ease-out) forwards;
+}
+.splash-arch path + path {
+  animation-delay: 180ms;
+}
+.splash-name {
+  opacity: 0;
+  animation: splash-rise 700ms 400ms var(--ease-out) forwards;
+}
+@keyframes splash-draw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes splash-rise {
+  from { opacity: 0; translate: 0 8px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes splash-breathe {
+  from { opacity: 1; }
+  to { opacity: 0.55; }
+}
+@keyframes splash-cap {
+  to { opacity: 0; visibility: hidden; }
+}

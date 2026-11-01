@@ -1,0 +1,162 @@
+/* ── Default: vertical timeline (mobile, tablet, reduced motion, no JS) ─────────────── */
+.stage {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.mapCol {
+  max-width: 440px;
+  margin: 0 auto 4rem;
+}
+.chapters {
+  position: relative;
+  display: grid;
+  gap: 4.5rem;
+  padding-left: 2.25rem;
+}
+.chapters::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 1px;
+  background-image: linear-gradient(to bottom, var(--color-brass) 50%, transparent 50%);
+  background-size: 1px 6px;
+}
+.chapter {
+  position: relative;
+  display: grid;
+  gap: 1.75rem;
+}
+.chapter::before {
+  content: "";
+  position: absolute;
+  left: calc(-2.25rem + 1px);
+  top: 0.35rem;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--color-terracotta);
+  box-shadow: 0 0 0 4px var(--paper);
+}
+.figure {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-width: 380px;
+  clip-path: url(#arch);
+  order: 2;
+}
+.card {
+  order: 1;
+}
+@media (min-width: 640px) {
+  .chapter {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 3rem;
+  }
+  .figure {
+    order: 1;
+  }
+  .card {
+    order: 2;
+  }
+}
+
+/* ── Pinned (desktop, motion allowed): set by JS ───────────────────────────────────── */
+.pinned .stage {
+  position: relative;
+  max-width: none;
+  height: 100svh;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 42fr) minmax(0, 58fr);
+  overflow: hidden;
+}
+.pinned .mapCol {
+  max-width: none;
+  margin: 0;
+  padding: calc(var(--header-h) + 3vh) clamp(24px, 4vw, 72px) 0 var(--gutter);
+  height: 55svh;
+  display: flex;
+  justify-content: center;
+}
+.pinned .mapCol svg {
+  height: 100%;
+  width: auto;
+}
+.pinned .chapters {
+  position: static;
+  display: block;
+  padding: 0;
+}
+.pinned .chapters::before {
+  display: none;
+}
+.pinned .chapter::before {
+  display: none;
+}
+.pinned .chapter {
+  position: static;
+  display: block;
+}
+.pinned .figure {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 58%;
+  max-width: none;
+  aspect-ratio: auto;
+  clip-path: var(--clip);
+  opacity: 0;
+}
+.pinned .card {
+  position: absolute;
+  left: var(--gutter);
+  width: calc(42% - var(--gutter) - clamp(24px, 4vw, 72px));
+  bottom: 7svh;
+  opacity: 0;
+  visibility: hidden;
+}
+@media (max-width: 1023px) {
+  .pinned .stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pinned .mapCol {
+    height: 30svh;
+    padding: calc(var(--header-h) + 2vh) var(--gutter) 0;
+  }
+  .pinned .figure {
+    top: calc(var(--header-h) + 32svh);
+    bottom: auto;
+    left: 0;
+    width: 100%;
+    height: 32svh;
+  }
+  .pinned .card {
+    right: var(--gutter);
+    width: auto;
+    bottom: 3svh;
+  }
+}
+.pinned .chapter:first-child .figure,
+.pinned .chapter:first-child .card {
+  opacity: 1;
+  visibility: visible;
+}
+
+.leg {
+  fill: none;
+  stroke: var(--color-terracotta);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+.stop {
+  fill: var(--color-terracotta);
+  stroke: var(--paper);
+  stroke-width: 3;
+}

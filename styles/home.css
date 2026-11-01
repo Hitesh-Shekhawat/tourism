@@ -1,0 +1,646 @@
+/* Home page (v4). Mobile-first; the 1024px breakpoint is where the tour cards have room to run sideways.
+   JS-driven layouts sit under state classes (.is-scrubbing) so no-JS and reduced motion keep the plain layout. */
+
+/* ── 01 Hero ─────────────────────────────────────────────────────────────────────── */
+.home-hero-media {
+  height: 88svh;
+}
+.home-hero-shade {
+  /* ≥ 4.5:1 for ivory copy over a bright sky where the text sits (bottom-left) */
+  background:
+    linear-gradient(to top, rgb(30 26 22 / 0.88) 0%, rgb(30 26 22 / 0.55) 38%, rgb(30 26 22 / 0.12) 70%, rgb(30 26 22 / 0.35) 100%),
+    linear-gradient(to right, rgb(94 26 26 / 0.45), transparent 60%);
+}
+.home-hero-copy {
+  min-height: 88svh;
+  padding-top: calc(var(--header-h) + 56px);
+  padding-bottom: 96px;
+}
+.home-hero-form {
+  margin-top: -56px;
+  padding-bottom: clamp(48px, 10vw, 96px);
+}
+@media (min-width: 1024px) {
+  .home-hero-media {
+    inset: 0;
+    height: auto;
+  }
+  .home-hero-copy {
+    min-height: 0;
+    padding-top: 0;
+    padding-bottom: 1rem;
+  }
+  .home-hero-form {
+    margin-top: 0;
+    padding-bottom: 0;
+  }
+}
+.home-fade {
+  animation: home-fade 900ms 380ms var(--ease-out) both;
+}
+@keyframes home-fade {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Quick enquiry (HeroEnquiry.tsx): a soft, frosted ivory panel. Softer radii than the rest of the site on
+   purpose: this is the one place the visitor handles things, so it should feel tactile. */
+.hq {
+  --hq-r: 22px;
+  --hq-soft: color-mix(in srgb, var(--color-sandstone) 55%, white);
+  --hq-line: color-mix(in srgb, var(--color-brass) 32%, transparent);
+  isolation: isolate;
+  padding: clamp(22px, 4.5vw, 34px);
+  border-radius: var(--hq-r);
+  background:
+    linear-gradient(160deg, rgb(255 253 248 / 0.94), rgb(247 241 230 / 0.9) 55%, rgb(237 226 207 / 0.92)),
+    var(--grain);
+  border: 1px solid rgb(255 255 255 / 0.65);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.8) inset,
+    0 0 0 1px var(--hq-line),
+    0 24px 48px -24px rgb(30 26 22 / 0.35),
+    0 60px 120px -40px rgb(61 20 20 / 0.45);
+  backdrop-filter: blur(18px) saturate(1.2);
+}
+/* A slow, warm light drifting across the top of the panel */
+.hq-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hq-glow::before {
+  content: "";
+  position: absolute;
+  width: 70%;
+  aspect-ratio: 1;
+  top: -45%;
+  left: -10%;
+  background: radial-gradient(circle, rgb(214 132 64 / 0.16), transparent 65%);
+  animation: hq-drift 14s ease-in-out infinite alternate;
+}
+@keyframes hq-drift {
+  to { translate: 70% 12%; }
+}
+.hq-badge {
+  flex-shrink: 0;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgb(161 77 42 / 0.09);
+  color: var(--color-terracotta-deep);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.hq-progress {
+  position: relative;
+  flex: 1;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--hq-line);
+  overflow: hidden;
+}
+.hq-progress > span {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-brass), var(--color-terracotta));
+  transform-origin: left;
+  transition: transform 700ms var(--ease-out);
+}
+.hq-step:not([hidden]) {
+  animation: hq-in 520ms var(--ease-out) both;
+}
+@keyframes hq-in {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: none; }
+}
+.hq-legend {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-ink-muted);
+}
+
+/* Choices: native radios under custom faces */
+.hq-choice {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 250ms var(--ease-out), border-color 250ms var(--ease-out), color 250ms var(--ease-out), box-shadow 250ms var(--ease-out), transform 250ms var(--ease-out);
+}
+.hq-choice:has(input:focus-visible) {
+  outline: 2px solid var(--color-terracotta);
+  outline-offset: 2px;
+}
+.hq-choice:active {
+  transform: scale(0.97);
+}
+.hq-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--hq-line);
+  background: rgb(255 255 255 / 0.55);
+  font-size: 0.875rem;
+}
+.hq-chip:hover {
+  border-color: var(--color-brass);
+  background: white;
+  box-shadow: 0 6px 16px -10px rgb(30 26 22 / 0.4);
+}
+.hq-chip:has(input:checked) {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-ivory);
+  box-shadow: 0 8px 20px -10px rgb(30 26 22 / 0.6);
+}
+.hq-chip:has(input:checked)::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-dune);
+  animation: hq-pop 300ms var(--ease-out);
+}
+.hq-segment {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--hq-soft);
+  box-shadow: 0 1px 2px rgb(30 26 22 / 0.06) inset;
+}
+.hq-segment .hq-choice {
+  flex: 1 1 auto;
+  display: grid;
+  place-items: center;
+  min-height: 38px;
+  padding: 0 0.7rem;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  color: var(--color-ink-muted);
+}
+.hq-segment .hq-choice:hover {
+  color: var(--color-ink);
+}
+.hq-segment .hq-choice:has(input:checked) {
+  background: white;
+  color: var(--color-ink);
+  font-weight: 600;
+  box-shadow: 0 4px 12px -6px rgb(30 26 22 / 0.35), 0 0 0 1px var(--hq-line);
+}
+.hq-tile {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  padding: 0.75rem 0.25rem 0.65rem;
+  border-radius: 14px;
+  border: 1px solid var(--hq-line);
+  background: rgb(255 255 255 / 0.5);
+  font-size: 0.8125rem;
+  color: var(--color-ink-muted);
+}
+.hq-tile svg {
+  color: var(--color-brass-text);
+  transition: transform 300ms var(--ease-out), color 250ms var(--ease-out);
+}
+.hq-tile:hover {
+  background: white;
+  color: var(--color-ink);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px -14px rgb(30 26 22 / 0.5);
+}
+.hq-tile:hover svg {
+  transform: scale(1.08);
+}
+.hq-tile:has(input:checked) {
+  border-color: var(--color-terracotta);
+  background: rgb(161 77 42 / 0.08);
+  color: var(--color-terracotta-deep);
+  font-weight: 600;
+  box-shadow: 0 0 0 3px rgb(161 77 42 / 0.12);
+}
+.hq-tile:has(input:checked) svg {
+  color: var(--color-terracotta);
+  animation: hq-pop 380ms var(--ease-out);
+}
+@keyframes hq-pop {
+  0% { transform: scale(0.6); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* Travellers stepper */
+.hq-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--hq-soft);
+  box-shadow: 0 1px 2px rgb(30 26 22 / 0.06) inset;
+}
+.hq-stepper button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: white;
+  font-size: 1.125rem;
+  box-shadow: 0 2px 6px -3px rgb(30 26 22 / 0.35);
+  transition: transform 200ms var(--ease-out), opacity 200ms var(--ease-out);
+}
+.hq-stepper button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.hq-stepper button:active:not(:disabled) {
+  transform: scale(0.92);
+}
+.hq-stepper button:disabled {
+  opacity: 0.35;
+  box-shadow: none;
+}
+.hq-count {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  animation: hq-pop 320ms var(--ease-out);
+}
+
+/* Soft filled inputs; .hq-float adds a floating label */
+.hq-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 52px;
+  padding: 0 0.95rem;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.7);
+  border: 1px solid var(--hq-line);
+  transition: border-color 250ms var(--ease-out), box-shadow 250ms var(--ease-out), background-color 250ms var(--ease-out);
+}
+.hq-input:focus-within {
+  background: white;
+  border-color: var(--color-terracotta);
+  box-shadow: 0 0 0 4px rgb(161 77 42 / 0.12);
+}
+.hq-input[data-invalid] {
+  border-color: var(--color-terracotta-deep);
+  box-shadow: 0 0 0 4px rgb(143 63 31 / 0.1);
+}
+.hq-input input,
+.hq-input select {
+  flex: 1;
+  min-width: 0;
+  height: 50px;
+  background: transparent;
+  border: 0;
+  outline: none;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: inherit;
+}
+.hq-input select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%235c5248' stroke-width='1.4'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+}
+.hq-float input,
+.hq-float select {
+  padding-top: 1.05rem;
+}
+.hq-float label {
+  position: absolute;
+  left: 0.95rem;
+  top: 50%;
+  translate: 0 -50%;
+  color: var(--color-ink-muted);
+  font-size: 0.9375rem;
+  pointer-events: none;
+  transform-origin: 0 0;
+  transition: transform 220ms var(--ease-out), color 220ms var(--ease-out);
+}
+.hq-float:focus-within label,
+.hq-float input:not(:placeholder-shown) + label,
+.hq-float select + label {
+  transform: translateY(-0.8rem) scale(0.76);
+}
+.hq-float:focus-within label {
+  color: var(--color-terracotta-deep);
+}
+.hq-tick {
+  flex-shrink: 0;
+  color: #4f7a52;
+  animation: hq-pop 380ms var(--ease-out);
+}
+
+/* Trip summary on step 2 */
+.hq-summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 14px;
+  background: var(--hq-soft);
+}
+.hq-summary li {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: white;
+  font-size: 0.8125rem;
+  box-shadow: 0 0 0 1px var(--hq-line);
+}
+
+/* Consent checkbox */
+.hq-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  cursor: pointer;
+}
+.hq-consent input {
+  position: absolute;
+  opacity: 0;
+  width: 22px;
+  height: 22px;
+}
+.hq-box {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border-radius: 7px;
+  border: 1.5px solid var(--color-brass);
+  background: white;
+  color: transparent;
+  transition: background-color 200ms var(--ease-out), border-color 200ms var(--ease-out), color 200ms var(--ease-out);
+}
+.hq-consent input:checked + .hq-box {
+  background: var(--color-terracotta);
+  border-color: var(--color-terracotta);
+  color: var(--color-ivory);
+}
+.hq-consent input:checked + .hq-box svg {
+  animation: hq-pop 320ms var(--ease-out);
+}
+.hq-consent input:focus-visible + .hq-box {
+  outline: 2px solid var(--color-terracotta);
+  outline-offset: 2px;
+}
+.hq-consent input[aria-invalid="true"] + .hq-box {
+  border-color: var(--color-terracotta-deep);
+  box-shadow: 0 0 0 4px rgb(143 63 31 / 0.12);
+}
+.hq-alert {
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  background: rgb(143 63 31 / 0.08);
+  border: 1px solid rgb(143 63 31 / 0.25);
+  font-size: 0.875rem;
+}
+
+/* Primary action: soft pill with a warm gradient, a sheen on hover and a shimmer while sending */
+.hq-submit {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 54px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #b85a32, var(--color-terracotta) 45%, var(--color-terracotta-deep));
+  color: var(--color-ivory);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 0 14px 30px -14px rgb(143 63 31 / 0.8), 0 1px 0 rgb(255 255 255 / 0.25) inset;
+  transition: transform 250ms var(--ease-out), box-shadow 250ms var(--ease-out);
+}
+.hq-submit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.28) 50%, transparent 70%);
+  translate: -110% 0;
+  transition: translate 900ms var(--ease-out);
+}
+.hq-submit:hover::after {
+  translate: 110% 0;
+}
+.hq-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 36px -14px rgb(143 63 31 / 0.85), 0 1px 0 rgb(255 255 255 / 0.25) inset;
+}
+.hq-submit:active {
+  transform: scale(0.985);
+}
+.hq-submit[data-sending]::after {
+  animation: hq-shimmer 1.1s linear infinite;
+}
+@keyframes hq-shimmer {
+  from { translate: -110% 0; }
+  to { translate: 110% 0; }
+}
+.hq-arrow {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.18);
+  font-size: 1rem;
+  letter-spacing: 0;
+  transition: transform 300ms var(--ease-out);
+}
+.hq-submit:hover .hq-arrow {
+  transform: translateX(4px);
+}
+.home-spinner {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: home-spin 700ms linear infinite;
+}
+@keyframes home-spin {
+  to { rotate: 360deg; }
+}
+
+/* ── 02 Featured journeys ────────────────────────────────────────────────────────── */
+.home-tours {
+  padding-block: var(--section-y);
+}
+.home-tours-intro {
+  padding-inline: var(--gutter);
+  max-width: 1440px;
+  margin-inline: auto;
+}
+/* Default (mobile, tablet, reduced motion, no JS): a native swipe carousel */
+.home-tours-cards {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 3rem;
+  padding: 0 var(--gutter) 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  overscroll-behavior-x: contain;
+}
+.home-tour-card,
+.home-tours-end {
+  flex: 0 0 min(84vw, 560px);
+  scroll-snap-align: start;
+}
+.home-tours-end {
+  align-self: center;
+  padding: 2rem 0;
+}
+.home-tour-frame {
+  aspect-ratio: 3 / 2;
+}
+.home-tours-bar {
+  display: none;
+}
+
+/* Desktop with full motion: pinned, cards driven sideways by vertical scroll (FeaturedTours.tsx) */
+.home-tours.is-scrubbing {
+  padding-block: 0;
+}
+.home-tours.is-scrubbing .home-tours-pin {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.home-tours.is-scrubbing .home-tours-track {
+  display: flex;
+  align-items: center;
+  gap: clamp(48px, 6vw, 112px);
+  width: max-content;
+  padding-inline: var(--gutter);
+  padding-top: var(--header-h);
+  will-change: transform;
+}
+.home-tours.is-scrubbing .home-tours-intro {
+  flex: 0 0 min(30vw, 440px);
+  padding: 0;
+  margin: 0;
+}
+.home-tours.is-scrubbing .home-tours-cards {
+  display: contents;
+}
+/* Active-card emphasis dims the photo only, so the text keeps full contrast on every card */
+.home-tours.is-scrubbing .home-tour-card {
+  flex: 0 0 clamp(520px, 44vw, 820px);
+  scale: 0.96;
+  transition: scale 600ms var(--ease-out);
+}
+.home-tours.is-scrubbing .home-tour-frame {
+  transition: opacity 600ms var(--ease-out), filter 600ms var(--ease-out);
+}
+.home-tours.is-scrubbing .home-tour-card:not(.is-active) .home-tour-frame {
+  opacity: 0.5;
+  filter: saturate(0.6);
+}
+.home-tours.is-scrubbing .home-tour-card.is-active {
+  scale: 1;
+}
+.home-tours.is-scrubbing .home-tour-frame {
+  aspect-ratio: auto;
+  height: 48svh;
+}
+.home-tours.is-scrubbing .home-tours-end {
+  flex: 0 0 380px;
+}
+.home-tours.is-scrubbing .home-tours-bar {
+  display: block;
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 5svh;
+  height: 1px;
+  background: color-mix(in srgb, var(--color-brass) 35%, transparent);
+}
+.home-tours-bar > span {
+  position: absolute;
+  inset: 0;
+  background: var(--color-brass);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* ── 03 Destinations & experiences ───────────────────────────────────────────────── */
+.home-exp-preview {
+  position: sticky;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--color-dune);
+}
+
+/* ── 05 Packages: a brass frame draws in on hover ────────────────────────────────── */
+.home-pkg-frame::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 1px solid color-mix(in srgb, var(--color-ivory) 70%, transparent);
+  opacity: 0;
+  scale: 1.04;
+  transition: opacity 600ms var(--ease-out), scale 600ms var(--ease-out);
+  pointer-events: none;
+}
+.home-pkg:hover .home-pkg-frame::after,
+.home-pkg:focus-within .home-pkg-frame::after {
+  opacity: 1;
+  scale: 1;
+}
+
+/* ── 06 Traveller stories ────────────────────────────────────────────────────────── */
+.home-stories-row {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(20px, 3vw, 40px);
+  padding: 0 var(--gutter) 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  overscroll-behavior-x: contain;
+}
+.home-story {
+  flex: 0 0 min(82vw, 560px);
+  scroll-snap-align: start;
+}
+.home-story-portrait {
+  flex-basis: min(66vw, 340px);
+}
+
+/* ── 08 Closing ──────────────────────────────────────────────────────────────────── */
+.home-final-shade {
+  background: linear-gradient(100deg, rgb(30 26 22 / 0.9) 0%, rgb(61 20 20 / 0.72) 48%, rgb(30 26 22 / 0.5) 100%);
+}

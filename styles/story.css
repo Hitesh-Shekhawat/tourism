@@ -1,0 +1,795 @@
+/* ── The home scroll story (§4–§6) ───────────────────────────────────────────────────
+   Layout variants: mobile-first = compact; (min-width: 1024px) = desktop; html[data-motion="reduced"]
+   and html:not(.js) = static (no pins, posters, grids). JS-driven states live under [data-motion]. */
+
+@property --soft {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 100;
+}
+
+/* Sections paint the time-of-day paper; GL chapters stay transparent over their view */
+.chapter {
+  background: var(--paper);
+  color: var(--ink);
+  isolation: isolate;
+}
+.chapter.on-dark {
+  color: var(--color-ivory);
+}
+
+/* One fixed WebGL canvas behind the DOM (below in-flow content, above the root background) */
+.gl-root {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.gl-view {
+  pointer-events: none;
+}
+html[data-gl="ready"] .gl-fallback,
+html[data-gl-open="ready"] #ch-threshold .gl-fallback {
+  visibility: hidden;
+}
+.ch-dark-a {
+  background: #241612;
+}
+.ch-dark-b {
+  background: #2a1d14;
+}
+.ch-dark-c {
+  background: #0b0d17;
+}
+html[data-gl="ready"] .gl-chapter,
+html[data-gl="ready"] .gl-chapter .th-stage,
+html[data-gl="ready"] .gl-chapter .thar-stage,
+html[data-gl-open="ready"] #ch-threshold,
+html[data-gl-open="ready"] #ch-threshold .th-stage {
+  background: transparent;
+}
+
+/* Frame sequences: poster underneath, canvas on top once its first frame has drawn */
+.frame-seq {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.frame-poster,
+.frame-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.frame-canvas {
+  opacity: 0;
+  transition: opacity 400ms var(--ease-out);
+}
+.frame-canvas[data-ready] {
+  opacity: 1;
+}
+
+/* Skip this chapter (§10): visible on focus only */
+.skip-chapter {
+  position: absolute;
+  z-index: 30;
+  top: calc(var(--header-h) + 8px);
+  left: var(--gutter);
+  padding: 0.75rem 1.25rem;
+  background: var(--color-ink);
+  color: var(--color-ivory);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transform: translateY(-200%);
+  opacity: 0;
+}
+.skip-chapter:focus-visible {
+  transform: none;
+  opacity: 1;
+  outline-color: var(--color-ivory);
+}
+
+/* Masked line rise used by SplitText (mask: "lines") */
+.split-line {
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+}
+
+/* ── Ch00 Threshold ─────────────────────────────────────────────────────────────── */
+.th-stage {
+  position: relative;
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+  background: #241612;
+}
+.th-visual {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.th-arch {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--header-h) + 2svh);
+  width: min(86vw, 52svh);
+  height: 60svh;
+  translate: -50% 0;
+  clip-path: url(#arch);
+  transform-origin: 50% 100%;
+}
+.th-arch .frame-poster {
+  animation: kenburns-6 6s var(--ease-out) both;
+}
+@keyframes kenburns-6 {
+  from { transform: scale(1.12); }
+  to { transform: scale(1); }
+}
+.th-arch-line {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--header-h) + 2svh);
+  width: min(86vw, 52svh);
+  height: 60svh;
+  translate: -50% 0;
+  overflow: visible;
+  color: var(--color-brass);
+  pointer-events: none;
+  transform-origin: 50% 100%;
+}
+@media (min-width: 1024px) {
+  .th-arch,
+  .th-arch-line {
+    top: 7svh;
+    height: 80svh;
+    width: 48svh;
+  }
+}
+.th-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  /* ≥ 4.5:1 for ivory copy even over a white sky (72–78% maroon where the copy sits) */
+  background: linear-gradient(to top, rgb(94 26 26 / 0.86) 0%, rgb(94 26 26 / 0.76) 34%, rgb(94 26 26 / 0.3) 58%, transparent 76%);
+}
+.th-copy {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 4;
+  padding-bottom: clamp(40px, 8vh, 96px);
+}
+.hero-title .rise-line > span {
+  animation: rise 900ms cubic-bezier(0.215, 0.61, 0.355, 1) both, soften 1600ms var(--ease-out) both;
+  animation-delay: calc(150ms + var(--i, 0) * 80ms);
+}
+@keyframes soften {
+  from { --soft: 0; }
+  to { --soft: 100; }
+}
+
+/* Preloader (≤ 1.2s, first visit per session): a brass line draws the jharokha, then it opens */
+.preloader {
+  display: none;
+}
+html.preload .preloader {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--color-ivory);
+  animation: pre-out 1200ms linear forwards;
+}
+html.preload .preloader svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(40vw, 30svh);
+  height: min(66vw, 50svh);
+  translate: -50% -58%;
+  overflow: visible;
+  animation: pre-open 450ms 750ms cubic-bezier(0.55, 0, 0.7, 0.2) forwards;
+}
+html.preload .preloader path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: pre-draw 700ms 50ms var(--ease-out) forwards;
+}
+@keyframes pre-draw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes pre-open {
+  to { transform: scale(7); opacity: 0; }
+}
+@keyframes pre-out {
+  0%, 70% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
+}
+html.preload-skip .preloader {
+  display: none !important;
+}
+
+/* ── Ch02 Hours: the sundial carousel ─────────────────────────────────────────────── */
+.hours-row {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 1rem var(--gutter) 2rem;
+  scrollbar-width: none;
+}
+.hours-row::-webkit-scrollbar {
+  display: none;
+}
+.hours-card {
+  flex: 0 0 72vw;
+  max-width: 340px;
+  scroll-snap-align: center;
+  transform: scale(var(--s, 0.9));
+  transition: transform 300ms var(--ease-out);
+}
+.hours-plate {
+  aspect-ratio: 4 / 5;
+  clip-path: url(#arch);
+  overflow: hidden;
+  position: relative;
+}
+.gnomon {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(115deg, transparent 38%, rgb(30 26 22 / 0.22) 49%, rgb(30 26 22 / 0.22) 51%, transparent 62%);
+  background-size: 300% 100%;
+  background-position: var(--gx, 100%) 0;
+  mix-blend-mode: multiply;
+}
+html[data-motion="desktop"] .hours-stage {
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+html[data-motion="desktop"] .hours-ring-wrap {
+  position: relative;
+  flex: 1;
+  perspective: 1600px;
+  perspective-origin: 50% 40%;
+}
+html[data-motion="desktop"] .hours-row {
+  position: absolute;
+  left: 50%;
+  top: 4svh;
+  display: block;
+  overflow: visible;
+  padding: 0;
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--R) * -1));
+  --R: 65vw;
+}
+html[data-motion="desktop"] .hours-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: min(22vw, 40svh);
+  max-width: none;
+  transform: translateX(-50%) rotateY(calc(var(--d, 0) * 28deg)) translateZ(var(--R)) scale(var(--s, 1));
+  filter: brightness(var(--b, 1));
+  opacity: var(--o, 1);
+  transition: none;
+  backface-visibility: hidden;
+}
+@media (max-width: 1023px) {
+  html[data-motion="desktop"] .hours-row {
+    top: 2svh;
+    --R: 110vw;
+  }
+  html[data-motion="desktop"] .hours-card {
+    width: min(52vw, 26svh);
+  }
+}
+html[data-motion="reduced"] .hours-row,
+html:not(.js) .hours-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2.5rem 2rem;
+  overflow: visible;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+html[data-motion="reduced"] .hours-card,
+html:not(.js) .hours-card {
+  max-width: none;
+  transform: none;
+}
+html[data-motion="reduced"] .gnomon,
+html:not(.js) .gnomon {
+  display: none;
+}
+
+/* ── Ch03 Trail (GL path): cards over the relief map ─────────────────────────────── */
+.trail-gl {
+  display: none;
+}
+html[data-gl="ready"] .trail-gl {
+  display: block;
+}
+/* visually hidden but still read by screen readers (the GL cards are aria-hidden) */
+html[data-gl="ready"] .trail-2d {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.trail-gl-stage {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+}
+.trail-card {
+  position: absolute;
+  right: var(--gutter);
+  top: 50%;
+  translate: 0 -50%;
+  width: min(34vw, 460px);
+  opacity: 0;
+  visibility: hidden;
+}
+.trail-card:first-child {
+  opacity: 1;
+  visibility: visible;
+}
+@media (max-width: 1023px) {
+  .trail-card {
+    left: var(--gutter);
+    top: auto;
+    bottom: var(--gutter);
+    translate: none;
+    width: auto;
+  }
+}
+
+/* ── Ch04 Thar ─────────────────────────────────────────────────────────────────── */
+.thar-stage {
+  position: relative;
+  background: #2a1d14;
+}
+.thar-view {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+}
+.thar-panels {
+  display: grid;
+  gap: 2rem;
+  padding: 3rem var(--gutter) 4rem;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+@media (min-width: 768px) {
+  .thar-panels {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+html[data-motion="desktop"] .thar-stage {
+  height: 100svh;
+  overflow: hidden;
+}
+html[data-motion="desktop"] .thar-panels {
+  position: absolute;
+  inset: 0;
+  display: block;
+  padding: 0;
+  max-width: none;
+  pointer-events: none;
+}
+html[data-motion="desktop"] .thar-panel {
+  position: absolute;
+  left: var(--gutter);
+  top: calc(var(--header-h) + 5svh);
+  width: min(400px, 32vw);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: auto;
+}
+html[data-motion="desktop"] .thar-panel:nth-child(2) {
+  left: auto;
+  right: var(--gutter);
+}
+html[data-motion="desktop"] .thar-panel:nth-child(3) {
+  left: 50%;
+  translate: -50% 0;
+}
+@media (max-width: 1023px) {
+  html[data-motion="desktop"] .thar-panel,
+  html[data-motion="desktop"] .thar-panel:nth-child(2),
+  html[data-motion="desktop"] .thar-panel:nth-child(3) {
+    left: var(--gutter);
+    right: var(--gutter);
+    top: calc(var(--header-h) + 3svh);
+    width: auto;
+    translate: none;
+  }
+}
+
+/* Narrow plate with a brass double rule (§3.3) */
+.plate-rule {
+  position: relative;
+  padding: 1.5rem 1.625rem;
+  border: 1px solid color-mix(in srgb, var(--color-brass) 80%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--color-brass) 55%, transparent);
+  outline-offset: 4px;
+}
+.plate-rule::before,
+.plate-rule::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--color-brass);
+  transform: rotate(45deg);
+  background: inherit;
+}
+.plate-rule::before {
+  top: -9px;
+  left: -9px;
+}
+.plate-rule::after {
+  bottom: -9px;
+  right: -9px;
+}
+
+/* ── Ch05 Ganjifa ──────────────────────────────────────────────────────────────── */
+.gj-row {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 1rem var(--gutter) 2rem;
+  scrollbar-width: none;
+}
+.gj-row::-webkit-scrollbar {
+  display: none;
+}
+.gj-card {
+  position: relative;
+  flex: 0 0 min(78vw, 340px);
+  aspect-ratio: 1;
+  scroll-snap-align: center;
+  perspective: 1200px;
+}
+.gj-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 700ms var(--ease-out);
+}
+.gj-card.is-flipped .gj-inner {
+  transform: rotateY(180deg);
+}
+.gj-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+.gj-back {
+  transform: rotateY(180deg);
+  background: #f4ead8 var(--grain);
+  color: #1e1a16;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 14%;
+}
+.gj-photo {
+  position: absolute;
+  inset: 13%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.gj-front {
+  background: #5e1a1a;
+}
+.gj-rim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.gj-dot {
+  transition: opacity 240ms var(--ease-out), transform 240ms var(--ease-out);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.gj-card:hover .gj-dot,
+.gj-card:focus-within .gj-dot {
+  animation: dot-draw 500ms var(--ease-out) both;
+  animation-delay: calc(var(--k) * 35ms);
+}
+@keyframes dot-draw {
+  0% { opacity: 0.2; transform: scale(0.4); }
+  100% { opacity: 1; transform: scale(1.25); }
+}
+html[data-motion="desktop"] .gj-stage {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+}
+html[data-motion="desktop"] .gj-row {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  display: block;
+  overflow: visible;
+  padding: 0;
+  --gj-w: min(360px, 40svh);
+}
+html[data-motion="desktop"] .gj-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--gj-w);
+  margin: calc(var(--gj-w) / -2) 0 0 calc(var(--gj-w) / -2);
+  flex: none;
+}
+html[data-motion="desktop"] .gj-card .gj-inner {
+  transition: none;
+}
+@media (max-width: 1023px) {
+  html[data-motion="desktop"] .gj-row {
+    top: 66%;
+    /* full size when drawn; Ganjifa.tsx scales the deck and fan to half on phones */
+    --gj-w: min(76vw, 44svh);
+  }
+}
+@media (min-width: 1024px) {
+  html[data-motion="desktop"] .gj-card:hover .gj-lift,
+  html[data-motion="desktop"] .gj-card:focus-within .gj-lift {
+    translate: 0 -12px;
+  }
+  .gj-lift {
+    position: absolute;
+    inset: 0;
+    transition: translate 300ms var(--ease-out);
+  }
+}
+.gj-lift {
+  position: absolute;
+  inset: 0;
+}
+html[data-motion="reduced"] .gj-row,
+html:not(.js) .gj-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  overflow: visible;
+  max-width: 1100px;
+  margin-inline: auto;
+}
+@media (min-width: 768px) {
+  html[data-motion="reduced"] .gj-row,
+  html:not(.js) .gj-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+html[data-motion="reduced"] .gj-card,
+html:not(.js) .gj-card {
+  aspect-ratio: auto;
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  perspective: none;
+}
+html[data-motion="reduced"] .gj-inner,
+html:not(.js) .gj-inner {
+  position: static;
+  display: contents;
+  transform: none;
+}
+html[data-motion="reduced"] .gj-front,
+html:not(.js) .gj-front {
+  position: relative;
+  aspect-ratio: 1;
+}
+html[data-motion="reduced"] .gj-back,
+html:not(.js) .gj-back {
+  position: static;
+  transform: none;
+  backface-visibility: visible;
+  background: none;
+  color: inherit;
+  padding: 0;
+  text-align: left;
+  place-items: start;
+  border-radius: 0;
+  overflow: visible;
+}
+html[data-motion="reduced"] .gj-lift,
+html:not(.js) .gj-lift {
+  position: static;
+  display: contents;
+}
+
+/* ── Ch06 Tickets ──────────────────────────────────────────────────────────────── */
+.ticket {
+  position: relative;
+  background: color-mix(in oklch, var(--paper) 82%, var(--color-ivory));
+  color: var(--ink);
+  /* perforated tear edges: a row of semicircles cut from both long sides */
+  --perf: radial-gradient(circle at 0 50%, transparent 7px, #000 7.5px) 0 0 / 51% 22px repeat-y, radial-gradient(circle at 100% 50%, transparent 7px, #000 7.5px) 100% 0 / 51% 22px repeat-y;
+  -webkit-mask: var(--perf);
+  mask: var(--perf);
+  transform-origin: 50% 0;
+}
+.ticket-stamp {
+  position: absolute;
+  right: 7%;
+  top: 14%;
+  width: 7.5rem;
+  height: 7.5rem;
+  rotate: -8deg;
+  pointer-events: none;
+}
+@media (min-width: 1024px) {
+  html[data-motion="desktop"] .tickets-stage {
+    position: relative;
+    height: 100svh;
+    overflow: hidden;
+  }
+  html[data-motion="desktop"] .tickets-list {
+    position: relative;
+    height: 100%;
+  }
+  html[data-motion="desktop"] .tickets-list > li {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+  }
+}
+
+/* ── Ch07 plan line ───────────────────────────────────────────────────────────── */
+.plan-line path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: var(--draw, 0);
+}
+
+/* ── Ch08 ember glow ──────────────────────────────────────────────────────────── */
+.ember {
+  position: absolute;
+  width: 34rem;
+  height: 34rem;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  background: radial-gradient(circle, rgb(214 132 64 / 0.22) 0%, rgb(176 141 87 / 0.1) 32%, transparent 62%);
+  pointer-events: none;
+  animation: ember 5s ease-in-out infinite alternate;
+}
+@keyframes ember {
+  from { opacity: 0.75; scale: 0.96; }
+  to { opacity: 1; scale: 1.03; }
+}
+
+/* ── Ch09 Starlight ───────────────────────────────────────────────────────────── */
+.starlight-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+.stars-2d {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 180vmax;
+  height: 180vmax;
+  margin: -90vmax 0 0 -90vmax;
+  transform-origin: 18% 12%;
+  animation: sidereal 400s linear infinite;
+}
+@keyframes sidereal {
+  to { rotate: 360deg; }
+}
+
+/* ── HUD ──────────────────────────────────────────────────────────────────────── */
+.hud-progress {
+  position: fixed;
+  left: 14px;
+  top: 18vh;
+  bottom: 18vh;
+  width: 1px;
+  z-index: 40;
+  background: color-mix(in srgb, var(--color-brass) 28%, transparent);
+  pointer-events: none;
+}
+.hud-progress span {
+  position: absolute;
+  inset: 0;
+  background: var(--color-brass);
+  transform-origin: top;
+  transform: scaleY(var(--p, 0));
+}
+.sundial-ring {
+  transition: filter 600ms var(--ease-out);
+}
+.sundial[data-night] .sundial-ring {
+  filter: drop-shadow(0 0 6px rgb(217 180 122 / 0.55));
+}
+
+/* ── Static fallbacks: reduced motion and no JS ───────────────────────────────── */
+html[data-motion="reduced"] .th-arch .frame-poster,
+html[data-motion="reduced"] .rise-line > span {
+  animation: none !important;
+}
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-delay: 0ms !important;
+  transition-duration: 0.001ms !important;
+  transition-delay: 0ms !important;
+}
+html[data-motion="reduced"] .js-hide-reduced {
+  display: none;
+}
+html[data-motion="reduced"] [data-reveal]:not(.is-in),
+html[data-motion="reduced"] [data-reveal-mask]:not(.is-in) > * {
+  opacity: 1 !important;
+  transform: none !important;
+  clip-path: none !important;
+}
+html[data-motion="reduced"]::view-transition-group(*),
+html[data-motion="reduced"]::view-transition-old(*),
+html[data-motion="reduced"]::view-transition-new(*) {
+  animation: none !important;
+}
+
+/* Outline buttons and links take the chapter's ink (light or dark palette) */
+.chapter .btn-secondary {
+  color: inherit;
+}
+.chapter .btn-secondary:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+.chapter.on-dark .btn-secondary:hover {
+  background: var(--color-ivory);
+  color: var(--color-maroon);
+}
+
+/* Owner placeholders follow the palette (readable on dusk and night paper too) */
+.chapter .ph {
+  color: var(--ink);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.chapter .ph-inline {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.chapter.on-dark .ph {
+  color: var(--color-ivory);
+  border-color: var(--color-dune);
+  background: color-mix(in srgb, var(--color-ivory) 10%, transparent);
+}
+
+/* Sheets always read on the static ivory palette, whatever the hour behind them */
+.sheet {
+  --paper: #f7f1e6;
+  --ink: #1e1a16;
+  --muted: #5c5248;
+  --accent: #a14d2a;
+  --sky: #cfdfe4;
+}

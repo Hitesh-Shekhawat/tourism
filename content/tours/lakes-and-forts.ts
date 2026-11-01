@@ -1,0 +1,31 @@
+import type { Tour } from "./types";
+
+export const lakesAndForts: Tour = {
+  slug: "lakes-and-forts",
+  title: "Lakes & Forts",
+  summary: "A first week in Rajasthan: Jaipur's bazaars, Mehrangarh's cliffs and Udaipur's still water.",
+  durationNights: 7,
+  durationDays: 8,
+  route: ["Jaipur", "Jodhpur", "Udaipur"],
+  bestSeason: "October to March",
+  idealFor: ["First visits", "Families", "Shorter trips"],
+  regions: ["Eastern Rajasthan", "Marwar & the Thar", "Mewar & the lakes"],
+  styles: ["First visit", "Family", "Heritage & architecture"],
+  heroImage: "tourLakesForts",
+  gallery: ["tourLakesFortsG1", "tourLakesFortsG2"],
+  itinerary: [
+    { day: 1, title: "Jaipur: arrival", description: "Met on arrival and driven to your hotel.", overnight: "Jaipur" },
+    { day: 2, title: "Jaipur: Amber and the City Palace", description: "Amber at opening, the City Palace and Jantar Mantar later in the day.", overnight: "Jaipur" },
+    { day: 3, title: "Jaipur to Jodhpur", description: "A drive west across the plains, arriving for a sunset view of Mehrangarh.", overnight: "Jodhpur" },
+    { day: 4, title: "Jodhpur: Mehrangarh", description: "The fort in the morning; the old city and clock tower market in the afternoon.", overnight: "Jodhpur" },
+    { day: 5, title: "Jodhpur to Udaipur, via Ranakpur", description: "Through the Aravallis with a stop at the Ranakpur temple.", overnight: "Udaipur" },
+    { day: 6, title: "Udaipur: the lake", description: "A boat on Lake Pichola at first light, then the City Palace.", overnight: "Udaipur" },
+    { day: 7, title: "Udaipur at leisure", description: "A free day. Cooking, a craft workshop or simply the lake.", overnight: "Udaipur" },
+    { day: 8, title: "Departure", description: "Transfer to Udaipur airport for your onward journey." },
+  ],
+  inclusions: ["Private air-conditioned car and driver throughout", "Seven nights' accommodation with breakfast", "Arrival and departure transfers", "On-trip support by phone and WhatsApp"],
+  exclusions: ["Flights", "Monument entry fees", "Lunches and dinners unless stated", "Tips and personal expenses"],
+  featured: true,
+  draft: true,
+  seo: { title: "Lakes & Forts: 8 days in Rajasthan", description: "Jaipur, Jodhpur and Udaipur in eight unhurried days. A private first journey through Rajasthan." },
+};

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="1000" viewBox="0 0 600 1000">
+  <!-- Jharokha arch (portrait 3:5). Use as clip-path: url(#jharokha) on any box; the path is in objectBoundingBox units. -->
+  <defs>
+    <clipPath id="jharokha" clipPathUnits="objectBoundingBox">
+      <path d="M0 1 L0 0.34 Q0.0048 0.2768 0.0313 0.2193 Q0.0694 0.1624 0.125 0.1224 Q0.1965 0.0718 0.2813 0.0493 Q0.3862 0.005 0.5 0 Q0.6138 0.005 0.7188 0.0493 Q0.8035 0.0718 0.875 0.1224 Q0.9306 0.1624 0.9688 0.2193 Q0.9952 0.2768 1 0.34 L1 1 Z"/>
+    </clipPath>
+  </defs>
+  <path d="M0 1 L0 0.34 Q0.0048 0.2768 0.0313 0.2193 Q0.0694 0.1624 0.125 0.1224 Q0.1965 0.0718 0.2813 0.0493 Q0.3862 0.005 0.5 0 Q0.6138 0.005 0.7188 0.0493 Q0.8035 0.0718 0.875 0.1224 Q0.9306 0.1624 0.9688 0.2193 Q0.9952 0.2768 1 0.34 L1 1 Z" transform="scale(600 1000)" fill="#EDE2CF" stroke="#B08D57" stroke-width="0.0010"/>
+</svg>

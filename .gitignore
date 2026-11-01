@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.next-dev/
+.next-verify/
+out/
+_src/
+*.zip
+next-env.d.ts
+*.tsbuildinfo
+.next-*/
+
+# env
+.env
+.env*.local
