@@ -1,71 +1,218 @@
 /* ── Home v5: trending places, "what are you looking for?", and the atlas ─────────────────────── */
 
-/* 01 · Trending places */
-.trend-glow {
-  background:
-    radial-gradient(60% 70% at 85% 0%, rgb(161 77 42 / 0.45), transparent 70%),
-    radial-gradient(50% 60% at 0% 100%, rgb(94 26 26 / 0.6), transparent 70%);
+/* 01 · The opening: a full-screen photo of the chosen place, the rail to choose it */
+.trend {
+  --px: 0;
+  --py: 0;
+  min-height: max(100svh, 640px);
 }
-.trend-row {
+.trend-bg {
+  position: absolute;
+  inset: -3%;
+  z-index: -2;
+  transform: translate3d(calc(var(--px) * -18px), calc(var(--py) * -12px), 0);
+}
+.trend-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1100ms var(--ease-out);
+}
+.trend-slide.is-active {
+  opacity: 1;
+}
+.trend-slide-img {
+  transform: scale(1.12);
+  transition: transform 9s linear;
+}
+.trend-slide.is-active .trend-slide-img {
+  transform: scale(1.02);
+}
+/* legibility: dark at the left and along the bottom where the copy and rail sit */
+.trend-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgb(20 16 13 / 0.82) 0%, rgb(20 16 13 / 0.5) 45%, rgb(20 16 13 / 0.15) 75%),
+    linear-gradient(0deg, rgb(20 16 13 / 0.92) 0%, rgb(20 16 13 / 0.35) 38%, transparent 60%),
+    linear-gradient(180deg, rgb(20 16 13 / 0.55) 0%, transparent 22%);
+}
+.trend-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(28px, 5vh, 56px);
+  min-height: max(100svh, 640px);
+  padding-top: calc(var(--header-h) + clamp(24px, 6vh, 72px));
+  padding-bottom: clamp(20px, 4vh, 40px);
+}
+.trend-copy {
+  display: grid;
+  gap: 32px;
+  align-items: end;
+}
+@media (min-width: 1024px) {
+  .trend-copy {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  }
+}
+.trend-now {
+  padding: 18px 20px;
+  border: 1px solid rgb(247 241 230 / 0.16);
+  border-radius: 12px;
+  background: rgb(20 16 13 / 0.5);
+  backdrop-filter: blur(12px);
+}
+@media (max-width: 767px) {
+  /* phones: a compact place line, and room for the fixed "Plan my trip" bar under the rail */
+  .trend-inner {
+    gap: 24px;
+    padding-top: calc(var(--header-h) + 20px);
+    padding-bottom: 92px;
+  }
+  .trend-copy {
+    gap: 20px;
+  }
+  .trend-now {
+    padding: 12px 14px;
+  }
+  .trend-now-sum {
+    display: none;
+  }
+}
+.trend-now-in {
+  animation: trend-now-in 700ms var(--ease-out) both;
+}
+@keyframes trend-now-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+.trend-rail {
+  display: grid;
+  gap: 14px;
+}
+.trend-ctl {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgb(247 241 230 / 0.35);
+  border-radius: 50%;
+  color: var(--color-ivory);
+  transition: background-color 200ms, border-color 200ms;
+}
+.trend-ctl:hover {
+  border-color: var(--color-ivory);
+  background: rgb(247 241 230 / 0.12);
+}
+.trend-ctl svg {
+  width: 14px;
+  height: 14px;
+}
+.trend-thumbs {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: min(72vw, 300px);
-  gap: clamp(14px, 2vw, 24px);
+  grid-auto-columns: minmax(150px, 1fr);
+  gap: 10px;
   overflow-x: auto;
-  overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
-  scroll-padding-inline: var(--gutter);
-  padding: 20px var(--gutter) clamp(48px, 8vh, 88px);
-  scrollbar-width: thin;
-  scrollbar-color: rgb(247 241 230 / 0.3) transparent;
+  scrollbar-width: none;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
 }
-@media (min-width: 1280px) {
-  .trend-row {
+.trend-thumbs::-webkit-scrollbar {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .trend-thumbs {
     grid-auto-flow: row;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     overflow: visible;
+    margin-inline: 0;
+    padding-inline: 0;
   }
 }
-.trend-card {
+.trend-thumb-li {
   scroll-snap-align: start;
-  animation: home-fade 900ms var(--ease-out) both;
+  animation: home-fade 800ms var(--ease-out) both;
 }
-.trend-card:nth-child(1) { animation-delay: 520ms; }
-.trend-card:nth-child(2) { animation-delay: 600ms; }
-.trend-card:nth-child(3) { animation-delay: 680ms; }
-.trend-card:nth-child(4) { animation-delay: 760ms; }
-.trend-card:nth-child(5) { animation-delay: 840ms; }
-.trend-card:nth-child(6) { animation-delay: 920ms; }
-.trend-card a:focus-visible {
-  outline: 2px solid var(--color-dune);
-  outline-offset: 4px;
+.trend-thumb-li:nth-child(1) { animation-delay: 600ms; }
+.trend-thumb-li:nth-child(2) { animation-delay: 670ms; }
+.trend-thumb-li:nth-child(3) { animation-delay: 740ms; }
+.trend-thumb-li:nth-child(4) { animation-delay: 810ms; }
+.trend-thumb-li:nth-child(5) { animation-delay: 880ms; }
+.trend-thumb-li:nth-child(6) { animation-delay: 950ms; }
+.trend-thumb {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px;
+  overflow: hidden;
+  border: 1px solid rgb(247 241 230 / 0.18);
+  border-radius: 10px;
+  background: rgb(20 16 13 / 0.38);
+  backdrop-filter: blur(10px);
+  text-align: left;
+  transition: border-color 250ms, background-color 250ms, transform 300ms var(--ease-out);
 }
-.trend-img {
-  transition: transform 900ms var(--ease-out);
+.trend-thumb:hover {
+  transform: translateY(-3px);
+  border-color: rgb(247 241 230 / 0.45);
 }
-.trend-card a:hover .trend-img,
-.trend-card a:focus-visible .trend-img {
-  transform: scale(1.05);
-}
-.trend-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  padding: 4px 10px;
-  border: 1px solid rgb(247 241 230 / 0.55);
-  background: rgb(30 26 22 / 0.45);
-  backdrop-filter: blur(6px);
-  color: var(--color-ivory);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.trend-badge.is-ready {
+.trend-thumb.is-active {
   border-color: var(--color-dune);
-  background: rgb(161 77 42 / 0.85);
+  background: rgb(20 16 13 / 0.6);
 }
-html[data-motion="reduced"] .trend-card {
+.trend-thumb:focus-visible {
+  outline: 2px solid var(--color-dune);
+  outline-offset: 2px;
+}
+.trend-thumb-img {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--color-dune);
+}
+.trend-thumb-text {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.trend-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--color-dune);
+  transform-origin: left;
+  animation: trend-progress 6s linear both;
+  animation-play-state: paused;
+}
+.trend[data-playing] .trend-progress {
+  animation-play-state: running;
+}
+@keyframes trend-progress {
+  from {
+    transform: scaleX(0);
+  }
+}
+html[data-motion="reduced"] .trend-bg,
+html[data-motion="reduced"] .trend-slide-img {
+  transform: none;
+  transition: none;
+}
+html[data-motion="reduced"] .trend-thumb-li,
+html[data-motion="reduced"] .trend-now-in {
   animation: none;
 }
 
@@ -247,8 +394,9 @@ html[data-motion="reduced"] .trend-card {
   left: 50%;
   bottom: clamp(24px, 6vh, 56px);
   translate: -50% 0;
+  width: max-content;
+  max-width: calc(100% - 32px);
   text-align: center;
-  white-space: nowrap;
 }
 
 .atlas-panel {
@@ -743,4 +891,21 @@ html[data-motion="reduced"] .atlas-tip-card {
   top: 0;
   width: 232px;
   pointer-events: none;
+}
+
+/* Before "Explore the map": the map stops above the button, which sits in clear space below it */
+.atlas-stage:not([data-started]) .atlas-svg {
+  top: 4%;
+  bottom: auto;
+  height: calc(96% - clamp(24px, 6vh, 56px) - 96px);
+}
+@media (max-width: 767px) {
+  /* clear of the fixed "Plan my trip" bar along the bottom of small screens */
+  .atlas-cta {
+    bottom: 96px;
+  }
+  .atlas-stage:not([data-started]) .atlas-svg {
+    top: 64px;
+    height: calc(100% - 64px - 96px - 120px);
+  }
 }

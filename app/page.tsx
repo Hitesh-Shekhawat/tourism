@@ -36,12 +36,12 @@ export default function Home() {
       <TrendingPlaces />
       <LookingFor />
       <IndiaExplorer />
-      <FeaturedTours />
-      <Services />
+      {/* <FeaturedTours /> */}
+      {/* <Services />
       <Packages />
       <TravellerStories />
       <Gallery />
-      <FinalCta />
+      <FinalCta /> */}
     </>
   );
 }
