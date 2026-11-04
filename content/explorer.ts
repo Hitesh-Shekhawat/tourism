@@ -10,12 +10,13 @@ import { hasItinerary } from "./itineraries";
 export type LL = [number, number];
 
 export type Interest = "heritage" | "lakes" | "desert" | "spiritual" | "hills";
-export const interests: { id: Interest; label: string; text: string }[] = [
-  { id: "heritage", label: "Forts & palaces", text: "Ridge-top forts, royal courtyards and painted halls" },
-  { id: "lakes", label: "Lakes", text: "Palaces on the water and boats at first light" },
-  { id: "desert", label: "Desert", text: "Dunes, camel trails and nights under the stars" },
-  { id: "spiritual", label: "Sacred places", text: "Ghats, temples and evening aarti" },
-  { id: "hills", label: "Hills", text: "Cool air and old temples in the Aravallis" },
+/** image: a real photo for the home "Explore by experience" tile (content/imageSources.ts). */
+export const interests: { id: Interest; label: string; text: string; image: AssetKey }[] = [
+  { id: "heritage", label: "Forts & palaces", text: "Ridge-top forts, royal courtyards and painted halls", image: "itinJaipurHero" },
+  { id: "lakes", label: "Lakes", text: "Palaces on the water and boats at first light", image: "trailUdaipur" },
+  { id: "desert", label: "Desert", text: "Dunes, camel trails and nights under the stars", image: "galCamel" },
+  { id: "spiritual", label: "Sacred places", text: "Ghats, temples and evening aarti", image: "expAarti" },
+  { id: "hills", label: "Hills", text: "Cool air and old temples in the Aravallis", image: "placeMountAbu" },
 ];
 
 export type OpenState = { id: string; name: string; devanagari: string; tagline: string };
@@ -35,6 +36,8 @@ export type Place = {
   attractions: { name: string; note: string; coords: LL }[];
   image: AssetKey;
   interests: Interest[];
+  /** Short identity line for cards, e.g. "The Pink City" (paired with the first part of region). */
+  epithet: string;
   /** Set when the place has a destination page (content/destinations.ts). */
   destinationSlug?: string;
   /** Put the map label under the pin, where a neighbour's label would collide above it. */
@@ -44,6 +47,7 @@ export type Place = {
 export const places: Place[] = [
   {
     id: "jaipur",
+    epithet: "The Pink City",
     state: "rajasthan",
     name: "Jaipur",
     devanagari: "जयपुर",
@@ -62,6 +66,7 @@ export const places: Place[] = [
   },
   {
     id: "udaipur",
+    epithet: "The City of Lakes",
     state: "rajasthan",
     name: "Udaipur",
     devanagari: "उदयपुर",
@@ -80,6 +85,7 @@ export const places: Place[] = [
   },
   {
     id: "jaisalmer",
+    epithet: "The Golden City",
     state: "rajasthan",
     name: "Jaisalmer",
     devanagari: "जैसलमेर",
@@ -97,6 +103,7 @@ export const places: Place[] = [
   },
   {
     id: "jodhpur",
+    epithet: "The Blue City",
     state: "rajasthan",
     name: "Jodhpur",
     devanagari: "जोधपुर",
@@ -114,6 +121,7 @@ export const places: Place[] = [
   },
   {
     id: "pushkar",
+    epithet: "Tirtha Raj",
     state: "rajasthan",
     name: "Pushkar",
     devanagari: "पुष्कर",
@@ -131,6 +139,7 @@ export const places: Place[] = [
   },
   {
     id: "mount-abu",
+    epithet: "The Hill Station",
     state: "rajasthan",
     name: "Mount Abu",
     devanagari: "माउंट आबू",
@@ -148,6 +157,7 @@ export const places: Place[] = [
   },
   {
     id: "bikaner",
+    epithet: "The Camel Country",
     state: "rajasthan",
     name: "Bikaner",
     devanagari: "बीकानेर",

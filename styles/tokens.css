@@ -1,0 +1,54 @@
+/*
+ * Design tokens, part 2 (enhancement brief §2). Colour, type families and the type scale live in
+ * globals.css (@theme + the t-* utilities); this file adds the spacing scale, hairlines, elevation and
+ * motion tokens so every section draws from one set of values.
+ *
+ * Contrast (measured, scripts/check-contrast.mjs and AUDIT.md):
+ *   ink #1e1a16 on ivory 15.9:1 · ink-muted #5c5248 on ivory 6.8:1 · terracotta #a14d2a on ivory 5.17:1
+ *   ivory on maroon #5e1a1a 11.6:1 · ivory/85 on maroon ≥ 8:1 · dune #d9c3a0 on ink 10.9:1
+ *   brass #b08d57 is decorative only (2.75:1): rules and ornaments, never text.
+ */
+@theme {
+  /* Spacing scale: section padding and layout gaps come only from these */
+  --spacing-s1: 4px;
+  --spacing-s2: 8px;
+  --spacing-s3: 12px;
+  --spacing-s4: 16px;
+  --spacing-s5: 24px;
+  --spacing-s6: 32px;
+  --spacing-s7: 48px;
+  --spacing-s8: 64px;
+  --spacing-s9: 96px;
+  --spacing-s10: 128px;
+  --spacing-s11: 160px;
+
+  /* Shape: small radii only */
+  --radius-sm: 4px;
+
+  /* Elevation: two soft shadows at most; hairlines are preferred */
+  --shadow-soft: 0 18px 40px -24px rgb(30 26 22 / 0.35);
+  --shadow-lift: 0 30px 60px -30px rgb(61 20 20 / 0.45);
+
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root {
+  --line-light: rgb(176 141 87 / 0.45); /* hairline on ivory/sandstone */
+  --line-dark: rgb(247 241 230 / 0.18); /* hairline on maroon/ink */
+  --dur-ui: 200ms;
+  --dur-reveal: 600ms;
+  --dur-hero: 1000ms;
+  --dur-section: 1200ms;
+  /* Section rhythm: 96 → 160px, stepped on the spacing scale */
+  --section-pad: 72px;
+}
+@media (min-width: 1024px) {
+  :root {
+    --section-pad: 96px;
+  }
+}
+@media (min-width: 1440px) {
+  :root {
+    --section-pad: 112px;
+  }
+}

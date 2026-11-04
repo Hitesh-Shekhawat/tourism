@@ -19,17 +19,19 @@ export function pageMeta({ title, description, path, ogImage }: { title: string;
   };
 }
 
+/** Only real values reach structured data: a field still holding a {{placeholder}} is left out. */
+const real = <T extends Record<string, unknown>>(o: T) => Object.fromEntries(Object.entries(o).filter(([, v]) => typeof v !== "string" || !isPlaceholder(v))) as Partial<T>;
+
 export function travelAgencyLd() {
   const a = business.address;
+  const address = real({ "@type": "PostalAddress", streetAddress: a.street, addressLocality: a.city, addressRegion: a.region, postalCode: a.postalCode, addressCountry: a.country });
   return {
     "@context": "https://schema.org",
     "@type": "TravelAgency",
     "@id": abs("/#agency"),
-    name: business.brandName,
+    ...real({ name: business.brandName, telephone: business.phone, email: business.email }),
     url: abs("/"),
-    telephone: business.phone,
-    email: business.email,
-    address: { "@type": "PostalAddress", streetAddress: a.street, addressLocality: a.city, addressRegion: a.region, postalCode: a.postalCode, addressCountry: a.country },
+    address,
     ...(business.openingHoursSchema.length && { openingHours: business.openingHoursSchema }),
     ...(!isPlaceholder(business.googleMapsUrl) && { hasMap: business.googleMapsUrl }),
     areaServed: { "@type": "State", name: "Rajasthan" },

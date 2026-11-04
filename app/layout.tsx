@@ -13,7 +13,7 @@ import { siteUrl } from "@/content/site";
 import { validateContent } from "@/content/validate";
 import { motionBootScript } from "@/lib/story/boot";
 import "@/styles/globals.css";
-import { fraunces, frauncesItalic, instrument, tiro } from "./fonts";
+import { fraunces, frauncesItalic, instrument, tiro, yatra } from "./fonts";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -34,7 +34,7 @@ validateContent();
 export default function RootLayout({ children, sheet }: { children: React.ReactNode; sheet: React.ReactNode }) {
   return (
     <ViewTransitions>
-      <html lang="en-GB" className={`${fraunces.variable} ${frauncesItalic.variable} ${instrument.variable} ${tiro.variable}`} suppressHydrationWarning>
+      <html lang="en-GB" className={`${fraunces.variable} ${frauncesItalic.variable} ${instrument.variable} ${tiro.variable} ${yatra.variable}`} suppressHydrationWarning>
         <head>
           {/* Pre-paint: html.js, html[data-motion] and the splash flag, so no layout variant flashes */}
           <script dangerouslySetInnerHTML={{ __html: motionBootScript }} />

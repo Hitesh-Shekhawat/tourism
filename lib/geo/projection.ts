@@ -60,6 +60,8 @@ export type Projection = {
   invert: (x: number, z: number) => LL;
   /** World units per degree of latitude. */
   scale: number;
+  /** cos(latitude) factor applied to x. */
+  k: number;
   center: LL;
   /** Projected size of the fitted box. */
   width: number;
@@ -67,16 +69,19 @@ export type Projection = {
 };
 
 /** A projection centred on `box`, scaled so its larger projected side measures `size` world units. */
-export function fitProjection(box: Box, size: number): Projection {
+export function fitProjection(box: Box, size: number, kOverride?: number): Projection {
   const lon0 = (box.minLon + box.maxLon) / 2;
   const lat0 = (box.minLat + box.maxLat) / 2;
-  const k = Math.cos((lat0 * Math.PI) / 180);
+  // kOverride: reuse a parent map's x-scale so a state drawn alone has exactly the shape it has on the
+  // India map (one consistent projection; the zoom between them is then a pure scale + translate)
+  const k = kOverride ?? Math.cos((lat0 * Math.PI) / 180);
   const w = (box.maxLon - box.minLon) * k;
   const d = box.maxLat - box.minLat;
   const scale = size / Math.max(w, d);
   const p = (([lon, lat]: LL) => [(lon - lon0) * k * scale, (lat0 - lat) * scale]) as Projection;
   p.invert = (x, z) => [lon0 + x / (k * scale), lat0 - z / scale];
   p.scale = scale;
+  p.k = k;
   p.center = [lon0, lat0];
   p.width = w * scale;
   p.depth = d * scale;

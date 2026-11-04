@@ -1,7 +1,8 @@
 import { Fact, OwnerBlock } from "@/components/ui/bits";
 import { MailIcon, PhoneIcon, WhatsAppIcon } from "@/components/layout/icons";
-import { business, isPlaceholder } from "@/content/business";
-import { mailHref, telHref, whatsappHref } from "@/lib/contact";
+import { business } from "@/content/business";
+import { hasWhatsApp, mailHref, telHref, whatsappHref } from "@/lib/contact";
+import { showPlaceholders } from "@/lib/content-flags";
 
 export function FaqList({ items, dark = false }: { items: { q: string; a: string | null }[]; dark?: boolean }) {
   return (
@@ -27,19 +28,25 @@ export function ContactLinks({ dark = false }: { dark?: boolean }) {
   const cls = `link inline-flex items-center gap-3 py-1.5 ${dark ? "text-ivory" : ""}`;
   return (
     <ul className="space-y-1">
-      <li>
-        <a className={cls} href={whatsappHref()} target="_blank" rel="noopener" data-missing={isPlaceholder(business.whatsappNumber) ? business.whatsappNumber : undefined}>
-          <WhatsAppIcon /> WhatsApp us
-        </a>
-      </li>
-      <li className="inline-flex items-center gap-3 py-1.5">
-        <PhoneIcon />
-        {tel ? <a className={cls} href={tel}>{business.phone}</a> : <Fact v={business.phone} />}
-      </li>
-      <li className="flex items-center gap-3 py-1.5">
-        <MailIcon />
-        {mail ? <a className={cls} href={mail}>{business.email}</a> : <Fact v={business.email} />}
-      </li>
+      {hasWhatsApp() && (
+        <li>
+          <a className={cls} href={whatsappHref()} target="_blank" rel="noopener">
+            <WhatsAppIcon /> WhatsApp us
+          </a>
+        </li>
+      )}
+      {(tel || showPlaceholders) && (
+        <li className="inline-flex items-center gap-3 py-1.5">
+          <PhoneIcon />
+          {tel ? <a className={cls} href={tel}>{business.phone}</a> : <Fact v={business.phone} />}
+        </li>
+      )}
+      {(mail || showPlaceholders) && (
+        <li className="flex items-center gap-3 py-1.5">
+          <MailIcon />
+          {mail ? <a className={cls} href={mail}>{business.email}</a> : <Fact v={business.email} />}
+        </li>
+      )}
     </ul>
   );
 }

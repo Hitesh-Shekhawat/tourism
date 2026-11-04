@@ -17,7 +17,7 @@ import { goTo, readUrl, scrollToAtlas, syncFromUrl, useExplorer } from "./store"
  * pinned where they are. All navigation is DOM as well as map: breadcrumbs, a state list, a place
  * list and the place card, so it works by keyboard and screen reader.
  */
-export function IndiaExplorer() {
+export function IndiaExplorer({ n = "04" }: { n?: string }) {
   const stage = useRef<HTMLDivElement>(null);
   const tip = useRef<HTMLDivElement>(null);
   const [stateNames, setStateNames] = useState<{ id: string; name: string }[]>([]);
@@ -83,19 +83,19 @@ export function IndiaExplorer() {
   return (
     <section id="explore" aria-labelledby="explore-title" className="atlas">
       <div className="wrap atlas-head">
-        <SectionHead n="03" label="The atlas" />
-        <div className="mt-8 grid gap-6 lg:grid-cols-12 lg:items-end">
+        <SectionHead n={n} label="Interactive atlas" />
+        <div className="mt-5 grid gap-6 lg:grid-cols-12 lg:items-end">
           <h2 id="explore-title" className="t-h1 max-w-[16ch] lg:col-span-7" data-reveal>
             Where in India would you like to go?
           </h2>
           <p className="measure text-ink-muted lg:col-span-4 lg:col-start-9" data-reveal>
-            Choose a state and step inside it. We're starting with Rajasthan, where every place on the map is one we plan journeys to.
+            Select Rajasthan and step inside it: every place on the map is one we plan journeys to. Each one is also listed beside the map.
           </p>
         </div>
       </div>
 
       <div ref={stage} className="atlas-stage" data-view={stateId ? "state" : "india"} data-started={started ? "" : undefined} data-place={placeId ? "" : undefined} data-pointer={hover || hoverPlace ? "" : undefined}>
-        <div className="atlas-canvas" aria-hidden="true">
+        <div className="atlas-canvas">
           <AtlasMap2D />
         </div>
 
@@ -141,10 +141,16 @@ export function IndiaExplorer() {
         {/* Before exploring: one clear invitation */}
         {!started && !stateId && (
           <div className="atlas-cta">
-            <button type="button" className="btn btn-primary" onClick={() => useExplorer.getState().set({ started: true })}>
-              Explore the map
+            <button type="button" className="btn btn-primary" onClick={() => goTo("rajasthan")} disabled={busy}>
+              Select Rajasthan
             </button>
-            <p className="mt-3 text-sm text-ink-muted">Then choose a state. Rajasthan is open now.</p>
+            <p className="mt-3 text-sm text-ink-muted">
+              Or{" "}
+              <button type="button" className="link font-semibold text-ink" onClick={() => useExplorer.getState().set({ started: true })}>
+                browse every state
+              </button>
+              . Rajasthan is open now.
+            </p>
           </div>
         )}
 

@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useEnquiry } from "@/components/enquiry/EnquiryProvider";
-import { business } from "@/content/business";
-import { whatsappHref } from "@/lib/contact";
+import { hasWhatsApp, whatsappHref } from "@/lib/contact";
 import { WhatsAppIcon } from "./icons";
 
 /**
@@ -44,7 +43,6 @@ export function FloatingContact() {
   }, []);
 
   const visible = past && !isOpen && !nearForm && !banner;
-  const missing = business.whatsappNumber.startsWith("{{") ? business.whatsappNumber : undefined;
 
   return (
     <>
@@ -56,16 +54,17 @@ export function FloatingContact() {
         <button type="button" aria-haspopup="dialog" className="btn btn-primary min-h-12! px-5! shadow-[0_6px_24px_-8px_rgb(30_26_22/.5)]" onClick={() => open(page.tour ? { tour: page.tour } : undefined)}>
           {page.tour ? "Enquire about this journey" : "Plan my trip"}
         </button>
-        <a
-          href={whatsappHref(page)}
-          target="_blank"
-          rel="noopener"
-          aria-label="Chat with us on WhatsApp"
-          data-missing={missing}
-          className="grid size-12 place-items-center rounded-full bg-maroon text-ivory ring-1 ring-ivory/60 shadow-[0_6px_24px_-8px_rgb(30_26_22/.5)] hover:bg-terracotta-deep"
-        >
-          <WhatsAppIcon size={22} />
-        </a>
+        {hasWhatsApp() && (
+          <a
+            href={whatsappHref(page)}
+            target="_blank"
+            rel="noopener"
+            aria-label="Chat with us on WhatsApp"
+            className="grid size-12 place-items-center rounded-full bg-maroon text-ivory ring-1 ring-ivory/60 shadow-[0_6px_24px_-8px_rgb(30_26_22/.5)] hover:bg-terracotta-deep"
+          >
+            <WhatsAppIcon size={22} />
+          </a>
+          )}
       </div>
 
       <div
@@ -77,9 +76,11 @@ export function FloatingContact() {
           <button type="button" className="btn btn-primary min-h-12! flex-1" onClick={() => open(page.tour ? { tour: page.tour } : undefined)}>
             {page.tour ? "Enquire about this journey" : "Plan My Trip"}
           </button>
-          <a href={whatsappHref(page)} target="_blank" rel="noopener" aria-label="WhatsApp us" data-missing={missing} className="grid size-12 place-items-center rounded-[2px] border border-ink/70">
-            <WhatsAppIcon size={22} />
-          </a>
+          {hasWhatsApp() && (
+            <a href={whatsappHref(page)} target="_blank" rel="noopener" aria-label="WhatsApp us" className="grid size-12 place-items-center rounded-[2px] border border-ink/70">
+              <WhatsAppIcon size={22} />
+            </a>
+          )}
         </div>
       </div>
     </>

@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import type { Interest } from "@/content/explorer";
+import { interests, type Interest } from "@/content/explorer";
 import { getLenis } from "@/lib/smooth";
 
 /**
@@ -45,7 +45,7 @@ export const cameraControls = { reset: () => {}, zoom: (_dir: 1 | -1) => {} };
 
 export function readUrl() {
   const q = new URLSearchParams(window.location.search);
-  return { state: q.get("state"), place: q.get("place") };
+  return { state: q.get("state"), place: q.get("place"), interest: q.get("interest") };
 }
 
 /** Moves the atlas (state, place) and records it in the history; `replace` for in-place updates. */
@@ -62,8 +62,9 @@ export function goTo(state: string | null, place: string | null = null, replace 
 
 /** Re-reads the URL (browser back / forward). */
 export function syncFromUrl() {
-  const { state, place } = readUrl();
+  const { state, place, interest } = readUrl();
   const s = useExplorer.getState();
+  if (interest && interests.some((i) => i.id === interest) && interest !== s.interest) s.set({ interest: interest as Interest });
   if (state !== s.stateId || place !== s.placeId) s.set({ stateId: state, placeId: state ? place : null, started: s.started || !!state, hover: null, hoverPlace: null });
 }
 

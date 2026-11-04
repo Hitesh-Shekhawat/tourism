@@ -7,7 +7,7 @@ import { useEnquiry } from "@/components/enquiry/EnquiryProvider";
 import { Wordmark } from "@/components/layout/Wordmark";
 import { business } from "@/content/business";
 import { nav } from "@/content/site";
-import { mailHref, telHref, whatsappHref } from "@/lib/contact";
+import { hasWhatsApp, mailHref, telHref, whatsappHref } from "@/lib/contact";
 import { useDialog } from "@/lib/useDialog";
 import { WhatsAppIcon } from "./icons";
 
@@ -68,9 +68,11 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
         >
           Plan My Trip
         </button>
-        <a className="btn btn-secondary w-full" href={whatsappHref(page)} target="_blank" rel="noopener" data-missing={business.whatsappNumber.startsWith("{{") ? business.whatsappNumber : undefined}>
-          <WhatsAppIcon /> WhatsApp us
-        </a>
+        {hasWhatsApp() && (
+          <a className="btn btn-secondary w-full" href={whatsappHref(page)} target="_blank" rel="noopener">
+            <WhatsAppIcon /> WhatsApp us
+          </a>
+        )}
         <div className="t-small flex flex-col gap-1 text-ink-muted">
           {tel ? <a href={tel} className="link w-fit py-1">{business.phone}</a> : <Fact v={business.phone} />}
           {mail ? <a href={mail} className="link w-fit py-1">{business.email}</a> : <Fact v={business.email} />}

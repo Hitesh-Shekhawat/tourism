@@ -1,58 +1,70 @@
 "use client";
 
-import { ExploreLink } from "@/components/explorer/ExploreLink";
-import { useExplorer } from "@/components/explorer/store";
-import { Arrow, SectionHead } from "@/components/ui/bits";
-import { interests, places } from "@/content/explorer";
+import { useState } from "react";
+import { atlasHref } from "@/lib/atlas-href";
+import { goTo, scrollToAtlas, useExplorer } from "@/components/explorer/store";
+import { Photo } from "@/components/ui/Photo";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Arrow } from "@/components/ui/bits";
+import { interests, places, type Interest } from "@/content/explorer";
+
+/** Sizes per tile, matching the grid in sections.css (.exp-1 tall feature … .exp-5 landscape). */
+const SIZES = ["(min-width: 1024px) 40vw, 100vw", "(min-width: 1024px) 56vw, 50vw", "(min-width: 1024px) 56vw, 50vw", "(min-width: 1024px) 56vw, 50vw", "(min-width: 1024px) 40vw, 100vw"];
 
 /**
- * Home · 02 · "What are you looking for?": a few honest ways in. Choosing one carries into the atlas,
- * where the places that match stay bright and the rest step back.
+ * 03 · Explore by experience. An asymmetric editorial grid (one tall feature, two stacked, two
+ * landscapes). Hover or focus reveals the image through a clip-path, scales it to 1.03 and lifts the
+ * caption 8px; on touch the first tap previews and the second follows the link. Each tile is a real
+ * link to the atlas filtered by that interest (the existing filtered listing).
  */
-export function LookingFor() {
-  const interest = useExplorer((s) => s.interest);
-  const matches = interest ? places.filter((p) => p.interests.includes(interest)) : [];
+export function LookingFor({ n }: { n: string }) {
+  const [preview, setPreview] = useState<Interest | null>(null);
+
+  const open = (e: React.MouseEvent<HTMLAnchorElement>, id: Interest) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || !document.getElementById("explore")) return;
+    // touch: first tap previews, second tap follows
+    const touch = window.matchMedia("(hover: none)").matches;
+    if (touch && preview !== id) {
+      e.preventDefault();
+      setPreview(id);
+      return;
+    }
+    e.preventDefault();
+    useExplorer.getState().set({ interest: id });
+    goTo("rajasthan");
+    scrollToAtlas();
+  };
 
   return (
-    <section aria-labelledby="look-title" className="section-y bg-sandstone">
+    <section id="experiences" aria-labelledby="look-title" className="sec bg-sandstone">
       <div className="wrap">
-        <SectionHead n="02" label="Begin with a feeling" />
-        <h2 id="look-title" className="t-h1 mt-8 max-w-[16ch]" data-reveal>
-          What are you looking for?
-        </h2>
+        <SectionHeading n={n} label="Explore by experience" id="look-title" title="What are you looking for?" note="Begin with a feeling rather than a place. Each one opens the atlas with the places that match." />
 
-        <div className="look-grid mt-12" role="group" aria-label="Interests">
-          {interests.map((i) => {
-            const n = places.filter((p) => p.interests.includes(i.id)).length;
+        <ul className="exp-grid mt-10 lg:mt-12">
+          {interests.map((i, idx) => {
+            const count = places.filter((p) => p.interests.includes(i.id)).length;
             return (
-              <button key={i.id} type="button" className="look-tile" aria-pressed={interest === i.id} onClick={() => useExplorer.getState().set({ interest: interest === i.id ? null : i.id })}>
-                <span className="font-display text-[1.5rem] leading-tight">{i.label}</span>
-                <span className="mt-2 text-sm text-ink-muted">{i.text}</span>
-                <span className="t-label mt-4 text-brass-text">
-                  {n} {n === 1 ? "place" : "places"}
-                </span>
-              </button>
+              <li key={i.id} className={`exp-tile exp-${idx + 1}`} data-preview={preview === i.id ? "" : undefined}>
+                <a href={atlasHref("rajasthan", undefined, i.id)} className="exp-link" onClick={(e) => open(e, i.id)} onBlur={() => preview === i.id && setPreview(null)}>
+                  <span className="exp-media">
+                    <Photo k={i.image} fill sizes={SIZES[idx]} decorative compact />
+                    <span className="exp-shade" aria-hidden="true" />
+                  </span>
+                  <span className="exp-caption on-dark">
+                    <span className="t-label block text-ivory/80">
+                      {count} {count === 1 ? "place" : "places"}
+                    </span>
+                    <span className="mt-2 block font-display text-[clamp(1.375rem,1.8vw,1.75rem)] leading-none">{i.label}</span>
+                    <span className="exp-text t-small mt-2 block max-w-[34ch] text-ivory/90">{i.text}</span>
+                    <span className="mt-3 inline-flex items-center gap-2 text-[0.75rem] font-semibold tracking-[0.12em] uppercase">
+                      See on the map <Arrow />
+                    </span>
+                  </span>
+                </a>
+              </li>
             );
           })}
-        </div>
-
-        <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4" aria-live="polite">
-          {interest ? (
-            <>
-              <p className="text-ink-muted">
-                {matches.map((p) => p.name).join(", ")}
-                {matches.length ? " on the map." : ""}
-              </p>
-              <ExploreLink state="rajasthan" interest={interest} className="btn btn-primary">
-                See them on the map <Arrow />
-              </ExploreLink>
-            </>
-          ) : (
-            <ExploreLink state={null} className="btn btn-primary">
-              Explore the map <Arrow />
-            </ExploreLink>
-          )}
-        </div>
+        </ul>
       </div>
     </section>
   );

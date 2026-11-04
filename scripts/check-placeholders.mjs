@@ -33,6 +33,50 @@ if (!files.length) {
   process.exit(1);
 }
 
+// Hard failures (enhancement brief §9): template debt and broken output. Never bypassable, because these
+// are bugs rather than missing owner content. Only the visible HTML is checked (scripts are stripped).
+const HARD = [
+  { re: /\bTODO\b/g, label: "TODO" },
+  { re: /\blorem\b/gi, label: "lorem" },
+  { re: /Placeholder:/g, label: "Placeholder: (dev-only stand-in leaked)" },
+  { re: /\bexample\.com\b/gi, label: "example.com" },
+  { re: /\bhref=""/g, label: 'empty href=""' },
+];
+// ({{ and }} are reported by the owner-placeholder pass below, which ALLOW_PLACEHOLDERS can bypass for previews.)
+const exists = (url) => {
+  const clean = decodeURIComponent(url.split("?")[0]);
+  if (clean.startsWith("/_next/static/")) return fs.existsSync(path.join(dist, "static", clean.slice("/_next/static/".length)));
+  if (clean.startsWith("/")) return fs.existsSync(path.join("public", clean));
+  return true; // absolute URLs are not checked here
+};
+const hard = [];
+for (const f of files) {
+  const visible = fs.readFileSync(f, "utf8").replace(/<script\b[\s\S]*?<\/script>/gi, "");
+  const page = path.relative(root, f).replace(/\\/g, "/").replace(/\.(html|body)$/, "");
+  const problems = new Set();
+  for (const { re, label } of HARD) {
+    re.lastIndex = 0; // global regexes keep their position between .test() calls
+    if (re.test(visible)) problems.add(label);
+  }
+  // broken images: <img src>, srcset entries and next/image ?url= sources must exist in the build
+  for (const m of visible.matchAll(/<img\b[^>]*>/gi)) {
+    const tag = m[0];
+    const srcs = [...tag.matchAll(/\b(?:src|srcset)="([^"]+)"/gi)].flatMap((s) => s[1].split(",").map((x) => x.trim().split(/\s+/)[0]));
+    for (const s of srcs) {
+      const u = s.replace(/&amp;/g, "&");
+      const target = u.startsWith("/_next/image") ? new URLSearchParams(u.split("?")[1]).get("url") : u;
+      if (target && !target.startsWith("data:") && !exists(target)) problems.add(`broken image ${target}`);
+    }
+  }
+  if (problems.size) hard.push({ page, problems });
+}
+if (hard.length) {
+  console.error(`\n[placeholders] ✗ ${hard.length} page(s) contain template debt or broken output:`);
+  for (const h of hard) console.error(`  /${h.page === "index" ? "" : h.page}: ${[...h.problems].slice(0, 6).join(", ")}`);
+  console.error("\nThese are bugs, not owner content: ALLOW_PLACEHOLDERS does not bypass them.\n");
+  process.exit(1);
+}
+
 const report = [];
 for (const f of files) {
   // Only the HTML before the RSC payload scripts: what a visitor actually sees.

@@ -249,7 +249,7 @@ html[data-motion="reduced"] .trend-now-in {
 
 /* 03 · The atlas */
 .atlas {
-  padding-top: clamp(72px, 11vh, 140px);
+  padding-top: var(--section-pad);
   background: var(--color-ivory);
 }
 .atlas-head {
@@ -257,7 +257,7 @@ html[data-motion="reduced"] .trend-now-in {
 }
 .atlas-stage {
   position: relative;
-  height: clamp(600px, 100svh, 980px);
+  height: clamp(560px, 86svh, 820px);
   overflow: hidden;
   isolation: isolate;
   background:

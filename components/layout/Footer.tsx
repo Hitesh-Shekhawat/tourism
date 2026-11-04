@@ -1,38 +1,50 @@
 import { Link } from "next-view-transitions";
+import { atlasHref } from "@/lib/atlas-href";
 import { Wordmark } from "@/components/layout/Wordmark";
 import { Deva, Fact, TrailDivider } from "@/components/ui/bits";
 import { business, isPlaceholder } from "@/content/business";
 import { destinations } from "@/content/destinations";
-import { packageCategories } from "@/content/homepage";
+import { interests } from "@/content/explorer";
+import { journal } from "@/content/journal";
 import { legalLinks } from "@/content/site";
 import { tours } from "@/content/tours";
-import { journal } from "@/content/journal";
-import { mailHref, telHref, whatsappHref } from "@/lib/contact";
+import { hasWhatsApp, mailHref, telHref, whatsappHref } from "@/lib/contact";
+import { canShow, showPlaceholders } from "@/lib/content-flags";
+import { FooterColumn } from "./FooterColumn";
 
-const col = "t-label mb-5 text-ivory/70";
 const li = "link py-1 text-ivory/90 hover:text-ivory";
+/** A business fact's row renders when the fact is real (or, in development, as a visible placeholder). */
+const has = (v: string) => !isPlaceholder(v) || showPlaceholders;
 
+/**
+ * 10 · Footer: burgundy fading to dark. Brand, destinations, journeys, experiences, quick links,
+ * contact and WhatsApp, policies, and GSTIN only when configured. Every link resolves; a missing
+ * business fact hides its row in production (and shows as a placeholder chip in development).
+ */
 export function Footer() {
   const tel = telHref();
   const mail = mailHref();
   const a = business.address;
   const socials = Object.entries(business.social).filter(([, url]) => url && !isPlaceholder(url));
+  const journeys = tours.filter((t) => canShow(!t.draft));
+  const addressKnown = !isPlaceholder(a.street) && !isPlaceholder(a.city) && !isPlaceholder(a.postalCode);
 
   return (
-    <footer className="on-dark border-t border-brass/40 bg-[linear-gradient(to_bottom,#5e1a1a,#12141f)] text-ivory">
+    <footer className="on-dark border-t border-[var(--line-dark)] bg-[linear-gradient(to_bottom,#5e1a1a,#2a1414_55%,#12141f)] text-ivory">
       <div className="wrap pt-24 pb-10 md:pt-32">
-        <div className="grid gap-12 border-b border-brass/45 pb-16 lg:grid-cols-12">
+        <div className="grid gap-12 border-b border-[var(--line-dark)] pb-16 lg:grid-cols-12">
           <div className="lg:col-span-3">
             <Wordmark />
-            <p className="mt-6 max-w-[34ch] font-display text-[1.625rem] leading-snug">
-              <Fact v={business.brandStatement} />
-            </p>
+            {has(business.brandStatement) && (
+              <p className="mt-6 max-w-[34ch] font-display text-[1.625rem] leading-snug">
+                <Fact v={business.brandStatement} />
+              </p>
+            )}
             <TrailDivider className="mt-8" />
           </div>
 
-          <nav aria-label="Footer" className="grid gap-10 sm:grid-cols-2 lg:col-span-6 xl:grid-cols-4">
-            <div>
-              <h2 className={col}>Destinations</h2>
+          <nav aria-label="Footer" className="grid lg:col-span-6 lg:grid-cols-2 lg:gap-10 xl:grid-cols-4">
+            <FooterColumn title="Destinations">
               <ul className="space-y-1.5">
                 {destinations.map((d) => (
                   <li key={d.slug}>
@@ -43,11 +55,10 @@ export function Footer() {
                   </li>
                 ))}
               </ul>
-            </div>
-            <div>
-              <h2 className={col}>Journeys</h2>
+            </FooterColumn>
+            <FooterColumn title="Journeys">
               <ul className="space-y-1.5">
-                {tours.map((t) => (
+                {journeys.map((t) => (
                   <li key={t.slug}>
                     <Link className={li} href={`/journeys/${t.slug}`}>
                       {t.title}
@@ -65,21 +76,19 @@ export function Footer() {
                   </Link>
                 </li>
               </ul>
-            </div>
-            <div>
-              <h2 className={col}>Tour categories</h2>
+            </FooterColumn>
+            <FooterColumn title="Tour categories">
               <ul className="space-y-1.5">
-                {packageCategories.map((c) => (
-                  <li key={c.id}>
-                    <Link className={li} href={`/#pkg-${c.id}`}>
-                      {c.title}
-                    </Link>
+                {interests.map((i) => (
+                  <li key={i.id}>
+                    <a className={li} href={atlasHref("rajasthan", undefined, i.id)}>
+                      {i.label}
+                    </a>
                   </li>
                 ))}
               </ul>
-            </div>
-            <div>
-              <h2 className={col}>Quick links</h2>
+            </FooterColumn>
+            <FooterColumn title="Quick links">
               <ul className="space-y-1.5">
                 <li>
                   <Link className={li} href="/">
@@ -114,24 +123,35 @@ export function Footer() {
                   </Link>
                 </li>
               </ul>
-            </div>
+            </FooterColumn>
           </nav>
 
           <div className="lg:col-span-3">
-            <h2 className={col}>Contact</h2>
+            <h2 className="t-label mb-5 text-ivory/70">Contact</h2>
             <address className="space-y-3 text-ivory/90 not-italic">
+              {(addressKnown || showPlaceholders) && (
+                <p>
+                  <Fact v={a.street} />, <Fact v={a.city} />, {a.region} <Fact v={a.postalCode} />
+                </p>
+              )}
+              {(tel || showPlaceholders) && <p>{tel ? <a className={li} href={tel}>{business.phone}</a> : <Fact v={business.phone} />}</p>}
+              {hasWhatsApp() && (
+                <p>
+                  <a className={li} href={whatsappHref()} target="_blank" rel="noopener">
+                    WhatsApp enquiry
+                  </a>
+                </p>
+              )}
+              {(mail || showPlaceholders) && <p>{mail ? <a className={li} href={mail}>{business.email}</a> : <Fact v={business.email} />}</p>}
+              {has(business.officeHours) && (
+                <p className="t-small text-ivory/75">
+                  <Fact v={business.officeHours} />
+                </p>
+              )}
               <p>
-                <Fact v={a.street} />, <Fact v={a.city} />, {a.region} <Fact v={a.postalCode} />
-              </p>
-              <p>{tel ? <a className={li} href={tel}>{business.phone}</a> : <Fact v={business.phone} />}</p>
-              <p>
-                <a className={li} href={whatsappHref()} target="_blank" rel="noopener" data-missing={isPlaceholder(business.whatsappNumber) ? business.whatsappNumber : undefined}>
-                  WhatsApp enquiry
-                </a>
-              </p>
-              <p>{mail ? <a className={li} href={mail}>{business.email}</a> : <Fact v={business.email} />}</p>
-              <p className="t-small text-ivory/75">
-                <Fact v={business.officeHours} />
+                <Link className={li} href="/contact">
+                  All the ways to reach us
+                </Link>
               </p>
             </address>
             {socials.length > 0 && (
@@ -159,8 +179,8 @@ export function Footer() {
             ))}
           </ul>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
-            {/* Set gstin to "" if not applicable */}
-            {business.gstin !== "" && (
+            {/* GSTIN only when configured; set gstin to "" if not applicable */}
+            {business.gstin !== "" && has(business.gstin) && (
               <span>
                 GSTIN <Fact v={business.gstin} />
               </span>

@@ -17,5 +17,8 @@ export function whatsappHref(ctx: EnquiryContext = {}) {
   return `https://wa.me/${n ?? ""}?text=${encodeURIComponent(whatsappMessage(ctx))}`;
 }
 
+/** WhatsApp buttons render only when the business number is configured (enhancement brief §3 · 09). */
+export const hasWhatsApp = () => whatsappDigits() !== null;
+
 export const telHref = () => (isPlaceholder(business.phone) ? null : `tel:${business.phone.replace(/[^\d+]/g, "")}`);
 export const mailHref = () => (isPlaceholder(business.email) ? null : `mailto:${business.email}`);

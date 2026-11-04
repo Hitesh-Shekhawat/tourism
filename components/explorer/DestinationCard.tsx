@@ -5,7 +5,10 @@ import { useEffect, useRef } from "react";
 import { EnquiryButton } from "@/components/enquiry/EnquiryButton";
 import { Photo } from "@/components/ui/Photo";
 import { Arrow, Deva } from "@/components/ui/bits";
+import { Placeholder } from "@/components/ui/Placeholder";
 import { placeLinks, type Place } from "@/content/explorer";
+import { toursThrough } from "@/content/tours";
+import { canShow } from "@/lib/content-flags";
 import { goTo } from "./store";
 
 const fmt = ([lon, lat]: [number, number]) => `${lat.toFixed(2)}° N, ${lon.toFixed(2)}° E`;
@@ -16,6 +19,8 @@ const fmt = ([lon, lat]: [number, number]) => `${lat.toFixed(2)}° N, ${lon.toFi
  */
 export function DestinationCard({ place }: { place: Place }) {
   const links = placeLinks(place);
+  // journeys from real data only: sample drafts appear in development, never in production
+  const journeys = toursThrough(place.name).filter((t) => canShow(!t.draft));
   const close = useRef<HTMLButtonElement>(null);
   useEffect(() => close.current?.focus({ preventScroll: true }), [place.id]);
 
@@ -49,6 +54,22 @@ export function DestinationCard({ place }: { place: Place }) {
             </li>
           ))}
         </ul>
+
+        {journeys.length > 0 && (
+          <>
+            <h4 className="t-label mt-6 text-ink-muted">Journeys through {place.name}</h4>
+            <ul className="mt-3 space-y-1.5">
+              {journeys.map((t) => (
+                <li key={t.slug}>
+                  <Link href={`/journeys/${t.slug}`} scroll={false} className="link inline-flex items-baseline gap-2 py-1 font-semibold">
+                    {t.title} <span className="t-small font-normal text-ink-muted">{t.durationDays} days</span>
+                  </Link>
+                  {t.draft && <Placeholder what={`a confirmed journey (content/tours/${t.slug}.ts is a sample draft)`} className="mt-1" />}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
 
         <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
           {links.itinerary ? (
