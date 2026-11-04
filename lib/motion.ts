@@ -14,4 +14,6 @@ export const MQ_MOTION = {
   wide: "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
   narrow: "(max-width: 1023px)",
   reduced: "(prefers-reduced-motion: reduce)",
+  /** any width, motion allowed: the pinned horizontal tracks run on phones too */
+  any: "(prefers-reduced-motion: no-preference)",
 } as const;

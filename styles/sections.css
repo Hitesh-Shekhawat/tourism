@@ -262,6 +262,23 @@ html[data-motion="reduced"] .kenburns {
 .htrack.is-pinned .jr-card { width: max(420px, calc(var(--card-h) * 1.5)); }
 .htrack.is-pinned .jr-end { width: max(230px, calc(var(--card-h) * 0.8)); }
 .htrack.is-pinned .dest-img { animation: none; }
+/* Phones and tablets, pinned: the heading stacks, so the photo gets what is left of a tall screen;
+   card widths are capped to the screen so the next card always peeks in from the right */
+@media (max-width: 1023px) {
+  .htrack.is-pinned {
+    --card-h: clamp(170px, calc(100svh - var(--header-h) - 430px), 400px);
+  }
+  .htrack.is-pinned .htrack-head .measure,
+  .htrack.is-pinned .htrack-head p {
+    margin-top: var(--spacing-s3);
+  }
+  .htrack.is-pinned .htrack-list { margin-top: var(--spacing-s5); }
+  .htrack.is-pinned .dest-card { width: min(72vw, max(210px, calc(var(--card-h) * 0.8))); }
+  .htrack.is-pinned .dest-card-wide { width: min(84vw, max(300px, calc(var(--card-h) * 1.2))); }
+  .htrack.is-pinned .jr-card { width: min(84vw, max(300px, calc(var(--card-h) * 1.3))); }
+  .htrack.is-pinned .jr-end { width: min(72vw, 260px); }
+  .htrack.is-pinned .htrack-bar { margin-top: var(--spacing-s4); }
+}
 .htrack.is-pinned .htrack-bar {
   display: block;
   margin-top: var(--spacing-s5);

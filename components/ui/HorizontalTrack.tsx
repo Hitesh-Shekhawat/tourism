@@ -8,11 +8,11 @@ import { MQ_MOTION } from "@/lib/motion";
 
 /**
  * An editorial horizontal track.
- * - Desktop (≥ 1024px, motion allowed): GSAP pins the track for exactly the distance its cards need, and
+ * - Every width (motion allowed): GSAP pins the track for exactly the distance its cards need, and
  *   vertical scrolling (smoothed by Lenis) carries them sideways; the last card always stops fully in view
  *   with the gutter after it. Cards are sized to the viewport height so the heading and every card fit on
  *   screen. Arrow buttons step the scroll; a hairline shows progress.
- * - Below 1024px or with reduced motion: a native overflow-x list with scroll-snap (touch, trackpad, Tab),
+ * - With reduced motion: a native overflow-x list with scroll-snap (touch, trackpad, Tab),
  *   plus drag-with-momentum on mouse.
  * The floating contact button stays hidden while a track is on screen (data-no-float), so it never covers a card.
  */
@@ -26,7 +26,7 @@ export function HorizontalTrack({ label, children, head, className = "", dark = 
   // Desktop: pinned, scroll-driven horizontal movement
   useSectionMotion(root, ({ gsap }, el) => {
     const mm = gsap.matchMedia();
-    mm.add(MQ_MOTION.wide, () => {
+    mm.add(MQ_MOTION.any, () => {
       const track = list.current!;
       el.classList.add("is-pinned");
       track.scrollLeft = 0;
