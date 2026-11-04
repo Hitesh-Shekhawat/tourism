@@ -15,8 +15,8 @@ const C = chapter("thar");
 const F = C.frames!;
 
 /**
- * Ch04 · 16:30 · जैसलमेर, "Into the Thar" (§6.5). The thar sequence (a push into the camel-caravan
- * photo) fills the viewport. When the chapter enters, frames introFrom → from play as a 1.2s intro; then the pin (≈380vh) scrubs from → to,
+ * Ch04 · 16:30 · जैसलमेर, "Into the Thar" (§6.5). The dunes sequence (the procedural Thar day cycle)
+ * fills the viewport. When the chapter enters, frames introFrom → from play as a 1.2s intro; then the pin (≈380vh) scrubs from → to,
  * 16:30 to night. Three plates sit in the sky, timed to the frames. With WebGL, scroll-reactive sand
  * blows across on top. Compact: a non-pinned scrub over 200vh. Reduced: the golden-hour poster.
  */
@@ -108,7 +108,7 @@ export function Thar() {
       <div className="thar-stage">
         <div className="thar-view">
         <div className="gl-fallback absolute inset-0">
-          <FrameCanvas name={F.sequence} chapterIndex={4} from={F.introFrom} to={F.to} focusY={0.55} api={api} alt="A camel caravan crossing the Thar dunes near Jaisalmer at sunset" />
+          <FrameCanvas name={F.sequence} chapterIndex={4} from={F.introFrom} to={F.to} focusY={0.55} api={api} alt="Wind-carved Thar dunes near Jaisalmer, from afternoon light into night" />
         </div>
         <div id="gl-thar" className="gl-view absolute inset-0" aria-hidden="true" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[45%] bg-[linear-gradient(to_top,rgb(30_20_14/.82),rgb(30_20_14/.45)_45%,transparent)]" />

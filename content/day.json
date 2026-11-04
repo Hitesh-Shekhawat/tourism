@@ -17,7 +17,7 @@
     },
     {
       "id": "thar", "n": "04", "time": "16:30", "place": "Jaisalmer", "placeDeva": "जैसलमेर", "title": "Into the Thar", "palette": "golden", "pin": 3.8,
-      "frames": { "sequence": "thar", "from": 16, "to": 60, "introFrom": 1, "introSeconds": 1.2 },
+      "frames": { "sequence": "dunes", "from": 95, "to": 150, "introFrom": 1, "introSeconds": 1.2 },
       "panels": [
         { "id": "camp", "from": 0.08, "to": 0.36 },
         { "id": "ridge", "from": 0.38, "to": 0.62 },
