@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { isOpenState, openStates, placesIn, type Place } from "@/content/explorer";
 import { boundsOf, centroidOf, fitProjection, INDIA_GEO, loadGeo, polygonsOf, stateGeo, type GeoCollection, type GeoFeature, type Projection } from "@/lib/geo/projection";
-import { goTo, useExplorer } from "./store";
+import { goTo, useChooseState, useExplorer } from "./store";
 
 const SIZE = 1000;
 const at = (proj: Projection, ll: [number, number]) => proj(ll).map((v) => v + SIZE / 2) as [number, number];
@@ -63,6 +63,7 @@ export function AtlasMap2D() {
   const hoverPlace = useExplorer((s) => s.hoverPlace);
   const interest = useExplorer((s) => s.interest);
   const busy = useExplorer((s) => s.busy);
+  const choose = useChooseState();
   const [india, setIndia] = useState<GeoCollection | null>(null);
   const [state, setState] = useState<{ id: string; data: GeoCollection } | null>(null);
 
@@ -133,7 +134,7 @@ export function AtlasMap2D() {
       <g className="atlas-layer-india" style={{ transform: focus?.transform ?? "none" }}>
         {indiaPaths.map(({ id, name, d }) => {
           const open = isOpenState(id);
-          const pick = () => canPick() && goTo(id);
+          const pick = () => canPick() && choose(id);
           return (
             <path
               key={id}
@@ -148,7 +149,7 @@ export function AtlasMap2D() {
         })}
         {!focus &&
           stateLabels.map((l) => (
-            <g key={l.id} transform={`translate(${l.pos[0]} ${l.pos[1]})`} className="atlas-svg-label" aria-hidden="true" onClick={() => canPick() && goTo(l.id)}>
+            <g key={l.id} transform={`translate(${l.pos[0]} ${l.pos[1]})`} className="atlas-svg-label" aria-hidden="true" onClick={() => canPick() && choose(l.id)}>
               <circle className="atlas-svg-halo" r="16" />
               <circle r="6" />
               <text y="-18" textAnchor="middle">

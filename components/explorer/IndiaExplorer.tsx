@@ -9,7 +9,7 @@ import { INDIA_GEO, loadGeo } from "@/lib/geo/projection";
 import { getLenis } from "@/lib/smooth";
 import { AtlasMap2D } from "./AtlasMap2D";
 import { DestinationCard } from "./DestinationCard";
-import { goTo, readUrl, scrollToAtlas, syncFromUrl, useExplorer } from "./store";
+import { goTo, readUrl, scrollToAtlas, syncFromUrl, useChooseState, useExplorer } from "./store";
 
 /**
  * Home · the atlas (§ flow: India map → Explore → state → place → itinerary). A flat map of India's
@@ -20,6 +20,7 @@ import { goTo, readUrl, scrollToAtlas, syncFromUrl, useExplorer } from "./store"
 export function IndiaExplorer({ n = "04" }: { n?: string }) {
   const stage = useRef<HTMLDivElement>(null);
   const tip = useRef<HTMLDivElement>(null);
+  const choose = useChooseState();
   const [stateNames, setStateNames] = useState<{ id: string; name: string }[]>([]);
   const { started, stateId, placeId, hover, hoverPlace, pinHover, busy, interest } = useExplorer(
     useShallow((s) => ({ started: s.started, stateId: s.stateId, placeId: s.placeId, hover: s.hover, hoverPlace: s.hoverPlace, pinHover: s.pinHover, busy: s.busy, interest: s.interest })),
@@ -89,7 +90,7 @@ export function IndiaExplorer({ n = "04" }: { n?: string }) {
             Where in India would you like to go?
           </h2>
           <p className="measure text-ink-muted lg:col-span-4 lg:col-start-9" data-reveal>
-            Select Rajasthan and step inside it: every place on the map is one we plan journeys to. Each one is also listed beside the map.
+            Select Rajasthan to open its cities, and the forts, lakes and dunes we plan journeys around in each one.
           </p>
         </div>
       </div>
@@ -141,7 +142,7 @@ export function IndiaExplorer({ n = "04" }: { n?: string }) {
         {/* Before exploring: one clear invitation */}
         {!started && !stateId && (
           <div className="atlas-cta">
-            <button type="button" className="btn btn-primary" onClick={() => goTo("rajasthan")} disabled={busy}>
+            <button type="button" className="btn btn-primary" onClick={() => choose("rajasthan")} disabled={busy}>
               Select Rajasthan
             </button>
             <p className="mt-3 text-sm text-ink-muted">
@@ -161,7 +162,7 @@ export function IndiaExplorer({ n = "04" }: { n?: string }) {
             <ul className="mt-3 space-y-1.5">
               {openStates.map((s) => (
                 <li key={s.id}>
-                  <button type="button" className="atlas-state-btn" onClick={() => goTo(s.id)} disabled={busy}>
+                  <button type="button" className="atlas-state-btn" onClick={() => choose(s.id)} disabled={busy}>
                     <span className="atlas-pulse" aria-hidden="true" />
                     <span className="font-display text-[1.375rem] leading-none">{s.name}</span>
                     <Deva className="text-accent">{s.devanagari}</Deva>
@@ -173,7 +174,7 @@ export function IndiaExplorer({ n = "04" }: { n?: string }) {
             {stateNames.length > 0 && (
               <label className="mt-5 block text-sm">
                 <span className="text-ink-muted">Or any state</span>
-                <select className="atlas-select" value="" onChange={(e) => e.target.value && goTo(e.target.value)} disabled={busy}>
+                <select className="atlas-select" value="" onChange={(e) => e.target.value && choose(e.target.value)} disabled={busy}>
                   <option value="">Select a state…</option>
                   {stateNames.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -235,7 +236,7 @@ export function IndiaExplorer({ n = "04" }: { n?: string }) {
             ) : (
               <>
                 <p className="mt-3 text-[0.95rem]">We're mapping {stateName}'s places now. For the moment the atlas opens on Rajasthan, where we already plan every journey.</p>
-                <button type="button" className="btn btn-primary mt-5" onClick={() => goTo("rajasthan")} disabled={busy}>
+                <button type="button" className="btn btn-primary mt-5" onClick={() => choose("rajasthan")} disabled={busy}>
                   Explore Rajasthan
                 </button>
               </>

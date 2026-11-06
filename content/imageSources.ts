@@ -82,6 +82,7 @@ export const imageSources: Partial<Record<AssetKey, ImageSource>> = {
   placeBikaner: junagarhInterior,
   itinJaipurHero: amerFortMorning,
   itinUdaipurHero: udaipurPalaces,
+  sightJalMahal: "/images/home-hero-jal-mahal-aerial.jpg",
 };
 
 export const imagePositions: Partial<Record<AssetKey, string>> = {

@@ -45,6 +45,9 @@ const a = (
   ...supplied,
 });
 
+/** A sight photo for the state page: 4:5 portrait, the sight's own subject and alt. */
+const s = (file: string, subject: string, time: string, alt: string) => a(`sight-${file}`, "4:5", "State page · a city's sights (horizontal track)", subject, time, "Clear, characterful, no identifiable faces", alt);
+
 export const assets = {
 
   /* Home: introduction */
@@ -130,6 +133,35 @@ export const assets = {
   /* Itineraries: Jaipur and Udaipur (hero + gallery reuse the photos above) */
   itinJaipurHero: a("itinerary-jaipur-amer-sunrise.jpg", "21:9", "Itinerary · Jaipur hero", "Amer Fort above Maota Lake at sunrise", "Sunrise", "Warm, wide", "Amer Fort above Maota Lake at sunrise"),
   itinUdaipurHero: a("itinerary-udaipur-palaces-pichola.jpg", "21:9", "Itinerary · Udaipur hero", "Udaipur's palaces reflected on Lake Pichola", "Golden hour", "Serene, reflective", "Udaipur's palaces reflected on Lake Pichola"),
+
+  /* State page (/explore/rajasthan): the sights in each city's horizontal track (content/sights.ts) */
+  sightJalMahal: s("jaipur-jal-mahal.jpg", "Jal Mahal on Man Sagar Lake", "Late afternoon", "Aerial view of Jal Mahal on Man Sagar Lake, Jaipur"),
+  sightJantarMantar: s("jaipur-jantar-mantar.jpg", "The giant stone instruments of Jantar Mantar", "Morning, raking light", "The stone instruments of Jantar Mantar, Jaipur"),
+  sightNahargarh: s("jaipur-nahargarh-dusk.jpg", "Nahargarh's walls with Jaipur below", "Dusk, city lights", "Jaipur seen from the walls of Nahargarh Fort at dusk"),
+  sightLakePalace: s("udaipur-lake-palace.jpg", "The Lake Palace (Jag Niwas) on its island", "Golden hour", "The white Lake Palace on its island in Lake Pichola"),
+  sightJagMandir: s("udaipur-jag-mandir.jpg", "Jag Mandir's pavilions and stone elephants", "Sunset", "Jag Mandir island palace on Lake Pichola"),
+  sightBagore: s("udaipur-bagore-ki-haveli.jpg", "Bagore ki Haveli courtyard or façade on Gangaur Ghat", "Evening", "Bagore ki Haveli on Gangaur Ghat, Udaipur"),
+  sightSaheliyon: s("udaipur-saheliyon-ki-bari.jpg", "Fountains and lotus pool, Saheliyon ki Bari", "Morning", "Fountains in the Saheliyon ki Bari garden, Udaipur"),
+  sightSajjangarh: s("udaipur-sajjangarh.jpg", "Sajjangarh Monsoon Palace on its hilltop", "Sunset", "The Monsoon Palace on its hill above Udaipur"),
+  sightPatwon: s("jaisalmer-patwon-ki-haveli.jpg", "Carved balconies of Patwon ki Haveli", "Morning", "The carved sandstone balconies of Patwon ki Haveli, Jaisalmer"),
+  sightGadisar: s("jaisalmer-gadisar-lake.jpg", "Gadisar Lake with its shrines and gateway", "Dawn", "Shrines and ghats around Gadisar Lake, Jaisalmer"),
+  sightKuldhara: s("jaisalmer-kuldhara.jpg", "Roofless stone houses at Kuldhara", "Late afternoon", "The abandoned stone village of Kuldhara near Jaisalmer"),
+  sightBadaBagh: s("jaisalmer-bada-bagh.jpg", "Rows of chhatris at Bada Bagh", "Sunset", "The royal cenotaphs of Bada Bagh at sunset"),
+  sightJaswantThada: s("jodhpur-jaswant-thada.jpg", "Jaswant Thada's white marble cenotaph", "Morning", "The white marble cenotaph of Jaswant Thada, Jodhpur"),
+  sightUmaidBhawan: s("jodhpur-umaid-bhawan.jpg", "Umaid Bhawan Palace's dome and façade", "Late afternoon", "Umaid Bhawan Palace on Chittar Hill, Jodhpur"),
+  sightClockTower: s("jodhpur-clock-tower-market.jpg", "The Ghanta Ghar above Sardar Market (no identifiable faces)", "Morning bustle", "The clock tower above Sardar Market, Jodhpur"),
+  sightMandore: s("jodhpur-mandore-gardens.jpg", "Temple-like cenotaphs at Mandore Gardens", "Morning", "The red sandstone cenotaphs at Mandore, Jodhpur"),
+  sightBrahmaTemple: s("pushkar-brahma-temple.jpg", "The red spire of the Brahma Temple", "Morning", "The Brahma Temple, Pushkar"),
+  sightSavitri: s("pushkar-savitri-temple-view.jpg", "View from Savitri Temple over Pushkar", "Sunrise", "Pushkar and its lake seen from the Savitri Temple"),
+  sightPushkarFair: s("pushkar-camel-fair.jpg", "Camels on the fair grounds at Pushkar", "Golden hour", "Camels gathered for the Pushkar fair"),
+  sightDilwara: s("mount-abu-dilwara-temples.jpg", "Carved marble at the Dilwara Temples (where photography is allowed)", "Daylight", "Carved white marble at the Dilwara Temples, Mount Abu"),
+  sightGuruShikhar: s("mount-abu-guru-shikhar.jpg", "The summit of Guru Shikhar and its temple", "Morning", "The temple on the summit of Guru Shikhar, Mount Abu"),
+  sightSunsetPoint: s("mount-abu-sunset-point.jpg", "Hills falling to the plains from Sunset Point", "Sunset", "The view from Sunset Point, Mount Abu"),
+  sightAchalgarh: s("mount-abu-achalgarh.jpg", "Achalgarh fort walls and temple", "Morning", "The hill fort at Achalgarh near Mount Abu"),
+  sightKarniMata: s("bikaner-karni-mata-temple.jpg", "The silver doors of Karni Mata Temple", "Daylight", "The carved silver doors of Karni Mata Temple, Deshnoke"),
+  sightRampuria: s("bikaner-rampuria-havelis.jpg", "Red sandstone façades of the Rampuria Havelis", "Morning", "The carved façades of the Rampuria Havelis, Bikaner"),
+  sightLalgarh: s("bikaner-lalgarh-palace.jpg", "Lalgarh Palace's red sandstone façade", "Late afternoon", "Lalgarh Palace, Bikaner"),
+  sightCamelFarm: s("bikaner-camel-research-farm.jpg", "Camels and calves at the national camel centre", "Morning", "Camels at the national research centre near Bikaner"),
 
   /* 404 */
   notFound: a("404-dune-horizon.jpg", "21:9", "404 page", "A lone set of footprints over a dune", "Late afternoon", "Minimal, wry", "Footprints leading over a dune"),

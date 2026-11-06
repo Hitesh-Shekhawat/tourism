@@ -1,7 +1,9 @@
 "use client";
 
+import { useTransitionRouter } from "next-view-transitions";
+import { useEffect } from "react";
 import { create } from "zustand";
-import { interests, type Interest } from "@/content/explorer";
+import { interests, isOpenState, openStates, type Interest } from "@/content/explorer";
 import { getLenis } from "@/lib/smooth";
 
 /**
@@ -83,3 +85,18 @@ export function scrollToAtlas(immediate = false) {
 }
 
 export const reducedMotion = () => typeof document !== "undefined" && document.documentElement.dataset.motion === "reduced";
+
+/** An open state has its own page (cities and their sights); any other state opens "coming soon" in the atlas. */
+export const statePageHref = (id: string) => (isOpenState(id) ? `/explore/${id}` : null);
+
+/** Choosing a state, from the map or a list: open states navigate to their page (prefetched), the rest stay in the atlas. */
+export function useChooseState() {
+  const router = useTransitionRouter();
+  useEffect(() => openStates.forEach((s) => router.prefetch(statePageHref(s.id)!)), [router]);
+  return (id: string) => {
+    if (useExplorer.getState().busy) return;
+    const href = statePageHref(id);
+    if (href) router.push(href);
+    else goTo(id);
+  };
+}

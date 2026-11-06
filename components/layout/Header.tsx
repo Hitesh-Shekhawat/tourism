@@ -12,7 +12,7 @@ import { useStory } from "@/lib/story/store";
 import { MobileMenu } from "./MobileMenu";
 
 /** Routes that open with a full-bleed dark hero: the header starts transparent with ivory text. */
-const overHero = (p: string) => p === "/" || /^\/(destinations|experiences|journeys)\/[^/]+(\/itinerary)?$/.test(p);
+const overHero = (p: string) => p === "/" || /^\/(destinations|experiences|journeys|explore)\/[^/]+(\/itinerary)?$/.test(p);
 
 /** On the story (also while a sheet is open over it) the HUD replaces the header. */
 export function Header() {

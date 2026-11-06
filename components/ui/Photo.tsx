@@ -67,4 +67,7 @@ export function Photo({ k, sizes, fill, ratio, priority, className = "", imgClas
   );
 }
 
+/** True when a real photo is supplied for the key (otherwise <Photo> draws a placeholder). */
+export const hasPhoto = (k: AssetKey) => !!(imageSources[k] ?? (assets[k].width && assets[k].height ? assets[k].src : undefined));
+
 export const assetRatio = (k: AssetKey) => ratioCss[assets[k].ratio];
