@@ -9,11 +9,11 @@ import { Arrow } from "@/components/ui/bits";
 import { interests, places, type Interest } from "@/content/explorer";
 
 /** Sizes per tile, matching the grid in sections.css (.exp-1 tall feature … .exp-5 landscape). */
-const SIZES = ["(min-width: 1024px) 40vw, 100vw", "(min-width: 1024px) 56vw, 50vw", "(min-width: 1024px) 56vw, 50vw", "(min-width: 1024px) 56vw, 50vw", "(min-width: 1024px) 40vw, 100vw"];
+const SIZES = ["(min-width: 1024px) 40vw, 100vw", "(min-width: 1024px) 56vw, 50vw", "(min-width: 1024px) 56vw, 50vw", "(min-width: 1024px) 56vw, 50vw", "(min-width: 1024px) 40vw, 50vw"];
 
 /**
  * 03 · Explore by experience. An asymmetric editorial grid (one tall feature, two stacked, two
- * landscapes). Hover or focus reveals the image through a clip-path, scales it to 1.03 and lifts the
+ * landscapes). Hover or focus scales the image to 1.03 and lifts the
  * caption 8px; on touch the first tap previews and the second follows the link. Each tile is a real
  * link to the atlas filtered by that interest (the existing filtered listing).
  */
@@ -56,8 +56,8 @@ export function LookingFor({ n }: { n: string }) {
                     </span>
                     <span className="mt-2 block font-display text-[clamp(1.375rem,1.8vw,1.75rem)] leading-none">{i.label}</span>
                     <span className="exp-text t-small mt-2 block max-w-[34ch] text-ivory/90">{i.text}</span>
-                    <span className="mt-3 inline-flex items-center gap-2 text-[0.75rem] font-semibold tracking-[0.12em] uppercase">
-                      See on the map <Arrow />
+                    <span className="mt-3 inline-flex items-center gap-2 text-[0.75rem] font-semibold tracking-[0.12em] uppercase whitespace-nowrap">
+                      <span className="exp-cta-text">See on the map</span> <Arrow />
                     </span>
                   </span>
                 </a>

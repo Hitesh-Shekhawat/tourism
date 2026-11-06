@@ -66,13 +66,13 @@ export function FeaturedTours({ n }: { n: string }) {
                     </>
                   ) : null}
                 </span>
-                <span className="t-small mt-3 block max-w-[46ch] text-ink-muted">{t.summary}</span>
+                <span className="jr-summary t-small mt-3 block max-w-[46ch] text-ink-muted">{t.summary}</span>
                 <span className="dest-explore mt-4 inline-flex items-center gap-2 text-[0.8125rem] font-semibold tracking-[0.12em] text-accent uppercase">
                   Explore journey <Arrow />
                 </span>
               </span>
             </Link>
-            {t.draft && <Placeholder what={`a confirmed journey: content/tours/${t.slug}.ts is a sample draft`} className="mt-4" />}
+            {t.draft && <Placeholder what={`a confirmed journey (content/tours/${t.slug}.ts is a sample draft)`} className="jr-draft" />}
           </li>
         ))}
         <li className="jr-card jr-end">

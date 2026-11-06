@@ -36,6 +36,7 @@
   --radius-xs: 2px;
 
   --breakpoint-xs: 30rem;
+  --breakpoint-wide: 85rem; /* 1360px: the footer's four link columns */
 }
 
 :root {

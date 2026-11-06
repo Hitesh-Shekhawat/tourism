@@ -48,7 +48,7 @@ export function FinalCta({ n }: { n: string }) {
         </div>
 
         <div className="lg:col-span-5 lg:col-start-8">
-          <div className="border border-[var(--line-dark)] bg-ink/55 p-6 backdrop-blur-[3px] sm:p-9">
+          <div className="border border-[var(--line-dark)] bg-ink/75 p-5 shadow-[var(--shadow-lift)] backdrop-blur-md xs:p-6 sm:p-9">
             <p className="t-label mb-6 text-ivory/80">Tell us about your trip</p>
             <InlineEnquiry dark />
           </div>

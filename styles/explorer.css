@@ -256,6 +256,8 @@ html[data-motion="reduced"] .trend-now-in {
   padding-bottom: clamp(24px, 4vh, 48px);
 }
 .atlas-stage {
+  /* overlays line up with the page content edge (same as .wrap and the horizontal tracks) */
+  --edge: max(var(--gutter), calc((100vw - 1440px) / 2 + var(--gutter)));
   position: relative;
   height: clamp(560px, 86svh, 820px);
   overflow: hidden;
@@ -279,6 +281,12 @@ html[data-motion="reduced"] .trend-now-in {
 @media (max-width: 1023px) {
   .atlas-stage {
     height: max(560px, 86svh);
+  }
+}
+/* phones: the stage is sized to the map (which is width-bound), not to the screen height */
+@media (max-width: 639px) {
+  .atlas-stage:not([data-view="state"]) {
+    height: clamp(520px, 100vw + 250px, 86svh);
   }
 }
 .atlas-canvas {
@@ -310,7 +318,7 @@ html[data-motion="reduced"] .trend-now-in {
   position: absolute;
   z-index: 5;
   top: 16px;
-  left: 16px;
+  left: var(--edge);
   max-width: calc(100% - 200px);
 }
 .atlas-crumbs ol {
@@ -347,7 +355,7 @@ html[data-motion="reduced"] .trend-now-in {
   position: absolute;
   z-index: 5;
   top: 16px;
-  right: 16px;
+  right: var(--edge);
   display: flex;
   gap: 6px;
 }
@@ -398,6 +406,16 @@ html[data-motion="reduced"] .trend-now-in {
   max-width: calc(100% - 32px);
   text-align: center;
 }
+/* wide screens: the CTA sits in the open sea at the map's lower left, so the map can take the full height */
+@media (min-width: 1024px) {
+  .atlas-cta {
+    left: var(--edge);
+    bottom: clamp(32px, 6vh, 56px);
+    translate: none;
+    max-width: 320px;
+    text-align: left;
+  }
+}
 
 .atlas-panel {
   position: absolute;
@@ -410,12 +428,12 @@ html[data-motion="reduced"] .trend-now-in {
   animation: atlas-in 500ms var(--ease-out) both;
 }
 .atlas-panel-india {
-  left: 16px;
+  left: var(--edge);
   bottom: 16px;
   width: min(320px, calc(100% - 32px));
 }
 .atlas-panel-state {
-  left: 16px;
+  left: var(--edge);
   top: 72px;
   width: min(340px, calc(100% - 32px));
   max-height: calc(100% - 88px);
@@ -680,8 +698,8 @@ html[data-motion="reduced"] .trend-now-in {
 @media (min-width: 1024px) {
   /* keep the map clear of the panels: the state list on the left, the place card on the right */
   .atlas-stage[data-view="state"] .atlas-svg {
-    inset: 6% 3% 4% 360px;
-    width: calc(97% - 360px);
+    inset: 6% 3% 4% calc(var(--edge) + 344px);
+    width: calc(97% - var(--edge) - 344px);
   }
   .atlas-stage[data-view="state"][data-place] .atlas-svg {
     inset: 6% 440px 4% 3%;
@@ -831,8 +849,8 @@ html[data-motion="reduced"] .atlas-svg-halo {
 /* Small screens: crumbs and tools share the top edge; the tools go icon-only */
 @media (max-width: 639px) {
   .atlas-crumbs {
-    top: 10px;
-    left: 10px;
+    top: 12px;
+    left: var(--edge);
     max-width: calc(100% - 196px);
   }
   .atlas-crumbs ol {
@@ -843,8 +861,8 @@ html[data-motion="reduced"] .atlas-svg-halo {
     margin-inline: 5px;
   }
   .atlas-tools {
-    top: 10px;
-    right: 10px;
+    top: 12px;
+    right: var(--edge);
     gap: 4px;
   }
   .atlas-back {
@@ -898,6 +916,13 @@ html[data-motion="reduced"] .atlas-tip-card {
   top: 4%;
   bottom: auto;
   height: calc(96% - clamp(24px, 6vh, 56px) - 96px);
+}
+/* wide screens: the button moves to the open sea at the lower left (see .atlas-cta), so the map takes the full height */
+@media (min-width: 1024px) {
+  .atlas-stage:not([data-started]) .atlas-svg {
+    top: 3%;
+    height: 94%;
+  }
 }
 @media (max-width: 767px) {
   /* clear of the fixed "Plan my trip" bar along the bottom of small screens */

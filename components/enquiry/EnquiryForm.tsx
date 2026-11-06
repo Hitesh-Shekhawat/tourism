@@ -214,7 +214,7 @@ export function EnquiryForm({ prefill, dark = false, context = {}, onSent, idPre
           <input id={id("name")} type="text" autoComplete="name" placeholder=" " aria-invalid={!!errors.name} aria-describedby={errors.name ? id("name-err") : undefined} {...register("name")} />
         </Field>
 
-        <div className="grid grid-cols-[minmax(0,8.5rem)_1fr] gap-4">
+        <div className="grid grid-cols-1 gap-6 xs:grid-cols-[minmax(0,8.5rem)_1fr] xs:gap-4">
           <Field id={id("code")} label="Country code" filled>
             <select id={id("code")} autoComplete="tel-country-code" {...register("phoneCode")}>
               {countryCodes.map((c) => (
@@ -229,7 +229,7 @@ export function EnquiryForm({ prefill, dark = false, context = {}, onSent, idPre
           </Field>
         </div>
 
-        <Field id={id("email")} label="Email (optional if you give a phone number)" error={err("email")}>
+        <Field id={id("email")} label="Email (optional with a phone number)" error={err("email")}>
           <input id={id("email")} type="email" autoComplete="email" placeholder=" " aria-invalid={!!errors.email} aria-describedby={errors.email ? id("email-err") : undefined} {...register("email")} />
         </Field>
 

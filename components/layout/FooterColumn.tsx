@@ -20,7 +20,7 @@ export function FooterColumn({ title, children }: { title: string; children: Rea
 
   return (
     <div className="border-b border-[var(--line-dark)] lg:border-0">
-      <h2 className="t-label text-ivory/70 lg:mb-5">
+      <h2 className="t-label text-ivory/70 lg:mb-5 lg:whitespace-nowrap">
         {desktop ? (
           title
         ) : (

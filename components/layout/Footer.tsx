@@ -32,7 +32,7 @@ export function Footer() {
   return (
     <footer className="on-dark border-t border-[var(--line-dark)] bg-[linear-gradient(to_bottom,#5e1a1a,#2a1414_55%,#12141f)] text-ivory">
       <div className="wrap pt-24 pb-10 md:pt-32">
-        <div className="grid gap-12 border-b border-[var(--line-dark)] pb-16 lg:grid-cols-12">
+        <div className="grid gap-12 border-b border-[var(--line-dark)] pb-16 lg:grid-cols-12 lg:gap-x-8">
           <div className="lg:col-span-3">
             <Wordmark />
             {has(business.brandStatement) && (
@@ -43,7 +43,7 @@ export function Footer() {
             <TrailDivider className="mt-8" />
           </div>
 
-          <nav aria-label="Footer" className="grid lg:col-span-6 lg:grid-cols-2 lg:gap-10 xl:grid-cols-4">
+          <nav aria-label="Footer" className="grid lg:col-span-6 lg:grid-cols-2 lg:gap-x-8 lg:gap-y-10 wide:col-span-7 wide:grid-cols-4 wide:gap-x-6">
             <FooterColumn title="Destinations">
               <ul className="space-y-1.5">
                 {destinations.map((d) => (
@@ -126,8 +126,8 @@ export function Footer() {
             </FooterColumn>
           </nav>
 
-          <div className="lg:col-span-3">
-            <h2 className="t-label mb-5 text-ivory/70">Contact</h2>
+          <div className="lg:col-span-3 wide:col-span-2">
+            <h2 className="t-label mb-5 whitespace-nowrap text-ivory/70">Contact</h2>
             <address className="space-y-3 text-ivory/90 not-italic">
               {(addressKnown || showPlaceholders) && (
                 <p>
