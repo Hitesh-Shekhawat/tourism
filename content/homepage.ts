@@ -8,11 +8,15 @@ import type { Tour } from "./tours/types";
  */
 
 /**
- * Hero footage. Leave src empty until the owner supplies a clip (ASSET_BRIEF.md, homeHero): the
- * hero then shows the homeHero photo of Lake Pichola at dawn. Use a 10–20 s loop, H.264 MP4 (and optionally WebM), ≤ 6 MB
- * desktop and ≤ 2.5 MB for the 720p portrait mobile cut; the homeHero photo is its poster.
+ * Home hero footage. The supplied clip is self-hosted; add srcMobile or srcWebm when alternate
+ * encodes are available. It is muted, loops, and is omitted for reduced motion or Save-Data.
  */
-export const heroVideo: { src?: string; srcWebm?: string; srcMobile?: string } = {};
+export const heroVideo: { src?: string; srcWebm?: string; srcMobile?: string } = {
+  src: "/Create_side_move_drone_shot_50b52d83.mp4",
+};
+
+/** Set to a YouTube URL or 11-character video ID to enable the persistent floating player. */
+export const floatingYoutubeUrl = "https://youtube.com/shorts/-g8yluOWAVo?si=IjveMPum2ZHHtptd";
 
 export const featured = {
   label: "Featured journeys",
@@ -29,25 +33,20 @@ export const discover = {
 
 export type ServiceIcon = "plan" | "hotel" | "car" | "plane" | "guide" | "dune" | "group" | "phone" | "route" | "lamp";
 
-/**
- * Why travel with us (§08 of the enhancement brief): at most six points, each a claim the business must
- * confirm. `offered: null` = not yet confirmed: it renders with a labelled placeholder in development and
- * is left out of production builds. Set true once it is true for this business, or false to drop it.
- * No rankings, no "best", no numbers that can't be sourced.
- */
-export const services: { id: string; title: string; text: string; icon: ServiceIcon; offered: boolean | null }[] = [
-  { id: "curated", title: "Curated itineraries", text: "Routes drawn up for the season and the distances involved, with time left in each place rather than a city a day.", icon: "route", offered: null },
-  { id: "local", title: "Local Rajasthan expertise", text: "Planned by people who know the state's roads, opening hours and quiet corners first-hand.", icon: "guide", offered: null },
-  { id: "personal", title: "Personalised journeys", text: "Your dates, your pace and your interests set the plan, and we refine it with you until it fits.", icon: "plan", offered: null },
-  { id: "comfort", title: "Comfortable arrangements", text: "Stays, a private car and driver, and transfers arranged and confirmed before you arrive.", icon: "hotel", offered: null },
-  { id: "culture", title: "Authentic cultural experiences", text: "Craft workshops, village visits, music and food, arranged with the people who keep them alive.", icon: "lamp", offered: null },
-  { id: "assist", title: "Dedicated assistance", text: "One named person to call or message while you are on the road.", icon: "phone", offered: null },
+/** Common trip-planning services; exact availability varies by operator and itinerary. */
+export const services: { id: string; title: string; text: string; icon: ServiceIcon; image: AssetKey }[] = [
+  { id: "custom-tours", title: "Custom tour planning", text: "Shape a route around your dates, interests, and preferred pace.", icon: "plan", image: "trailJaipur" },
+  { id: "hotel-booking", title: "Hotel booking", text: "Explore stays suited to your route and budget; confirm options before booking.", icon: "hotel", image: "galPalace" },
+  { id: "transport", title: "Transport & transfers", text: "Plan road transport and arrival or departure transfers around your itinerary.", icon: "car", image: "expPichola" },
+  { id: "local-guides", title: "Local guides", text: "Add local guides for selected cities, sights, and experiences.", icon: "guide", image: "expBagru" },
+  { id: "sightseeing", title: "Sightseeing planning", text: "Plan time for forts, palaces, markets, and cultural stops along the way.", icon: "route", image: "trailJodhpur" },
+  { id: "trip-support", title: "On-trip support", text: "Ask your tour operator about assistance options while you are travelling.", icon: "phone", image: "expThar" },
 ];
 
-export const whyUs = {
-  label: "Why travel with us",
-  title: "Everything arranged, nothing rushed.",
-  note: "One team plans the route, books the stays and stays with you on the road.",
+export const facilitiesIntro = {
+  label: "Tour facilities",
+  title: "The arrangements that make a journey easier.",
+  note: "Services and availability vary by operator and itinerary. Confirm inclusions before booking.",
 };
 
 /** Package categories. Each shows the published journeys that fit it; with none, an owner placeholder. */
@@ -67,8 +66,8 @@ export const packagesCopy = {
 };
 
 /**
- * Guest video stories: real guests only, with written permission to show their name, face and words.
- * Leave empty until there are some; the section stays hidden while this and `reviews` (home.ts) are empty.
+ * Guest stories: real guests only, with written permission to show their name, face and words.
+ * Owner-provided video features are kept separately in `storyVideos`.
  */
 export type TravellerStory = {
   name: string;
@@ -81,8 +80,14 @@ export type TravellerStory = {
 };
 export const travellerStories: TravellerStory[] = [];
 
-/** The stories section (and its number in the sequence) only exists once there is something real to show. */
-export const hasStories = travellerStories.length > 0 || reviews.length > 0;
+/** Owner-provided video links for the Stories section; these are video features, not guest reviews. */
+export const storyVideos = [
+  { id: "road-short-1", youtubeId: "zIxXRjm35E0" },
+  { id: "road-short-2", youtubeId: "aNwvVFmAzkE" },
+] as const;
+
+/** The stories section (and its number in the sequence) only exists once there is content to show. */
+export const hasStories = travellerStories.length > 0 || storyVideos.length > 0 || reviews.length > 0;
 const n = (k: number) => String(hasStories ? k : k - 1).padStart(2, "0");
 export const sectionNo = { gallery: n(8), closing: n(9) };
 
@@ -130,7 +135,7 @@ export const memories: Memory[] = [
 export const storiesCopy = {
   label: "Stories from the road",
   title: "Stories From The Road.",
-  note: "Don't just take our word for it. Hear it from the people who travelled with us.",
+  note: "Short films and stories from Rajasthan, shared from the road.",
 };
 
 export const gallery = {

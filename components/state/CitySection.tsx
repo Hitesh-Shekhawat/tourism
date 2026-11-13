@@ -47,7 +47,7 @@ export function CitySection({ place: p, sights, n, tone }: { place: Place; sight
               <article className="dest-link" aria-labelledby={`${p.id}-sight-${i}`}>
                 <span className="dest-frame">
                   <span className="dest-img">
-                    <Photo k={s.image} fill sizes={i === 0 ? "(min-width: 1024px) 40vw, 84vw" : "(min-width: 1024px) 24vw, 72vw"} compact phPos="top" />
+                    <Photo k={s.image} fill sizes={i === 0 ? "(min-width: 1024px) 40vw, 84vw" : "(min-width: 1024px) 24vw, 72vw"} compact />
                   </span>
                   <span className="sight-no" aria-hidden="true">
                     {String(i + 1).padStart(2, "0")}

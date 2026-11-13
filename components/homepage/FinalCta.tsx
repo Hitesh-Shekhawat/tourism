@@ -16,14 +16,14 @@ import { hasWhatsApp, whatsappHref } from "@/lib/contact";
 export function FinalCta({ n }: { n: string }) {
   return (
     <section id="enquire" aria-labelledby="final-title" className="on-dark relative isolate overflow-hidden bg-ink text-ivory">
-      <div className="absolute inset-0 -z-10" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
         <div className="absolute inset-0" data-parallax="6">
           <Photo k="homeFinal" fill sizes="100vw" decorative />
         </div>
-        <div className="home-final-shade absolute inset-0" />
+        <div className="home-final-shade absolute inset-0 z-10" />
       </div>
 
-      <div className="wrap sec grid gap-14 lg:grid-cols-12 lg:gap-8">
+      <div className="wrap sec relative z-10 grid gap-14 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-6">
           <SectionHead n={n} label="Begin" dark />
           <h2 id="final-title" className="t-h1 mt-5 max-w-[14ch]">

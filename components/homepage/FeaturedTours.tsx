@@ -2,9 +2,9 @@ import { Link } from "next-view-transitions";
 import { EnquiryButton } from "@/components/enquiry/EnquiryButton";
 import { HorizontalTrack } from "@/components/ui/HorizontalTrack";
 import { Photo } from "@/components/ui/Photo";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Arrow } from "@/components/ui/bits";
+import { SectionImageBackground } from "./SectionImageBackground";
 import { featured } from "@/content/homepage";
 import { tours } from "@/content/tours";
 import { canShow } from "@/lib/content-flags";
@@ -17,14 +17,15 @@ export const visibleJourneys = () => tours.filter((t) => t.featured && canShow(!
 /**
  * 06 · Featured journeys (choose). A draggable horizontal track (no pin): large photography and minimal
  * metadata (route, duration, travel style), with the price only when it exists in real data, written
- * "from ₹…". Sample drafts are labelled in development and left out of production; with no confirmed
- * journey the section is not rendered at all.
+ * "from ₹…". Sample drafts appear only in development; with no confirmed journey the section is not
+ * rendered in production.
  */
 export function FeaturedTours({ n }: { n: string }) {
   const list = visibleJourneys();
   if (!list.length) return null;
   return (
-    <section id="journeys" aria-labelledby="ft-title" className="sec bg-ivory">
+    <section id="journeys" aria-labelledby="ft-title" className="sec relative isolate bg-ivory">
+      <SectionImageBackground variant="editorial" />
       <HorizontalTrack
         label="Featured journeys"
         head={
@@ -72,7 +73,6 @@ export function FeaturedTours({ n }: { n: string }) {
                 </span>
               </span>
             </Link>
-            {t.draft && <Placeholder what={`a confirmed journey (content/tours/${t.slug}.ts is a sample draft)`} className="jr-draft" />}
           </li>
         ))}
         <li className="jr-card jr-end">

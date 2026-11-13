@@ -8,7 +8,7 @@ import { MQ_MOTION } from "@/lib/motion";
 
 /**
  * An editorial horizontal track.
- * - Every width (motion allowed): GSAP pins the track for exactly the distance its cards need, and
+ * - With motion allowed: GSAP pins the track for exactly the distance its cards need, and
  *   vertical scrolling (smoothed by Lenis) carries them sideways; the last card always stops fully in view
  *   with the gutter after it. Cards are sized to the viewport height so the heading and every card fit on
  *   screen. Arrow buttons step the scroll; a hairline shows progress.
@@ -23,10 +23,10 @@ export function HorizontalTrack({ label, children, head, className = "", dark = 
   const trigger = useRef<ScrollTrigger | null>(null);
   const [edge, setEdge] = useState({ start: true, end: false });
 
-  // Desktop: pinned, scroll-driven horizontal movement
+  // Motion-enabled: pinned, scroll-driven horizontal movement
   useSectionMotion(root, ({ gsap }, el) => {
     const mm = gsap.matchMedia();
-    mm.add(MQ_MOTION.any, () => {
+    mm.add(MQ_MOTION.pin, () => {
       const track = list.current!;
       el.classList.add("is-pinned");
       track.scrollLeft = 0;

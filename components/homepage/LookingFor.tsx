@@ -6,6 +6,7 @@ import { goTo, scrollToAtlas, useExplorer } from "@/components/explorer/store";
 import { Photo } from "@/components/ui/Photo";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Arrow } from "@/components/ui/bits";
+import { SectionImageBackground } from "./SectionImageBackground";
 import { interests, places, type Interest } from "@/content/explorer";
 
 /** Sizes per tile, matching the grid in sections.css (.exp-1 tall feature … .exp-5 landscape). */
@@ -36,7 +37,8 @@ export function LookingFor({ n }: { n: string }) {
   };
 
   return (
-    <section id="experiences" aria-labelledby="look-title" className="sec bg-sandstone">
+    <section id="experiences" aria-labelledby="look-title" className="sec relative isolate bg-sandstone">
+      <SectionImageBackground variant="field" />
       <div className="wrap">
         <SectionHeading n={n} label="Explore by experience" id="look-title" title="What are you looking for?" note="Begin with a feeling rather than a place. Each one opens the atlas with the places that match." />
 

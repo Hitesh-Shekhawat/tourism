@@ -470,12 +470,10 @@ html.lenis body {
   to { transform: none; }
 }
 
-.hover-zoom img,
-.hover-zoom .photo-inner {
+.hover-zoom img {
   transition: transform 1200ms var(--ease-out);
 }
 .hover-zoom:hover img,
-.hover-zoom:hover .photo-inner,
 .hover-zoom:focus-within img {
   transform: scale(1.03);
 }

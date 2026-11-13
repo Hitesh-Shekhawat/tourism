@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { Photo } from "@/components/ui/Photo";
+import { SectionImageBackground } from "@/components/homepage/SectionImageBackground";
 import { Deva, SectionHead } from "@/components/ui/bits";
 import { getPlace, interests, isOpenState, openStates, placeLinks, placesIn } from "@/content/explorer";
 import { INDIA_GEO, loadGeo } from "@/lib/geo/projection";
@@ -82,7 +83,8 @@ export function IndiaExplorer({ n = "04" }: { n?: string }) {
   const hoverPin = stateId && pinHover && hoverPlace && hoverPlace !== placeId ? getPlace(hoverPlace) : undefined;
 
   return (
-    <section id="explore" aria-labelledby="explore-title" className="atlas">
+    <section id="explore" aria-labelledby="explore-title" className="atlas relative isolate">
+      <SectionImageBackground variant="field" />
       <div className="wrap atlas-head">
         <SectionHead n={n} label="Interactive atlas" />
         <div className="mt-5 grid gap-6 lg:grid-cols-12 lg:items-end">

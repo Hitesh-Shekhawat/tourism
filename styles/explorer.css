@@ -263,7 +263,7 @@ html[data-motion="reduced"] .trend-now-in {
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(70% 70% at 50% 45%, #fbf6ec 0%, #f2e7d4 62%, #e6d6bb 100%);
+    radial-gradient(70% 70% at 50% 45%, rgb(251 246 236 / 0.76) 0%, rgb(242 231 212 / 0.72) 62%, rgb(230 214 187 / 0.68) 100%);
   border-block: 1px solid rgb(176 141 87 / 0.45);
 }
 /* faint graticule, like a printed atlas */

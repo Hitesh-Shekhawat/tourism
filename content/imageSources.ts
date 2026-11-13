@@ -23,6 +23,7 @@ import picholaDawn from "../assets/Dawn_view_of_Lake_Pichola_44d2a75d.jpg";
 import jaisalmerWalls from "../assets/Jaisalmer_Fort_walls_rising_ac9f32da.jpg";
 import pushkarGhats from "../assets/Pushkar_Lake_temples_and_ghats_61400b8e.jpg";
 import jodhpurLane from "../assets/Alleyway_in_Jodhpur_old_city_26158c32.jpg";
+import ranthamboreTiger from "../assets/Ranthambore_Bengal_tiger_Giles_Laurent.jpg";
 // Wikimedia Commons (credited in content/credits.ts)
 import nakkiLake from "../assets/Nakki_Lake_Mount_Abu_commons.jpg";
 import junagarhInterior from "../assets/Junagarh_Fort_painted_interior_commons.jpg";
@@ -30,7 +31,7 @@ import junagarhInterior from "../assets/Junagarh_Fort_painted_interior_commons.j
 type ImageSource = string | StaticImageData;
 
 export const imageSources: Partial<Record<AssetKey, ImageSource>> = {
-  homeHero: "/images/home-hero-jal-mahal-aerial.jpg",
+  homeHero: "/Create_Rajasthani_embroidery_wal…_50d54ca1_2K.jpg",
   homeFinal: mehrangarh,
   introArch: amerCorridor,
   introDetail: handBlockPrinting,
@@ -80,6 +81,7 @@ export const imageSources: Partial<Record<AssetKey, ImageSource>> = {
   placePushkar: pushkarGhats,
   placeMountAbu: nakkiLake,
   placeBikaner: junagarhInterior,
+  placeRanthambore: ranthamboreTiger,
   itinJaipurHero: amerFortMorning,
   itinUdaipurHero: udaipurPalaces,
   sightJalMahal: "/images/home-hero-jal-mahal-aerial.jpg",
@@ -90,4 +92,5 @@ export const imagePositions: Partial<Record<AssetKey, string>> = {
   trailJaisalmer: "76% center",
   tourDesert: "62% center",
   placeMountAbu: "25% 20%",
+  placeRanthambore: "36% center",
 };

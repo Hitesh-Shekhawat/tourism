@@ -5,7 +5,7 @@ import { heroVideo } from "@/content/homepage";
 import { useStory } from "@/lib/story/store";
 
 /**
- * Hero footage over the homeHero photo (which stays as the poster and the LCP image). Mounts after
+ * Hero footage over the hero photo (which stays as the poster and the LCP image). Mounts after
  * first paint, never under reduced motion or Save-Data, with a lighter portrait cut on narrow screens,
  * and pauses while the hero is off screen.
  */
@@ -25,7 +25,11 @@ export function HeroVideo() {
   useEffect(() => {
     const v = ref.current;
     if (!v) return;
-    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? v.play().catch(() => {}) : v.pause()));
+    const io = new IntersectionObserver(([e]) =>
+      e.isIntersecting
+        ? v.play().catch((error: unknown) => console.error("The hero video failed to play.", error))
+        : v.pause(),
+    );
     io.observe(v);
     return () => io.disconnect();
   }, [src]);
@@ -41,6 +45,7 @@ export function HeroVideo() {
       preload="metadata"
       aria-hidden="true"
       onPlaying={() => setPlaying(true)}
+      onError={() => console.error("The hero video failed to load.")}
     >
       {src.webm && <source src={src.webm} type="video/webm" />}
       <source src={src.mp4} type="video/mp4" />

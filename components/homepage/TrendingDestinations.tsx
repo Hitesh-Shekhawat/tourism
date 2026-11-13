@@ -5,6 +5,7 @@ import { HorizontalTrack } from "@/components/ui/HorizontalTrack";
 import { Photo } from "@/components/ui/Photo";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Arrow } from "@/components/ui/bits";
+import { SectionImageBackground } from "./SectionImageBackground";
 import { placeLinks, trending, type Place } from "@/content/explorer";
 
 /** A card's destination: the itinerary, else the destination guide, else the place in the atlas. */
@@ -29,10 +30,11 @@ function CardLink({ p, className, children }: { p: Place; className: string; chi
  */
 export function TrendingDestinations({ n }: { n: string }) {
   return (
-    <section id="trending" aria-labelledby="trending-title" className="sec bg-ivory">
+    <section id="trending" aria-labelledby="trending-title" className="sec relative isolate bg-ivory">
+      <SectionImageBackground variant="editorial" />
       <HorizontalTrack
         label="Trending destinations"
-        head={<SectionHeading n={n} label="Trending destinations" id="trending-title" title="Six places to begin." note="The cities most journeys start from, each with its own colour, history and pace." />}
+        head={<SectionHeading n={n} label="Trending destinations" id="trending-title" title="Seven places to begin." note="The cities and landscapes most journeys start from, each with its own colour, history and pace." />}
       >
         {trending.map((p, i) => (
           <li key={p.id} className={`dest-card ${i === 0 ? "dest-card-wide" : ""}`}>

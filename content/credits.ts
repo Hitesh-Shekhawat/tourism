@@ -18,6 +18,14 @@ export const credits: { file: string; author: string; source: string; sourceUrl:
     licence: "CC BY 4.0",
     licenceUrl: "https://creativecommons.org/licenses/by/4.0/",
   },
+  {
+    file: "Bengal tiger in Ranthambore National Park: the Ranthambore place card",
+    author: "Giles Laurent",
+    source: "Wikimedia Commons",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:080_Bengal_tiger_in_Ranthambore_National_Park_Photo_by_Giles_Laurent.jpg",
+    licence: "CC BY-SA 4.0",
+    licenceUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+  },
 ];
 
 /** Data and generated imagery (not photographs). */

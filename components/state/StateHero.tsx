@@ -27,7 +27,7 @@ export function StateHero({ name, devanagari, tagline, image, cities, sightCount
     <section ref={root} id="state-top" className="sh-hero on-dark relative isolate flex min-h-[100svh] items-end overflow-hidden bg-maroon text-ivory">
       <div className="sh-media absolute inset-0 -z-10" aria-hidden="true">
         <div className="sh-zoom absolute inset-0">
-          <Photo k={image} fill priority sizes="100vw" decorative phPos="below-header" />
+          <Photo k={image} fill priority sizes="100vw" decorative />
         </div>
       </div>
       <div aria-hidden="true" className="sh-shade absolute inset-0 -z-[5]" />

@@ -51,7 +51,7 @@ export function PageHero({
   return (
     <section className="on-dark relative isolate flex min-h-[78svh] items-end overflow-hidden bg-maroon text-ivory">
       <div className="absolute inset-0 -z-10" style={imageStyle}>
-        <Photo k={image} fill priority sizes="100vw" phPos="below-header" />
+        <Photo k={image} fill priority sizes="100vw" />
       </div>
       <div aria-hidden="true" className="absolute inset-0 -z-[5] bg-[linear-gradient(to_top,rgb(94_26_26/.8)_0%,rgb(94_26_26/.72)_34%,rgb(94_26_26/.25)_62%,transparent_80%)]" />
       <div className="wrap pt-40 pb-[clamp(40px,8vh,88px)]">

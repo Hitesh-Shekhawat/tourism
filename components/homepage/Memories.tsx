@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Photo } from "@/components/ui/Photo";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionImageBackground } from "./SectionImageBackground";
 import { VideoPoster } from "@/components/ui/VideoPoster";
 import type { LightboxItem } from "@/components/ui/Lightbox";
 import { memories, memoriesCopy, type Memory } from "@/content/homepage";
@@ -71,7 +72,8 @@ export function Memories({ n }: { n: string }) {
   };
 
   return (
-    <section id="memories" aria-labelledby="mem-title" className="sec overflow-hidden bg-ivory">
+    <section id="memories" aria-labelledby="mem-title" className="sec relative isolate overflow-hidden bg-ivory">
+      <SectionImageBackground variant="masonry" />
       <div className="wrap">
         <SectionHeading n={n} label={memoriesCopy.label} id="mem-title" title={memoriesCopy.title} note={memoriesCopy.note} />
 

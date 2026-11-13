@@ -173,6 +173,23 @@ export const places: Place[] = [
     interests: ["heritage", "desert"],
     destinationSlug: "bikaner",
   },
+  {
+    id: "ranthambore",
+    epithet: "The Tiger Reserve",
+    state: "rajasthan",
+    name: "Ranthambore",
+    devanagari: "रणथंभौर",
+    region: "Sawai Madhopur district, eastern Rajasthan",
+    coords: [76.5026, 26.0173],
+    summary: "A landscape of forest, lakes and Bengal tigers.",
+    description: "Ranthambore National Park lies near Sawai Madhopur in eastern Rajasthan. Its forests, lakes and historic Ranthambore Fort are part of a protected landscape known for Bengal tigers.",
+    attractions: [
+      { name: "Ranthambore National Park", note: "Protected forest and tiger habitat", coords: [76.5026, 26.0173] },
+      { name: "Ranthambore Fort", note: "Historic fort within the reserve", coords: [76.455, 26.017] },
+    ],
+    image: "placeRanthambore",
+    interests: ["heritage"],
+  },
 ];
 
 export const placesIn = (state: string) => places.filter((p) => p.state === state);
@@ -184,4 +201,4 @@ export const placeLinks = (p: Place) => ({
 });
 
 /** The home page's trending row, in order. */
-export const trending = ["jaipur", "udaipur", "jaisalmer", "jodhpur", "pushkar", "mount-abu"].map((id) => getPlace(id)!);
+export const trending = ["jaipur", "udaipur", "jaisalmer", "jodhpur", "pushkar", "mount-abu", "ranthambore"].map((id) => getPlace(id)!);

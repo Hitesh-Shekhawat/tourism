@@ -69,6 +69,7 @@ const label = (f) => PLACE.find(([r]) => r.test(f))?.[1] ?? f;
 const VIA = {
   "destinations.indexImage": ["Home · destination tiles", "Story · Hours", "Destination pages"],
   "destinations.heroImage": ["Destination pages (hero)", "Destinations list"],
+  "explorer.image": ["Home · trending places", "Atlas place cards"],
   "experiences.image": ["Home · experiences list", "Story · Ganjifa", "Experiences list", "Experience pages (hero)"],
   "tours.heroImage": ["Home · featured journeys", "Story · tickets", "Journey pages (hero)", "Journey rows (journeys list, destination, experience and related-journey lists)"],
   "tours.gallery": ["Journey pages (gallery)"],
@@ -179,6 +180,7 @@ Until a photo is supplied, the site shows a dune-coloured placeholder at the exa
 
 - **Hero drone clip:** follow VIDEO_BRIEF.md, then \`scripts/video-to-frames.sh <clip> hero-aerial 150\` and set its status to \`"ready"\` in \`content/day.json\`.
 - **Home hero loop:** put the files in \`public/video/\` and set \`heroVideo\` in \`content/homepage.ts\`, e.g. \`{ src: "/video/home-hero.mp4", srcWebm: "/video/home-hero.webm", srcMobile: "/video/home-hero-portrait.mp4" }\`. It never loads under reduced motion or Save-Data, and is muted, looped and paused off screen.
+- **Floating YouTube player:** set \`floatingYoutubeUrl\` in \`content/homepage.ts\` to a YouTube URL or 11-character video ID; leave it empty to keep the player disabled.
 - **Guest stories:** files in \`public/video/stories/\`, a poster photo added to \`content/assets.ts\`, then an entry in \`travellerStories\` in \`content/homepage.ts\`.
 
 ---

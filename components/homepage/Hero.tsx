@@ -1,6 +1,7 @@
 import { Link } from "next-view-transitions";
 import { Photo } from "@/components/ui/Photo";
 import { Arrow } from "@/components/ui/bits";
+import { HeroVideo } from "./HeroVideo";
 import { hero } from "@/content/home";
 import { itineraries } from "@/content/itineraries";
 import { visibleJourneys } from "./FeaturedTours";
@@ -10,9 +11,8 @@ import { RajasthanWordmark } from "./RajasthanWordmark";
 const featured = itineraries.find((i) => i.slug === "jaipur") ?? itineraries[0];
 
 /**
- * 01 · Cinematic hero (arrive). Full-viewport Hawa Mahal photograph (the LCP image, preloaded) with a
- * slow Ken Burns move and a bottom gradient that keeps ivory copy above 4.5:1. The heading and CTAs are
- * server-rendered and paint without script; nothing else in the hero animates.
+ * 01 · Cinematic hero (arrive). The supplied loop plays over the existing full-viewport photograph,
+ * which remains the LCP image and fallback. The heading and CTAs stay server-rendered.
  */
 export function Hero() {
   // the journeys section only renders with real journeys; otherwise the CTA goes to the journeys page
@@ -21,6 +21,7 @@ export function Hero() {
     <section aria-labelledby="home-title" className="hero on-dark relative isolate overflow-hidden bg-ink text-ivory">
       <div className="absolute inset-0 -z-10" aria-hidden="true">
         <Photo k="placeJaipur" fill priority sizes="100vw" decorative imgClassName="kenburns hero-img" />
+        <HeroVideo />
         <div className="hero-shade absolute inset-0" />
       </div>
 

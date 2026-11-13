@@ -96,8 +96,8 @@ export const assets = {
   destPushkar: a("dest-pushkar-hero-evening-aarti.jpg", "21:9", "Destination · Pushkar hero", "Evening aarti on the ghats of Pushkar Lake", "Dusk", "Flame, reflection, reverent", "Evening aarti on the ghats of Pushkar Lake"),
   destBikaner: a("dest-bikaner-hero-old-city-haveli.jpg", "21:9", "Destination · Bikaner hero", "Red sandstone havelis of Bikaner's old city", "Morning", "Rich red, quiet street", "Red sandstone havelis in Bikaner's old city"),
 
-  /* Home (v4): hero, services, packages, gallery, final band. Footage for the hero goes in content/homepage.ts → heroVideo. */
-  homeHero: a("home-hero-dawn-lake-pichola.jpg", "16:9", "Home · Hero (full-bleed, text sits bottom-left; keep the subject right of centre)", "Dawn across Lake Pichola, with Udaipur's palaces along the shore; also the poster frame for the hero video", "Dawn", "Cinematic, still water, warm", "Udaipur's palaces reflected on Lake Pichola at dawn"),
+  /* Home (v4): editorial section backgrounds. Hero footage is configured in content/homepage.ts → heroVideo. */
+  homeHero: a("Create_Rajasthani_embroidery_wal…_50d54ca1_2K.jpg", "16:9", "Home · subtle editorial section backgrounds", "A repeating Rajasthani textile illustration in warm ivory and muted brown", "Soft daylight", "Quiet, decorative, warm", "A Rajasthani textile illustration with traditional people, animals and architecture"),
   homeServices: a("home-services-driver-heritage-gate.jpg", "4:5", "Home · Why travel with us", "A private car waiting at a heritage hotel gate, driver beside it (real staff, signed release)", "Morning", "Calm, attentive, unposed", "A private car and driver waiting at a heritage hotel gate"),
   pkgWeekend: a("pkg-weekend-amber-ramparts.jpg", "3:2", "Home · Packages (hover zooms the photo; keep edges simple)", "Amber Fort and the ridge at sunrise", "Sunrise", "Short escape, golden", "Amber Fort at sunrise above Maota Lake, Jaipur"),
   pkgFamily: a("pkg-family-city-palace-courtyard.jpg", "3:2", "Home · Packages (hover zooms the photo; keep edges simple)", "Open palace courtyard with space to wander (no identifiable faces)", "Morning", "Easy, spacious, bright", "An open palace courtyard in Rajasthan in the morning"),
@@ -129,6 +129,7 @@ export const assets = {
   placePushkar: a("place-pushkar-lake-ghats.jpg", "4:5", "Home · Trending places and the atlas card", "Temples and ghats around Pushkar Lake", "Dawn", "Devotional, calm", "Temples and ghats around Pushkar Lake"),
   placeMountAbu: a("place-mount-abu-nakki-lake.jpg", "4:5", "Home · Trending places and the atlas card", "Nakki Lake among the Aravalli hills at Mount Abu", "Morning", "Green hills, cool air", "Nakki Lake in the hills at Mount Abu"),
   placeBikaner: a("place-bikaner-junagarh.jpg", "4:5", "Home · the atlas card", "Junagarh Fort's red sandstone façade", "Morning", "Rich red stone", "The red sandstone façade of Junagarh Fort, Bikaner"),
+  placeRanthambore: a("ranthambore-bengal-tiger-giles-laurent.jpg", "16:9", "Home · Trending places and the atlas card", "A Bengal tiger in Ranthambore National Park", "Daylight", "Wildlife, natural habitat", "A Bengal tiger in Ranthambore National Park"),
 
   /* Itineraries: Jaipur and Udaipur (hero + gallery reuse the photos above) */
   itinJaipurHero: a("itinerary-jaipur-amer-sunrise.jpg", "21:9", "Itinerary · Jaipur hero", "Amer Fort above Maota Lake at sunrise", "Sunrise", "Warm, wide", "Amer Fort above Maota Lake at sunrise"),
