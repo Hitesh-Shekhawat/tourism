@@ -107,6 +107,8 @@ export type Memory = {
   image?: AssetKey;
   /** Footage: muted mp4 + poster; never autoplays with sound, plays only on request. */
   video?: { src: string; poster: AssetKey };
+  /** Poster artwork for a forthcoming video; does not imply a video is available. */
+  poster?: AssetKey;
   guest?: boolean;
   ready: boolean;
   /** What is needed, for stand-ins. */
@@ -120,7 +122,7 @@ export const memoriesCopy = {
 };
 
 export const memories: Memory[] = [
-  { id: "film", theme: "Desert nights", caption: "An evening in the Thar, from the last light to the first stars", location: "Thar Desert", shape: "wide", ready: false, need: "a 20–40 s muted memory film (H.264 MP4 ≤ 3 MB) with a 16:9 poster frame" },
+  { id: "film", theme: "Desert nights", caption: "An evening in the Thar, from the last light to the first stars", location: "Thar Desert", shape: "wide", poster: "homeMemoryFilmPoster", ready: false, need: "a 20–40 s muted memory film (H.264 MP4 ≤ 3 MB) with a 16:9 poster frame" },
   { id: "dunes", theme: "Desert sunsets", caption: "A camel train crossing the dunes as the sun goes down", location: "Thar Desert, near Jaisalmer", shape: "portrait", image: "galCamel", ready: true },
   { id: "camp", theme: "Campfires & desert nights", caption: "Lanterns lit at camp as the desert cools", location: "Thar Desert", shape: "landscape", image: "expThar", ready: true },
   { id: "gate", theme: "Forts & palaces", caption: "A painted gateway in a palace courtyard", location: "City Palace, Jaipur", shape: "small", image: "galFortGate", ready: true },

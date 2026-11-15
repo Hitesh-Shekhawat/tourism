@@ -50,6 +50,10 @@ export function Memories({ n }: { n: string }) {
         <div className="mem-frame">
           {m.ready && m.video ? (
             <VideoPoster src={m.video.src} poster={m.video.poster} label={m.caption} sizes={SIZES[m.shape]} />
+          ) : m.poster ? (
+            <div className="mem-poster">
+              <Photo k={m.poster} fill sizes={SIZES[m.shape]} decorative compact />
+            </div>
           ) : m.ready && m.image ? (
             <button type="button" className="mem-open group" onClick={() => setOpen(photoIndex)} aria-label={`Open photo: ${m.caption}, ${m.location}`} aria-haspopup="dialog">
               <Photo k={m.image} fill sizes={SIZES[m.shape]} decorative compact imgClassName="mem-img" />

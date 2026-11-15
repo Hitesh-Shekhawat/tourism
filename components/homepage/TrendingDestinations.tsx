@@ -47,7 +47,7 @@ export function TrendingDestinations({ n }: { n: string }) {
               <span className="mt-4 block">
                 {/* always two fixed lines (epithet, then region) so every name sits on the same baseline */}
                 <span className="t-label block truncate text-ink-muted">{p.epithet}</span>
-                <span className="t-label mt-1 block truncate text-ink-muted/80">{p.region.split(",")[0]}</span>
+                <span className="t-label mt-1 block truncate text-ink-muted">{p.region.split(",")[0]}</span>
                 <span className="dest-name mt-2 block font-display text-[clamp(1.5rem,1.9vw,1.875rem)] leading-none">{p.name}</span>
                 <span className="t-small mt-3 block max-w-[38ch] text-ink-muted">{p.summary}</span>
                 <span className="dest-explore mt-4 inline-flex items-center gap-2 text-[0.8125rem] font-semibold tracking-[0.12em] text-accent uppercase">

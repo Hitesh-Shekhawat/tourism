@@ -6,7 +6,6 @@ import { Placeholder } from "@/components/ui/Placeholder";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { showPlaceholders } from "@/lib/content-flags";
 import { Photo } from "@/components/ui/Photo";
-import { SectionImageBackground } from "./SectionImageBackground";
 import { assets } from "@/content/assets";
 import { imageSources } from "@/content/imageSources";
 import { reviews } from "@/content/home";
@@ -22,13 +21,13 @@ export function TravellerStories({ n }: { n: string }) {
   const [playing, setPlaying] = useState<TravellerStory | null>(null);
   const [playingYoutube, setPlayingYoutube] = useState<string | null>(null);
   const heading = <SectionHeading n={n} label={storiesCopy.label} id="stories-title" title={storiesCopy.title} note={storiesCopy.note} />;
+  const galleryHeading = <p className="t-label text-ink-muted">Travel films &amp; stories from the road</p>;
 
   // No real testimonials: nothing in production; a labelled stand-in in development
   if (!hasStories) {
     if (!showPlaceholders) return null;
     return (
       <section id="stories" aria-labelledby="stories-title" className="sec relative isolate bg-sandstone">
-        <SectionImageBackground variant="masonry" />
         <div className="wrap">
           {heading}
           <Placeholder what="real guest stories (content/homepage.ts → travellerStories, content/home.ts → reviews), with written permission for each name, photo and quote" className="mt-12 min-h-[240px]">
@@ -45,10 +44,9 @@ export function TravellerStories({ n }: { n: string }) {
   const carouselStories = [...videoStories, ...otherStories];
   return (
     <section id="stories" aria-labelledby="stories-title" className="sec relative isolate overflow-hidden bg-sandstone">
-      <SectionImageBackground variant="masonry" />
-      <div className="wrap">
-        {heading}
-        {lead && (
+      {lead && (
+        <div className="wrap">
+          {heading}
           <div className="mt-12 grid gap-8 lg:mt-16 lg:grid-cols-12 lg:items-end">
             <div className="lg:col-span-7">
               <StoryMedia s={lead} onPlay={setPlaying} sizes="(min-width: 1024px) 58vw, 100vw" />
@@ -57,23 +55,23 @@ export function TravellerStories({ n }: { n: string }) {
               <Caption s={lead} large />
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
       {(storyVideos.length > 0 || carouselStories.length > 0 || reviews.length > 0) && (
         <HorizontalTrack
           label="Stories from the road"
-          className="mt-14"
-          head={<p className="t-label text-ink-muted">Travel films &amp; stories from the road</p>}
+          className={`stories-track ${lead ? "mt-14" : ""}`}
+          head={lead ? galleryHeading : heading}
         >
           {storyVideos.map((video, index) => (
-            <li key={video.id} className="story-card">
+            <li key={video.id} className="story-card story-video-card">
               <button
                 type="button"
                 className="story-video-button group relative block w-full text-left"
                 onClick={() => setPlayingYoutube(video.youtubeId)}
                 aria-label={`Play travel video ${index + 1}`}
               >
-                <span className="story-video-thumb relative block aspect-[9/16] overflow-hidden bg-ink">
+                <span className="story-video-thumb relative block aspect-[4/5] overflow-hidden bg-ink">
                   <img
                     src={`https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`}
                     alt=""

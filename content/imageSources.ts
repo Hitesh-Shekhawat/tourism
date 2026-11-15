@@ -33,6 +33,7 @@ type ImageSource = string | StaticImageData;
 export const imageSources: Partial<Record<AssetKey, ImageSource>> = {
   homeHero: "/Create_Rajasthani_embroidery_wal…_50d54ca1_2K.jpg",
   homeFinal: mehrangarh,
+  homeMemoryFilmPoster: "/Rajasthan_culture_photography_co…_db505816_2K.jpg",
   introArch: amerCorridor,
   introDetail: handBlockPrinting,
   idxJaipur: "/images/dest-index-jaipur-hawa-mahal-facade.jpg",

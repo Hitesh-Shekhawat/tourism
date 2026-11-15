@@ -76,6 +76,7 @@ const VIA = {
   "home.image": ["Story · Golden Trail"],
   "homepage.image": ["Home · packages"],
   "homepage.items": ["Home · gallery"],
+  "homepage.poster": ["Home · Memories (film poster)"],
 };
 // The home page's lead destination uses the first destination's hero; its tiles skip that destination
 const destSrc = fs.readFileSync("content/destinations.ts", "utf8");

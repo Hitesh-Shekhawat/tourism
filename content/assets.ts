@@ -114,6 +114,7 @@ export const assets = {
   galLakeHotel: a("gallery-lake-heritage-hotel.jpg", "3:2", "Home · Gallery (asymmetric; each slot is cropped with object-fit: cover)", "Udaipur City Palace beside Lake Pichola", "Late afternoon", "Reflective, serene", "Udaipur City Palace beside Lake Pichola"),
   galCulture: a("gallery-folk-music-detail.jpg", "4:5", "Home · Gallery (asymmetric; each slot is cropped with object-fit: cover)", "Folk musician's hands on a kamaicha or dholak (hands only)", "Evening", "Intimate, rhythmic", "Hands playing a folk instrument in Rajasthan"),
   homeFinal: a("home-final-mehrangarh-jodhpur.jpg", "21:9", "Home · Final call to action (dark overlay; keep the top third calm)", "Mehrangarh Fort above Jodhpur's blue rooftops", "Late afternoon", "Cinematic, an ending", "Mehrangarh Fort above Jodhpur's blue rooftops"),
+  homeMemoryFilmPoster: a("Rajasthan_culture_photography_co…_db505816_2K.jpg", "16:9", "Home · Memories (film poster frame)", "Rajasthan cultural scene for the desert memory film poster", "Warm light", "Cinematic, documentary", "A Rajasthan cultural scene used as the poster frame for a forthcoming Thar memory film"),
 
   /* Home: FAQ + final CTA band */
 
