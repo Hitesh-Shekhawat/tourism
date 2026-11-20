@@ -9,7 +9,7 @@ import { hasItinerary } from "./itineraries";
  */
 export type LL = [number, number];
 
-export type Interest = "heritage" | "lakes" | "desert" | "spiritual" | "hills";
+export type Interest = "heritage" | "lakes" | "desert" | "spiritual" | "hills" | "wildlife";
 /** image: a real photo for the home "Explore by experience" tile (content/imageSources.ts). */
 export const interests: { id: Interest; label: string; text: string; image: AssetKey }[] = [
   { id: "heritage", label: "Forts & palaces", text: "Ridge-top forts, royal courtyards and painted halls", image: "itinJaipurHero" },
@@ -17,6 +17,7 @@ export const interests: { id: Interest; label: string; text: string; image: Asse
   { id: "desert", label: "Desert", text: "Dunes, camel trails and nights under the stars", image: "galCamel" },
   { id: "spiritual", label: "Sacred places", text: "Ghats, temples and evening aarti", image: "expAarti" },
   { id: "hills", label: "Hills", text: "Cool air and old temples in the Aravallis", image: "placeMountAbu" },
+  { id: "wildlife", label: "Wildlife & nature", text: "Protected forest, lakes and Bengal tiger habitat", image: "placeRanthambore" },
 ];
 
 export type OpenState = { id: string; name: string; devanagari: string; tagline: string };
@@ -188,7 +189,7 @@ export const places: Place[] = [
       { name: "Ranthambore Fort", note: "Historic fort within the reserve", coords: [76.455, 26.017] },
     ],
     image: "placeRanthambore",
-    interests: ["heritage"],
+    interests: ["heritage", "wildlife"],
   },
 ];
 
