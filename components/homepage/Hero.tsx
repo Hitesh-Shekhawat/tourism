@@ -1,71 +1,78 @@
 import { Link } from "next-view-transitions";
+import { EnquiryButton } from "@/components/enquiry/EnquiryButton";
 import { Photo } from "@/components/ui/Photo";
+import { ArchOutline, Creeper, Rosette } from "@/components/ui/Ornaments";
 import { Arrow } from "@/components/ui/bits";
-import { HeroVideo } from "./HeroVideo";
-import { hero } from "@/content/home";
+import { heroV5 } from "@/content/homepage";
 import { itineraries } from "@/content/itineraries";
-import { visibleJourneys } from "./FeaturedTours";
+import { HeroVideo } from "./HeroVideo";
 import { RajasthanWordmark } from "./RajasthanWordmark";
 
-/** The hero's featured card: one real itinerary from content/itineraries.ts, or nothing at all. */
-const featured = itineraries.find((i) => i.slug === "jaipur") ?? itineraries[0];
+/** The arch window's itinerary: a real one from content/itineraries.ts, or no window at all. */
+const windowItinerary = itineraries.find((i) => i.slug === heroV5.windowItinerary);
 
 /**
- * 01 · Cinematic hero (arrive). The supplied loop plays over the existing full-viewport photograph,
- * which remains the LCP image and fallback. The heading and CTAs stay server-rendered.
+ * 01 · Cinematic hero. A full-bleed Amer Fort sunrise is the only priority image (the LCP); on wide
+ * screens a jharokha window floats over it on a second parallax layer and opens one real itinerary.
+ * Parallax uses the site's [data-parallax] runtime (transform only, off under reduced motion). The
+ * heading, copy and CTAs are server-rendered; "Plan Your Trip" opens the existing enquiry drawer.
  */
 export function Hero() {
-  // the journeys section only renders with real journeys; otherwise the CTA goes to the journeys page
-  const journeysHref = visibleJourneys().length ? "#journeys" : "/journeys";
   return (
-    <section aria-labelledby="home-title" className="hero on-dark relative isolate overflow-hidden bg-ink text-ivory">
-      <div className="absolute inset-0 -z-10" aria-hidden="true">
-        <Photo k="placeJaipur" fill priority sizes="100vw" decorative imgClassName="kenburns hero-img" />
+    <section aria-labelledby="home-title" className="hero hero-v5 on-dark relative isolate overflow-hidden bg-forest text-ivory">
+      <div className="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+        <div className="absolute inset-0" data-parallax="5">
+          <Photo k="itinJaipurHero" fill priority sizes="100vw" imgClassName="kenburns hero-img" />
+        </div>
         <HeroVideo />
         <div className="hero-shade absolute inset-0" />
+        <div className="hero-jaali absolute inset-y-0 right-0 hidden w-[42%] lg:block" />
       </div>
 
       <div className="wrap hero-inner">
         <div className="hero-copy">
-          <p className="t-label text-ivory/85">{hero.label}</p>
-          <h1 id="home-title" className="t-display mt-5">
-            {/* "Rajasthan," as the SVG Devanagari wordmark; the h1 still reads "Rajasthan, Slowly." */}
+          <span aria-hidden="true" className="hero-v5-wordmark">
             <RajasthanWordmark className="hero-wordmark" />
-            {hero.headline.slice(1).map((line) => (
-              <span key={line} className="block">
-                {line}
-              </span>
-            ))}
+          </span>
+          <p className="t-label hero-eyebrow">
+            <Rosette className="size-5 text-sand" />
+            {heroV5.eyebrow}
+          </p>
+          <h1 id="home-title" className="hero-title">
+            Discover Rajasthan Through Journeys <em>Crafted Around You</em>
           </h1>
-          <p className="mt-5 max-w-[38ch] text-[1.0625rem] text-ivory/90">{hero.support}</p>
-          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3">
-            <a href={journeysHref} className="btn btn-primary">
-              Explore Journeys <Arrow />
+          <p className="hero-text">{heroV5.text}</p>
+          <div className="mt-9 flex flex-wrap items-center gap-x-4 gap-y-3">
+            <a href="#packages" className="btn btn-primary">
+              {heroV5.primary} <Arrow />
             </a>
-            <a href="#explore" className="btn btn-secondary">
-              Discover Rajasthan
-            </a>
+            <EnquiryButton variant="secondary" arrow={false}>
+              {heroV5.secondary}
+            </EnquiryButton>
           </div>
         </div>
 
-        {featured && (
-          <Link href={`/destinations/${featured.slug}/itinerary`} className="hero-card group" aria-label={`Featured itinerary: ${featured.title}, ${featured.duration.label}`}>
-            <span className="hero-card-img">
-              <Photo k={featured.heroImage} fill sizes="(min-width: 768px) 180px, 96px" decorative compact imgClassName="transition-transform duration-[900ms] ease-[var(--ease-out)] group-hover:scale-105" />
+        {windowItinerary && (
+          <Link href={`/destinations/${windowItinerary.slug}/itinerary`} className="hero-window group" aria-label={`Featured itinerary: ${windowItinerary.title}, ${windowItinerary.duration.label}`}>
+            <span className="hero-window-frame">
+              <span className="hero-window-photo">
+                <Photo k={windowItinerary.heroImage} fill sizes="(min-width: 1024px) 26vw, 1px" decorative imgClassName="transition-transform duration-[1200ms] ease-[var(--ease-out)] group-hover:scale-[1.04]" />
+              </span>
+              <ArchOutline className="hero-window-outline text-sand" />
             </span>
-            <span className="min-w-0 p-4 sm:p-5">
-              <span className="t-label block text-ivory/75">Featured itinerary</span>
-              <span className="mt-2 block font-display text-[1.1875rem] leading-tight">{featured.title}</span>
-              <span className="t-small mt-1 block text-ivory/80">{featured.duration.label}</span>
-              <span className="mt-3 inline-flex items-center gap-2 text-[0.8125rem] font-semibold tracking-[0.12em] uppercase">
-                View itinerary <Arrow />
+            <span className="hero-window-caption">
+              <span className="t-label text-sand">Featured itinerary</span>
+              <span className="mt-1.5 block font-display text-[1.375rem] leading-tight">{windowItinerary.title}</span>
+              <span className="mt-1 flex items-center gap-2 text-[0.875rem] text-ivory/85">
+                {windowItinerary.duration.label} <Arrow />
               </span>
             </span>
           </Link>
         )}
       </div>
 
-      <a href="#trending" className="hero-cue" aria-label="Scroll to trending destinations">
+      <Creeper className="hero-creeper text-sand/70" width={720} />
+      <a href="#discover" className="hero-cue" aria-label="Scroll to find your Rajasthan experience">
         <span className="t-label">Scroll</span>
         <span aria-hidden="true" className="hero-cue-line" />
       </a>

@@ -17,6 +17,14 @@ export function whatsappHref(ctx: EnquiryContext = {}) {
   return `https://wa.me/${n ?? ""}?text=${encodeURIComponent(whatsappMessage(ctx))}`;
 }
 
+/** The enquiry form's details as a WhatsApp message (labels already resolved by the caller). */
+export function whatsappEnquiryHref(rows: [string, string][]) {
+  const n = whatsappDigits();
+  const lines = rows.filter(([, v]) => v.trim()).map(([k, v]) => `${k}: ${v}`);
+  const text = `Hello, I'd like help planning a Rajasthan trip.\n\n${lines.join("\n")}`;
+  return `https://wa.me/${n ?? ""}?text=${encodeURIComponent(text)}`;
+}
+
 /** WhatsApp buttons render only when the business number is configured (enhancement brief §3 · 09). */
 export const hasWhatsApp = () => whatsappDigits() !== null;
 

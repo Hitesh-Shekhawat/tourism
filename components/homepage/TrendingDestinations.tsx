@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { Link } from "next-view-transitions";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,27 +8,42 @@ import { useSectionMotion } from "@/components/homepage/HomeMotion";
 import { Photo } from "@/components/ui/Photo";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Arrow, Check } from "@/components/ui/bits";
-import { assets } from "@/content/assets";
-import { getPlace, placeLinks, type Place } from "@/content/explorer";
-import { imageSources } from "@/content/imageSources";
+import { placeLinks, trending, type Place } from "@/content/explorer";
+import { royalCities } from "@/content/homepage";
 import { getLenis } from "@/lib/smooth";
 import { useStory } from "@/lib/story/store";
-import type { TrainProgress } from "./LuxuryTrainScene";
+import { TRAIN_VIEW } from "./train/Train";
+import { TrainScene } from "./train/TrainScene";
 
-const route = ["jaipur", "jodhpur", "udaipur", "jaisalmer", "pushkar", "bikaner", "mount-abu"];
-const stops = route.map((id) => getPlace(id)!);
-const stopPhotos = stops.map((place) => {
-  const source = imageSources[place.image] ?? assets[place.image].src;
-  const path = typeof source === "string" ? source : source?.src;
-  return path ? `/_next/image?url=${encodeURIComponent(path)}&w=640&q=65` : null;
-});
+const stops = trending;
 const STOP_COUNT = stops.length;
 const STAGE_COUNT = STOP_COUNT + 2;
+/** The same identity lines as the destination cards ("The Sacred City", …). */
+const epithet = (p: Place) => royalCities.cities.find((c) => c.id === p.id)?.epithet ?? p.epithet;
 
-const LuxuryTrainScene = dynamic(
-  () => import("./LuxuryTrainScene").then((module) => module.LuxuryTrainScene),
-  { ssr: false, loading: () => <TrainPoster /> },
-);
+/** One coach per destination, in journey order, generated from the destination data (never a fixed count). */
+const coaches = stops.map((place, i) => ({ id: place.id, name: place.name, epithet: epithet(place), number: i + 1 }));
+
+/**
+ * The point of the train (drawing units) held at the centre of the scene in each scroll stage: the
+ * engine rolling in from the right, the engine, then each destination's coach. Stage s is centred at
+ * progress (s + 0.5) / STAGE_COUNT, which is exactly when that destination is the active stop.
+ */
+function focusAt(p: number, visibleUnits: number) {
+  const keys = [
+    TRAIN_VIEW.locoCenter - visibleUnits * 0.25, // stage 0: the engine enters, on the right
+    TRAIN_VIEW.locoCenter + 140, // stage 1: the engine and its coupling
+    ...coaches.map((_, i) => TRAIN_VIEW.coachCenter(i)), // stages 2…: coach i for stop i
+  ];
+  const at = (s: number) => (s + 0.5) / STAGE_COUNT;
+  if (p <= at(0)) return keys[0];
+  const last = keys.length - 1;
+  if (p >= at(last)) return keys[last];
+  const s = Math.floor(p * STAGE_COUNT - 0.5);
+  const t = (p - at(s)) / (at(s + 1) - at(s));
+  const eased = t * t * (3 - 2 * t); // settles on each coach, glides between them
+  return keys[s] + (keys[s + 1] - keys[s]) * eased;
+}
 
 function PlaceLink({ place, children, className }: { place: Place; children: ReactNode; className: string }) {
   const { itinerary, destination } = placeLinks(place);
@@ -38,19 +52,6 @@ function PlaceLink({ place, children, className }: { place: Place; children: Rea
     <Link href={href} className={className}>{children}</Link>
   ) : (
     <AtlasAnchor state={place.state} place={place.id} className={className}>{children}</AtlasAnchor>
-  );
-}
-
-function TrainPoster() {
-  return (
-    <div className="train-poster" aria-label="Rajasthan destinations from Jaipur to Mount Abu">
-      <Photo k="placeJaisalmer" fill sizes="(min-width: 1024px) 68vw, 100vw" decorative />
-      <span className="train-poster-shade" />
-      <span className="train-poster-copy">
-        <span className="t-label">The royal train · Rajasthan</span>
-        <span className="font-display">Jaipur <i>—</i> Jodhpur <i>—</i> Udaipur <i>—</i> Jaisalmer <i>—</i> Pushkar <i>—</i> Bikaner <i>—</i> Mount Abu</span>
-      </span>
-    </div>
   );
 }
 
@@ -84,17 +85,86 @@ function MobileStop({ place, index }: { place: Place; index: number }) {
   );
 }
 
-/** A pinned R3F train traverse on larger screens; mobile keeps a full-train view and natural stops. */
+/** The current stop over the scene (≥ 768px): name, epithet, summary and a link to the place. */
+function StopPanel({ active }: { active: number }) {
+  const place = active >= 0 ? stops[active] : null;
+  return (
+    <div className="t2d-panel" aria-live="polite">
+      {place ? (
+        <div key={place.id} className="t2d-panel-in">
+          <p className="t-label t2d-panel-label">
+            Stop {String(active + 1).padStart(2, "0")} <span aria-hidden="true">/</span> {String(STOP_COUNT).padStart(2, "0")} · {epithet(place)}
+          </p>
+          <p className="t2d-panel-name font-display">{place.name}</p>
+          <p className="t2d-panel-text">{place.summary}</p>
+          <PlaceLink place={place} className="t2d-panel-link">
+            Explore {place.name} <Arrow />
+          </PlaceLink>
+        </div>
+      ) : (
+        <div key="start" className="t2d-panel-in">
+          <p className="t-label t2d-panel-label">All aboard</p>
+          <p className="t2d-panel-name font-display">{stops[0].name} to {stops[STOP_COUNT - 1].name}</p>
+          <p className="t2d-panel-text">Scroll to ride through {STOP_COUNT} places, one stop at a time.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * A pinned ride on larger screens: scroll drives one 2D vector train (locomotive + coach, a single
+ * element) across the scene, its wheels turning with the distance travelled, while the background
+ * shifts slightly and the station board and stop panel follow the stops. Phones get a short unpinned
+ * ride plus the natural list of stops; reduced motion shows the train standing still.
+ */
 export function TrendingDestinations({ n }: { n: string }) {
   const root = useRef<HTMLElement>(null);
-  const progress = useRef<TrainProgress>({ value: 0 });
+  const progress = useRef({ value: 0 });
   const trigger = useRef<ScrollTrigger | null>(null);
   const mobileStops = useRef<(HTMLLIElement | null)[]>([]);
+  const trainEl = useRef<HTMLDivElement>(null);
+  const farEl = useRef<HTMLDivElement>(null);
+  const midEl = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(-1);
-  const [inView, setInView] = useState(false);
-  const [lowPower, setLowPower] = useState(false);
-  const [staticScene, setStaticScene] = useState(false);
   const mode = useStory((state) => state.mode);
+
+  /**
+   * Places the whole train for ride progress p (0–1): transform-only writes, no React render. The
+   * wheels turn by distance ÷ radius, so they roll rather than slide; the parallax layers drift the
+   * other way, a little, as if the eye follows the train.
+   */
+  const paint = (p: number) => {
+    const train = trainEl.current;
+    const stage = train?.parentElement;
+    if (!train || !stage) return;
+    const stageW = stage.clientWidth;
+    const scale = train.offsetHeight / TRAIN_VIEW.height; // px per drawing unit
+    if (!scale) return;
+    const visible = stageW / scale;
+    const focus = focusAt(p, visible);
+    const left = stageW / 2 - focus * scale;
+    // the wheels roll: angle = distance travelled ÷ radius (counter-clockwise, the train runs left)
+    const travelled = focus - focusAt(0, visible);
+    train.style.left = "0px";
+    train.style.transform = `translate3d(${left.toFixed(1)}px, 0, 0)`;
+    train.style.setProperty("--wheel", `${(-(travelled / TRAIN_VIEW.wheelRadius) * (180 / Math.PI)).toFixed(1)}deg`);
+    if (farEl.current) farEl.current.style.transform = `translate3d(${(p * 2).toFixed(2)}%, 0, 0)`;
+    if (midEl.current) midEl.current.style.transform = `translate3d(${(p * 5).toFixed(2)}%, 0, 0)`;
+  };
+  const unpaint = () => {
+    for (const el of [trainEl.current, farEl.current, midEl.current]) el?.style.removeProperty("transform");
+    trainEl.current?.style.removeProperty("left");
+    trainEl.current?.style.removeProperty("--wheel");
+  };
+
+  // Focus the active destination's coach: a class toggle once per stop change (the SVG never re-renders)
+  useEffect(() => {
+    const train = trainEl.current;
+    if (!train) return;
+    train.classList.toggle("has-active", active >= 0);
+    train.querySelectorAll<SVGGElement>(".t2d-coach").forEach((coach) => coach.classList.toggle("is-active", Number(coach.dataset.i) === active));
+  }, [active]);
 
   const setStage = (value: number) => {
     progress.current.value = value;
@@ -104,7 +174,7 @@ export function TrendingDestinations({ n }: { n: string }) {
     setActive((current) => current === next ? current : next);
   };
 
-  useSectionMotion(root, ({ gsap }, section) => {
+  useSectionMotion(root, ({ gsap, ScrollTrigger }, section) => {
     const media = gsap.matchMedia();
     media.add("(min-width: 768px)", () => {
       const tween = gsap.to(progress.current, {
@@ -118,40 +188,48 @@ export function TrendingDestinations({ n }: { n: string }) {
           scrub: 0.65,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onUpdate: (self) => setStage(self.progress),
-          onRefresh: (self) => setStage(self.progress),
-          onLeaveBack: () => setStage(0),
+          onUpdate: (self) => {
+            setStage(self.progress);
+            paint(self.progress);
+          },
+          onRefresh: (self) => {
+            setStage(self.progress);
+            paint(self.progress);
+          },
+          onLeaveBack: () => {
+            setStage(0);
+            paint(0);
+          },
         },
       });
       trigger.current = tween.scrollTrigger ?? null;
+      paint(tween.scrollTrigger?.progress ?? 0);
       return () => {
         trigger.current = null;
         progress.current.value = 0;
         setActive(-1);
+        unpaint();
+      };
+    });
+    // Phones: no pin; the train rolls through as its frame crosses the viewport
+    media.add("(max-width: 767px)", () => {
+      const frame = trainEl.current?.parentElement;
+      if (!frame) return;
+      const ride = ScrollTrigger.create({
+        trigger: frame,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 0.5,
+        onUpdate: (self) => paint(self.progress),
+        onRefresh: (self) => paint(self.progress),
+      });
+      return () => {
+        ride.kill();
+        unpaint();
       };
     });
     return () => media.revert();
   });
-
-  useEffect(() => {
-    const section = root.current;
-    if (!section) return;
-    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { rootMargin: "320px 0px" });
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const update = () => {
-      const compact = window.matchMedia("(max-width: 1023px)").matches;
-      const fewCores = typeof navigator !== "undefined" && (navigator.hardwareConcurrency || 8) < 6;
-      setLowPower(compact || fewCores);
-      setStaticScene(window.matchMedia("(max-width: 767px)").matches || mode === "reduced");
-    };
-    update();
-    window.addEventListener("resize", update, { passive: true });
-    return () => window.removeEventListener("resize", update);
-  }, [mode]);
 
   useEffect(() => {
     let observer: IntersectionObserver | null = null;
@@ -181,7 +259,7 @@ export function TrendingDestinations({ n }: { n: string }) {
   const goToStage = (index: number) => {
     const activeTrigger = trigger.current;
     if (activeTrigger && index >= 0) {
-      const value = (index + 2) / STAGE_COUNT;
+      const value = (index + 2.5) / STAGE_COUNT; // the middle of the stop: its coach is centred
       const y = activeTrigger.start + value * (activeTrigger.end - activeTrigger.start);
       const lenis = getLenis();
       if (lenis) lenis.scrollTo(y, { duration: 0.9 });
@@ -212,22 +290,11 @@ export function TrendingDestinations({ n }: { n: string }) {
         </div>
 
         <div className="train-main">
-          <div className="train-scene-frame" aria-label="Interactive three-dimensional royal train">
-            {inView ? (
-              <LuxuryTrainScene
-                progress={progress.current}
-                active={active}
-                stops={stops}
-                photos={stopPhotos}
-                onSelectStop={goToStage}
-                lowPower={lowPower}
-                staticScene={staticScene}
-                fallback={<TrainPoster />}
-              />
-            ) : (
-              <TrainPoster />
-            )}
-            <p className="train-scene-kicker" aria-hidden="true">Engine <span>←</span> Jaipur · Jodhpur · Udaipur · Jaisalmer · Pushkar · Bikaner · Mount Abu</p>
+          <div className="train-scene-frame">
+            <TrainScene stops={stops} coaches={coaches} active={active} trainRef={trainEl} farRef={farEl} midRef={midEl}>
+              <StopPanel active={active} />
+            </TrainScene>
+            <p className="train-scene-kicker" aria-hidden="true">Engine <span>←</span> {stops.map((place) => place.name).join(" · ")}</p>
           </div>
 
         </div>

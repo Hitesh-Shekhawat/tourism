@@ -23,6 +23,18 @@ export const budgetBands = [
   { value: "2l-plus", label: "Above ₹2,00,000 per person" },
 ];
 
+/** Preferred travel experience (the homepage's discovery and experience themes). */
+export const experienceOptions = [
+  { value: "", label: "Open to suggestions" },
+  { value: "heritage", label: "Royal heritage: forts, palaces, heritage stays" },
+  { value: "desert", label: "Desert adventures: dunes, camels, desert camps" },
+  { value: "romance", label: "Romantic escapes: lakes, boutique stays" },
+  { value: "culture", label: "Culture: music, crafts, food, festivals" },
+  { value: "wildlife", label: "Wildlife: Ranthambore tiger safaris" },
+  { value: "spiritual", label: "Spiritual: Pushkar, temples, ghats" },
+  { value: "family", label: "A relaxed family holiday" },
+];
+
 export const countryCodes = [
   { code: "+91", label: "India (+91)" },
   { code: "+44", label: "United Kingdom (+44)" },

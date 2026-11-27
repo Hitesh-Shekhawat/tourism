@@ -5,15 +5,32 @@ import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { Controller, useForm, type FieldPath } from "react-hook-form";
 import { Arrow } from "@/components/ui/bits";
-import { destinations } from "@/content/destinations";
+import { places } from "@/content/explorer";
 import { tours } from "@/content/tours";
 import { track } from "@/lib/analytics";
-import { whatsappHref, telHref, type EnquiryContext } from "@/lib/contact";
-import { budgetBands, countryCodes, FLEXIBLE, monthOptions } from "@/lib/enquiry/options";
+import { hasWhatsApp, whatsappEnquiryHref, whatsappHref, telHref, type EnquiryContext } from "@/lib/contact";
+import { budgetBands, countryCodes, experienceOptions, FLEXIBLE, monthOptions } from "@/lib/enquiry/options";
 import { enquiryDefaults, enquirySchema, step1Fields, step2Fields, type EnquiryResponse, type EnquiryValues } from "@/lib/enquiry/schema";
 import type { Prefill } from "./EnquiryProvider";
 import { ErrorText, Field, Stepper } from "./FormParts";
 import { Turnstile } from "./Turnstile";
+
+/** The form values as labelled rows for a WhatsApp message (the same labels as the enquiry email). */
+function waRows(v: EnquiryValues): [string, string][] {
+  const month = v.month === FLEXIBLE ? "Flexible" : v.month ? new Date(`${v.month}-01T00:00:00Z`).toLocaleDateString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" }) : "";
+  const kids = v.children ? `, ${v.children} child${v.children === 1 ? "" : "ren"}` : "";
+  return [
+    ["Name", v.name],
+    ["Journey", v.tour],
+    ["Destinations", v.destinations.map((d) => places.find((p) => p.id === d)?.name ?? d).join(", ")],
+    ["When", month],
+    ["Travellers", `${v.adults} adult${v.adults === 1 ? "" : "s"}${kids}`],
+    ["Experience", v.experience ? (experienceOptions.find((o) => o.value === v.experience)?.label ?? "") : ""],
+    ["Budget", v.budget ? (budgetBands.find((b) => b.value === v.budget)?.label ?? "") : ""],
+    ["Email", v.email],
+    ["Message", v.message],
+  ];
+}
 
 const newKey = () => (crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`).replace(/[^a-zA-Z0-9-]/g, "");
 
@@ -144,14 +161,14 @@ export function EnquiryForm({ prefill, dark = false, context = {}, onSent, idPre
             name="destinations"
             render={({ field }) => (
               <div className="flex flex-wrap gap-2">
-                {destinations.map((d) => {
-                  const on = field.value.includes(d.slug);
+                {places.map((d) => {
+                  const on = field.value.includes(d.id);
                   return (
                     <button
-                      key={d.slug}
+                      key={d.id}
                       type="button"
                       aria-pressed={on}
-                      onClick={() => field.onChange(on ? field.value.filter((s) => s !== d.slug) : [...field.value, d.slug])}
+                      onClick={() => field.onChange(on ? field.value.filter((s) => s !== d.id) : [...field.value, d.id])}
                       className={`min-h-11 rounded-[2px] border px-3.5 text-[0.9375rem] transition-colors ${
                         on ? (dark ? "border-ivory bg-ivory text-maroon" : "border-ink bg-ink text-ivory") : dark ? "border-ivory/40 hover:border-ivory" : "border-dune hover:border-ink"
                       }`}
@@ -176,7 +193,7 @@ export function EnquiryForm({ prefill, dark = false, context = {}, onSent, idPre
           </select>
         </Field>
 
-        <Field id={id("month")} label="When would you travel?" error={err("month")} filled>
+        <Field id={id("month")} label="Travel dates (month)" error={err("month")} filled>
           <select id={id("month")} aria-invalid={!!errors.month} aria-describedby={errors.month ? id("month-err") : undefined} {...register("month")}>
             <option value="">Choose a month</option>
             <option value={FLEXIBLE}>Flexible / Not sure yet</option>
@@ -192,6 +209,16 @@ export function EnquiryForm({ prefill, dark = false, context = {}, onSent, idPre
           <Controller control={control} name="adults" render={({ field }) => <Stepper id={id("adults")} label="Adults" min={1} max={40} value={field.value} onChange={field.onChange} dark={dark} />} />
           <Controller control={control} name="children" render={({ field }) => <Stepper id={id("children")} label="Children" min={0} max={30} value={field.value} onChange={field.onChange} dark={dark} />} />
         </div>
+
+        <Field id={id("experience")} label="Preferred travel experience (optional)" filled>
+          <select id={id("experience")} {...register("experience")}>
+            {experienceOptions.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </Field>
 
         <Field id={id("budget")} label="Budget per person (optional)" filled>
           <select id={id("budget")} {...register("budget")}>
@@ -285,6 +312,21 @@ export function EnquiryForm({ prefill, dark = false, context = {}, onSent, idPre
           </button>
         </div>
         <p className={`t-small ${dark ? "text-ivory/80" : "text-ink-muted"}`}>No payment needed to enquire.</p>
+        {hasWhatsApp() && (
+          <a
+            href={whatsappHref()}
+            className={`t-small inline-flex items-center gap-2 underline underline-offset-2 ${dark ? "text-ivory" : "text-ink"}`}
+            target="_blank"
+            rel="noopener"
+            onClick={(e) => {
+              // Built at click time so the message carries what the guest has entered so far
+              e.currentTarget.href = whatsappEnquiryHref(waRows(getValues()));
+              track("whatsapp_click", { source: "enquiry_form", tour: getValues("tour") || undefined });
+            }}
+          >
+            Prefer WhatsApp? Send these details as a message
+          </a>
+        )}
       </div>
     </form>
   );

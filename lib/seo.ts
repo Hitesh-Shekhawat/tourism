@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { business, isPlaceholder } from "@/content/business";
 import type { Destination } from "@/content/destinations";
+import { getPlace, placeLinks } from "@/content/explorer";
+import { royalCities } from "@/content/homepage";
 import type { Itinerary } from "@/content/itineraries";
 import { siteUrl } from "@/content/site";
 import type { Tour } from "@/content/tours";
@@ -36,6 +38,44 @@ export function travelAgencyLd() {
     ...(!isPlaceholder(business.googleMapsUrl) && { hasMap: business.googleMapsUrl }),
     areaServed: { "@type": "State", name: "Rajasthan" },
     sameAs: Object.values(business.social).filter(Boolean),
+  };
+}
+
+/** WebSite node for the home page (name only when the brand name is real). */
+export function websiteLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": abs("/#website"),
+    url: abs("/"),
+    ...real({ name: business.brandName }),
+    publisher: { "@id": abs("/#agency") },
+    inLanguage: "en",
+  };
+}
+
+/** The home page's destination grid as an ItemList; URLs only for places that have their own page. */
+export function homeDestinationsLd() {
+  const items = royalCities.cities.map((c) => getPlace(c.id)!).filter(Boolean);
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Destinations in Rajasthan",
+    itemListElement: items.map((p, i) => {
+      const page = placeLinks(p).destination;
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "TouristDestination",
+          name: p.name,
+          description: p.summary,
+          ...(page && { url: abs(page) }),
+          geo: { "@type": "GeoCoordinates", latitude: p.coords[1], longitude: p.coords[0] },
+          containedInPlace: { "@type": "State", name: "Rajasthan" },
+        },
+      };
+    }),
   };
 }
 

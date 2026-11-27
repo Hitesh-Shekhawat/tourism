@@ -188,7 +188,7 @@ function Player({ story, onClose }: { story: TravellerStory; onClose: () => void
   );
 }
 
-function YoutubePlayer({ videoId, onClose }: { videoId: string; onClose: () => void }) {
+export function YoutubePlayer({ videoId, onClose }: { videoId: string; onClose: () => void }) {
   const panel = useRef<HTMLDivElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
   useDialog(true, onClose, panel, closeBtn);
