@@ -150,3 +150,143 @@ export const closing = {
   title: "Your Rajasthan Story Starts Here.",
   text: "Tell us what kind of journey you're dreaming of. We'll help you plan the rest.",
 };
+
+/* ───────────────────────────────────────────────────────────────────────────────────────────────
+ * Homepage v5 (premium editorial redesign). Editorial copy only. Every link points to a page that
+ * exists; anything that would need a business fact or content we don't have yet is `ready: false`
+ * (shown labelled in development, left out of production builds).
+ * ─────────────────────────────────────────────────────────────────────────────────────────────── */
+
+export const heroV5 = {
+  eyebrow: "Discover Rajasthan",
+  title: "Discover Rajasthan Through Journeys Crafted Around You",
+  text: "From the royal palaces of Jaipur and Udaipur to the golden dunes of Jaisalmer, discover Rajasthan through its magnificent forts, painted havelis, timeless traditions and extraordinary landscapes. Explore customised Rajasthan tour packages designed around the experiences you want to remember.",
+  primary: "Explore Rajasthan Tours",
+  secondary: "Plan Your Trip",
+  /** The arch window on the hero: one real itinerary, by slug (content/itineraries.ts). */
+  windowItinerary: "udaipur",
+};
+
+export type DiscoveryCard = { id: string; title: string; text: string; where: string; image: AssetKey; href: string; cta: string };
+
+/** 02 · Find your Rajasthan experience. Each card leads to an existing page that covers it best. */
+export const discovery = {
+  label: "Find your experience",
+  title: "Find Your Rajasthan Experience",
+  note: "Discover Rajasthan through experiences that match your interests.",
+  cards: [
+    { id: "heritage", title: "Royal Heritage", text: "Palaces, forts, royal architecture and heritage stays.", where: "Jaipur · Jodhpur · Bikaner", image: "introArch", href: "/destinations/jaipur/itinerary", cta: "Explore royal Jaipur" },
+    { id: "desert", title: "Desert Adventures", text: "Desert safaris, camel rides, sand dunes and desert camps.", where: "Jaisalmer · Bikaner · the Thar", image: "galCamel", href: "/experiences/a-night-in-the-thar", cta: "A night in the Thar" },
+    { id: "romance", title: "Romantic Escapes", text: "Lakeside palaces, boutique stays and private experiences.", where: "Udaipur · Mount Abu", image: "tourLakesForts", href: "/destinations/udaipur/itinerary", cta: "Three days in Udaipur" },
+    { id: "culture", title: "Cultural Experiences", text: "Folk music, festivals, local crafts, traditional food and art.", where: "Pushkar · Bagru · Jodhpur", image: "expBagru", href: "/experiences", cta: "Browse experiences" },
+  ] satisfies DiscoveryCard[] as DiscoveryCard[],
+};
+
+/**
+ * 03 · The royal cities, in grid order. Place data (photo, summary, coordinates) comes from
+ * content/explorer.ts; this adds the card's identity line and one travel experience per city.
+ */
+export const royalCities = {
+  label: "Explore Rajasthan",
+  title: "Explore the Royal Cities of Rajasthan",
+  note: "Eight places, each with its own colour, history and pace. Start with one, or let us link them into a single route.",
+  cities: [
+    { id: "jaipur", epithet: "The Pink City", experience: "Amber Fort at opening time, then the bazaars of the walled city" },
+    { id: "udaipur", epithet: "The City of Lakes", experience: "A boat on Lake Pichola at first light" },
+    { id: "jaisalmer", epithet: "The Golden City", experience: "Sunset from a dune ridge and a night in the Thar" },
+    { id: "jodhpur", epithet: "The Blue City", experience: "An early walk through the blue lanes below Mehrangarh" },
+    { id: "pushkar", epithet: "The Sacred City", experience: "Evening aarti on the ghats of the holy lake" },
+    { id: "ranthambore", epithet: "Wildlife & Tiger Safari", experience: "Safaris into Bengal tiger habitat around a historic fort" },
+    { id: "bikaner", epithet: "Desert Heritage", experience: "Junagarh's painted rooms and the camel country around it" },
+    { id: "mount-abu", epithet: "Rajasthan's Hill Station", experience: "The marble Dilwara temples and evenings by Nakki Lake" },
+  ],
+};
+
+/** 04 · Curated journeys: real itineraries and confirmed tours only (drafts render in development). */
+export const packagesV5 = {
+  label: "Curated journeys",
+  title: "Handcrafted Rajasthan Tour Packages",
+  note: "Explore thoughtfully planned Rajasthan travel itineraries covering royal cities, historic landmarks, desert landscapes and authentic local experiences.",
+  custom: {
+    title: "A journey built around you",
+    text: "Tell us your dates, interests and pace. We'll shape a Rajasthan itinerary around them, from a long weekend to two weeks or more.",
+    cta: "Request a custom itinerary",
+  },
+};
+
+export type ShowcaseItem = {
+  id: string;
+  title: string;
+  text: string;
+  /** A real photo; without one the card is drawn as a Rajasthani ornament panel (no stand-in photography). */
+  image?: AssetKey;
+  /** Devanagari word on ornament panels. */
+  deva?: string;
+  motif?: "peacock" | "elephant" | "rosette" | "rail";
+  /** A page that covers it, or an enquiry pre-filled with these place ids. */
+  href?: string;
+  enquire?: { destinations?: string[] };
+  cta: string;
+};
+
+/** 05 · Beyond the ordinary. Copy describes Rajasthan, not services we have not confirmed. */
+export const showcase = {
+  label: "Beyond the ordinary",
+  title: "Experience Rajasthan Beyond the Ordinary",
+  note: "The moments people remember are rarely on the monument list. These are the ones worth building a day around.",
+  items: [
+    { id: "desert", title: "Desert Safari & Camel Experiences", text: "Dunes at sunset beyond Jaisalmer, supper by lantern and a sky full of stars.", image: "expThar", href: "/experiences/a-night-in-the-thar", cta: "A night in the Thar" },
+    { id: "music", title: "Rajasthani Folk Music & Dance", text: "Songs of the desert and the court, from the kamaicha and the khartal to the swirl of a ghoomar.", deva: "संगीत", motif: "peacock", href: "/destinations/jaipur/itinerary", cta: "An evening in Jaipur" },
+    { id: "crafts", title: "Traditional Arts & Crafts", text: "Carved teak blocks and natural dyes in Bagru, a short drive from Jaipur.", image: "expBagru", href: "/experiences/block-printing-in-bagru", cta: "Block printing in Bagru" },
+    { id: "cuisine", title: "Traditional Rajasthani Cuisine", text: "Pyaaz kachori for breakfast, dal baati churma for lunch, a glass of lassi in the old city.", deva: "स्वाद", motif: "rosette", href: "/destinations/jaipur/itinerary", cta: "Food in Jaipur" },
+    { id: "stays", title: "Royal Palace & Heritage Stays", text: "Palaces, forts and havelis across Rajasthan now take guests. Tell us if you'd like one on your route.", image: "galPalace", enquire: {}, cta: "Ask about heritage stays" },
+    { id: "wildlife", title: "Wildlife & Tiger Safaris", text: "Forest, lakes and a ruined fort at Ranthambore, one of the best places in India to see a Bengal tiger.", image: "placeRanthambore", enquire: { destinations: ["ranthambore"] }, cta: "Plan a safari" },
+    { id: "festivals", title: "Fairs & Festivals", text: "The Pushkar Camel Fair under the Kartik full moon, and lamps on the ghats every evening.", image: "idxPushkar", href: "/destinations/pushkar", cta: "Pushkar and its fair" },
+    { id: "rail", title: "Palace on Wheels & Heritage Journeys", text: "Rajasthan's heritage trains, including the state's Palace on Wheels, link its royal cities. Ask whether one suits your dates.", deva: "रेल", motif: "rail", enquire: {}, cta: "Ask about rail journeys" },
+  ] satisfies ShowcaseItem[] as ShowcaseItem[],
+};
+
+export type TrustCard = { id: string; icon: "compass" | "route" | "hands" | "chat"; title: string; text: string; ready: boolean; need?: string };
+
+/**
+ * 06 · Why travel with us. `ready: true` only for what the site itself demonstrates (custom planning
+ * through the enquiry form, local advice in the published guides, contact while planning). A claim
+ * that needs a business fact stays `ready: false` until the owner confirms it.
+ */
+export const trust = {
+  label: "Why travel with us",
+  title: "Travel with People Who Know Rajasthan",
+  note: "No fixed departures and no crowded coaches: a plan made for you, around how you want your days to feel.",
+  cards: [
+    { id: "local", icon: "compass", title: "Local Expertise", text: "Advice on timing, routes and seasons, like Amber at opening time and Pichola before the boats, built into every plan.", ready: true },
+    { id: "custom", icon: "route", title: "Custom Itineraries", text: "Travel plans designed around your interests, your dates and the pace you want to travel at.", ready: true },
+    { id: "partners", icon: "hands", title: "Trusted Travel Partners", text: "Thoughtful arrangements and relevant local connections.", ready: false, need: "which hotels, drivers and guides you work with, and how they are chosen" },
+    { id: "assist", icon: "chat", title: "Travel Assistance", text: "Clear answers by form, WhatsApp or phone while you plan, before anything is booked.", ready: true },
+  ] satisfies TrustCard[] as TrustCard[],
+};
+
+export type StoryLink = { id: string; kicker: string; title: string; text: string; href: string; image: AssetKey; ready: boolean; need?: string };
+
+/** 07 · Stories: links to real published content. Topics with nothing written yet stay dev-only. */
+export const storiesV5 = {
+  label: "Travel stories",
+  title: "Discover Rajasthan Through Stories",
+  note: "Guides, itineraries and stories from the road, for the trip before the trip.",
+  feature: { kicker: "A story in one day", title: "One Day in Rajasthan", text: "From 05:30 at Jaipur to 21:30 in the Thar: forts at first light, lakes at noon and the desert after dark, told as you scroll.", href: "/story", image: "trailAmber" as AssetKey },
+  links: [
+    { id: "heritage", kicker: "Royal heritage & architecture", title: "Three days in royal Jaipur", text: "Amber at opening, the City Palace's painted gates and Jai Singh's stone observatory.", href: "/destinations/jaipur/itinerary", image: "introArch", ready: true },
+    { id: "painted", kicker: "Painted walls", title: "Junagarh's painted rooms", text: "Gilded, mirrored and lacquered palace rooms in Bikaner, added to over generations.", href: "/destinations/bikaner", image: "placeBikaner", ready: true },
+    { id: "desert", kicker: "Desert life", title: "A night in the Thar", text: "Dunes at sunset, supper by lantern and a sky without a city in it.", href: "/experiences/a-night-in-the-thar", image: "expThar", ready: true },
+    { id: "fairs", kicker: "Fairs & festivals", title: "Pushkar and its camel fair", text: "Ghats, evening aarti and the fair under the Kartik full moon.", href: "/destinations/pushkar", image: "idxPushkar", ready: true },
+    { id: "shekhawati", kicker: "Shekhawati", title: "The painted havelis of Shekhawati", text: "Journal article to write.", href: "/journal", image: "galStreet", ready: false, need: "a journal article on Shekhawati's painted havelis (content/journal.ts)" },
+    { id: "cuisine", kicker: "Rajasthani cuisine", title: "What to eat in Rajasthan", text: "Journal article to write.", href: "/journal", image: "galStreet", ready: false, need: "a journal article on Rajasthani food (content/journal.ts)" },
+  ] satisfies StoryLink[] as StoryLink[],
+  guides: ["jaipur", "jodhpur", "udaipur", "jaisalmer"],
+};
+
+export const closingV5 = {
+  eyebrow: "Start your journey",
+  title: "Your Rajasthan Story Starts Here.",
+  text: "Tell us what you want to experience. Our team will help you plan a memorable Rajasthan journey.",
+  cta: "Plan Your Rajasthan Trip",
+};

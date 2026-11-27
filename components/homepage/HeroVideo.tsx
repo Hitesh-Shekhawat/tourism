@@ -6,8 +6,8 @@ import { useStory } from "@/lib/story/store";
 
 /**
  * Hero footage over the hero photo (which stays as the poster and the LCP image). Mounts after
- * first paint, never under reduced motion or Save-Data, with a lighter portrait cut on narrow screens,
- * and pauses while the hero is off screen.
+ * first paint, only on large screens (phones and tablets keep the still photograph, so they never
+ * download the clip), never under reduced motion or Save-Data, and pauses while the hero is off screen.
  */
 export function HeroVideo() {
   const mode = useStory((s) => s.mode);
@@ -18,8 +18,8 @@ export function HeroVideo() {
   useEffect(() => {
     if (!heroVideo.src || mode === "reduced") return setSrc(null);
     if ((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData) return;
-    const narrow = window.matchMedia("(max-width: 767px)").matches;
-    setSrc(narrow && heroVideo.srcMobile ? { mp4: heroVideo.srcMobile } : { mp4: heroVideo.src, webm: heroVideo.srcWebm });
+    if (!window.matchMedia("(min-width: 1024px)").matches) return;
+    setSrc({ mp4: heroVideo.src, webm: heroVideo.srcWebm });
   }, [mode]);
 
   useEffect(() => {
@@ -27,7 +27,10 @@ export function HeroVideo() {
     if (!v) return;
     const io = new IntersectionObserver(([e]) =>
       e.isIntersecting
-        ? v.play().catch((error: unknown) => console.error("The hero video failed to play.", error))
+        ? v.play().catch((error: unknown) => {
+            // AbortError = paused again before playback began (the hero scrolled away): expected, not a failure
+            if (!(error instanceof DOMException && error.name === "AbortError")) console.error("The hero video failed to play.", error);
+          })
         : v.pause(),
     );
     io.observe(v);

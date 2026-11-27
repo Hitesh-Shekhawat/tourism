@@ -3,39 +3,41 @@ import { InlineEnquiry } from "@/components/enquiry/InlineEnquiry";
 import { ContactLinks } from "@/components/home/FaqFinal";
 import { WhatsAppIcon } from "@/components/layout/icons";
 import { Photo } from "@/components/ui/Photo";
+import { Creeper, Rosette } from "@/components/ui/Ornaments";
 import { SectionHead } from "@/components/ui/bits";
-import { closing } from "@/content/homepage";
+import { closingV5 } from "@/content/homepage";
 import { hasWhatsApp, whatsappHref } from "@/lib/contact";
 
 /**
- * 09 · Conversion CTA (enquire). A Rajasthan photograph with gentle parallax (≤ 6%) under a maroon-ink
- * shade that keeps ivory copy above 4.5:1. "Plan Your Trip" opens the existing enquiry drawer; the
- * WhatsApp enquiry (pre-filled message) appears only when the business number is configured. The
- * existing inline enquiry form sits beside it, unchanged.
+ * 08 · Final enquiry CTA. Mehrangarh at dusk under a deep-green shade (ivory copy ≥ 4.5:1), a jaali
+ * veil and fresco borders. "Plan Your Rajasthan Trip" opens the existing enquiry drawer; the inline
+ * form beside it is the same form, posting to the same /api/enquiry. WhatsApp shows only when the
+ * business number is configured.
  */
 export function FinalCta({ n }: { n: string }) {
   return (
-    <section id="enquire" aria-labelledby="final-title" className="on-dark relative isolate overflow-hidden bg-ink text-ivory">
+    <section id="enquire" aria-labelledby="final-title" className="final-v5 on-dark relative isolate overflow-hidden bg-forest text-ivory">
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
         <div className="absolute inset-0" data-parallax="6">
           <Photo k="homeFinal" fill sizes="100vw" decorative />
         </div>
-        <div className="home-final-shade absolute inset-0 z-10" />
+        <div className="final-shade absolute inset-0 z-10" />
+        <div className="final-jaali absolute inset-0 z-10" />
       </div>
 
       <div className="wrap sec relative z-10 grid gap-14 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-6">
-          <SectionHead n={n} label="Begin" dark />
-          <h2 id="final-title" className="t-h1 mt-5 max-w-[14ch]">
+        <div className="lg:col-span-6" data-reveal>
+          <SectionHead n={n} label={closingV5.eyebrow} dark />
+          <Rosette className="mt-10 size-16 text-sand" />
+          <h2 id="final-title" className="final-title mt-6">
             <span className="mask-line" data-reveal-mask>
-              <span>{closing.title}</span>
+              <span>{closingV5.title}</span>
             </span>
           </h2>
-          <p className="measure mt-6 text-ivory/90" data-reveal>
-            {closing.text}
-          </p>
+          <Creeper className="mt-6 h-6 w-64 text-sand/70" width={320} />
+          <p className="measure mt-6 text-[1.0625rem] text-ivory/90">{closingV5.text}</p>
           <div className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-3">
-            <EnquiryButton>Plan Your Trip</EnquiryButton>
+            <EnquiryButton>{closingV5.cta}</EnquiryButton>
             {hasWhatsApp() && (
               <a href={whatsappHref()} target="_blank" rel="noopener" className="btn btn-secondary">
                 <WhatsAppIcon /> WhatsApp enquiry
@@ -48,8 +50,8 @@ export function FinalCta({ n }: { n: string }) {
         </div>
 
         <div className="lg:col-span-5 lg:col-start-8">
-          <div className="border border-[var(--line-dark)] bg-ink/75 p-5 shadow-[var(--shadow-lift)] backdrop-blur-md xs:p-6 sm:p-9">
-            <p className="t-label mb-6 text-ivory/80">Tell us about your trip</p>
+          <div className="final-form">
+            <p className="t-label mb-6 text-sand">Tell us about your trip</p>
             <InlineEnquiry dark />
           </div>
         </div>

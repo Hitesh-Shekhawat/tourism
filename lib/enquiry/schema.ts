@@ -9,6 +9,8 @@ export const enquirySchema = z
     adults: z.number({ message: "Enter a number" }).int().min(1, "At least one adult").max(40),
     children: z.number({ message: "Enter a number" }).int().min(0).max(30),
     budget: z.string().max(20),
+    /** Preferred travel experience (lib/enquiry/options.ts → experienceOptions). Optional for older callers. */
+    experience: z.string().max(40).optional(),
     name: z.string().trim().min(2, "Please tell us your name").max(100, "That's a little long"),
     phoneCode: z.string().regex(/^\+\d{1,4}$/, "Choose a country code"),
     phone: z.union([z.literal(""), z.string().trim().regex(/^[\d\s()-]{6,20}$/, "Enter a valid phone number, digits only")]),
@@ -25,7 +27,7 @@ export const enquirySchema = z
 
 export type EnquiryValues = z.infer<typeof enquirySchema>;
 
-export const step1Fields = ["destinations", "tour", "month", "adults", "children", "budget"] as const;
+export const step1Fields = ["destinations", "tour", "month", "adults", "children", "budget", "experience"] as const;
 export const step2Fields = ["name", "phoneCode", "phone", "email", "message", "consent"] as const;
 
 export const enquiryDefaults: EnquiryValues = {
@@ -35,6 +37,7 @@ export const enquiryDefaults: EnquiryValues = {
   adults: 2,
   children: 0,
   budget: "",
+  experience: "",
   name: "",
   phoneCode: "+91",
   phone: "",

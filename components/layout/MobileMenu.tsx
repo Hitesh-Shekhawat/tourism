@@ -6,7 +6,7 @@ import { Deva, Fact } from "@/components/ui/bits";
 import { useEnquiry } from "@/components/enquiry/EnquiryProvider";
 import { Wordmark } from "@/components/layout/Wordmark";
 import { business } from "@/content/business";
-import { nav } from "@/content/site";
+import { mainNav } from "@/content/site";
 import { hasWhatsApp, mailHref, telHref, whatsappHref } from "@/lib/contact";
 import { useDialog } from "@/lib/useDialog";
 import { WhatsAppIcon } from "./icons";
@@ -17,6 +17,7 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
   const { open: openEnquiry, page } = useEnquiry();
   useDialog(open, onClose, panel);
   const [shown, setShown] = useState(false);
+  const [group, setGroup] = useState<string | null>(null);
   useEffect(() => {
     const r = requestAnimationFrame(() => setShown(open));
     return () => cancelAnimationFrame(r);
@@ -31,7 +32,7 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
       aria-modal="true"
       aria-label="Menu"
       inert={!open}
-      className={`grain fixed inset-0 z-[70] flex flex-col overflow-y-auto text-ink transition-[opacity,visibility] duration-500 lg:hidden ${shown ? "visible opacity-100" : "invisible opacity-0"}`}
+      className={`grain fixed inset-0 z-[70] flex flex-col overflow-y-auto text-ink transition-[opacity,visibility] duration-500 xl:hidden ${shown ? "visible opacity-100" : "invisible opacity-0"}`}
       data-lenis-prevent
     >
       <div className="wrap flex h-[var(--header-h)] shrink-0 items-center justify-between">
@@ -44,14 +45,35 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
       </div>
       <nav aria-label="Mobile" className="wrap flex-1 pt-6">
         <ul className="border-t border-brass/45">
-          {[{ href: "/", label: "Home" }, ...nav, { href: "/contact", label: "Contact" }].map((n, i) => (
-            <li key={n.href} className="border-b border-brass/45">
-              <Link href={n.href} onClick={onClose} className="flex items-baseline justify-between py-4 font-display text-[2.25rem] leading-tight">
-                {n.label}
-                <span aria-hidden="true" className="serif-italic text-base text-brass-text">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-              </Link>
+          {mainNav.map((n, i) => (
+            <li key={n.href + n.label} className="border-b border-brass/45">
+              <div className="flex items-center justify-between gap-3">
+                <Link href={n.href} onClick={onClose} className="flex flex-1 items-baseline gap-4 py-3.5 font-display text-[2rem] leading-tight">
+                  <span aria-hidden="true" className="serif-italic w-7 text-base text-brass-text">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {n.label}
+                </Link>
+                {n.children && (
+                  <button type="button" className="grid size-12 place-items-center" aria-expanded={group === n.label} aria-controls={`mm-${i}`} aria-label={`${n.label}: show links`} onClick={() => setGroup(group === n.label ? null : n.label)}>
+                    <svg className={`transition-transform duration-200 ${group === n.label ? "rotate-45" : ""}`} width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                      <path d="M8 1v14M1 8h14" stroke="currentColor" strokeWidth="1.3" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+              {n.children && (
+                <ul id={`mm-${i}`} hidden={group !== n.label} className="grid gap-x-6 pb-5 pl-11 sm:grid-cols-2">
+                  {n.children.map((c) => (
+                    <li key={c.href + c.label}>
+                      <Link href={c.href} onClick={onClose} className="flex min-h-11 flex-col justify-center py-1">
+                        <span className="text-[1rem] font-medium">{c.label}</span>
+                        {c.note && <span className="t-small text-ink-muted">{c.note}</span>}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>

@@ -1,55 +1,55 @@
 import type { Metadata } from "next";
-import { FeaturedTours, visibleJourneys } from "@/components/homepage/FeaturedTours";
+import { ExperienceShowcase } from "@/components/homepage/ExperienceShowcase";
+import { FeaturedTours } from "@/components/homepage/FeaturedTours";
 import { FinalCta } from "@/components/homepage/FinalCta";
 import { Hero } from "@/components/homepage/Hero";
 import { HomeMotion } from "@/components/homepage/HomeMotion";
-import { FloatingYoutubePlayer } from "@/components/layout/FloatingYoutubePlayer";
 import { LookingFor } from "@/components/homepage/LookingFor";
-import { Memories } from "@/components/homepage/Memories";
+import { RoyalCities } from "@/components/homepage/RoyalCities";
+import { ScrollFx } from "@/components/homepage/ScrollFx";
 import { Services } from "@/components/homepage/Services";
-import { TravellerStories } from "@/components/homepage/TravellerStories";
+import { TravelStories } from "@/components/homepage/TravelStories";
 import { TrendingDestinations } from "@/components/homepage/TrendingDestinations";
+import { FloatingYoutubePlayer } from "@/components/layout/FloatingYoutubePlayer";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { business } from "@/content/business";
-import { hasStories, memories } from "@/content/homepage";
-import { canShow, showPlaceholders } from "@/lib/content-flags";
-import { pageMeta, travelAgencyLd } from "@/lib/seo";
+import { homeDestinationsLd, pageMeta, travelAgencyLd, websiteLd } from "@/lib/seo";
+
+const title = "Rajasthan Tour Packages | Custom Rajasthan Holidays & Tours";
 
 export const metadata: Metadata = {
   ...pageMeta({
-    title: `Private Rajasthan Tours & Journeys · ${business.brandName}`,
-    description: "Private journeys through Rajasthan's forts, lakes and desert: Jaipur, Udaipur, Jodhpur, Jaisalmer, Pushkar and Mount Abu, planned around your dates and pace.",
+    title,
+    description:
+      "Explore Rajasthan tour packages covering Jaipur, Udaipur, Jodhpur, Jaisalmer and beyond. Discover royal forts, heritage stays, desert safaris and customised Rajasthan travel itineraries.",
     path: "/",
   }),
-  title: { absolute: `Private Rajasthan Tours & Journeys · ${business.brandName}` },
+  title: { absolute: title },
 };
 
 /**
- * The home page, read as one story (enhancement brief §3): arrive (hero) → discover (trending) →
- * explore (by experience) → plan (facilities) → feel (memories) → choose (journeys) → trust (stories)
- * → enquire (CTA) → footer. Sections without real content are not rendered in production, and
- * the catalogue numbers count only the sections that are on the page.
+ * The home page (v5, premium editorial): arrive (hero) → choose a feeling (discovery) → the royal
+ * cities (grid + locator map, then the interactive royal train) → curated packages → experiences →
+ * why us → stories → enquire → footer. Section numbers count only what is on the page.
  */
 export default function Home() {
-  const on = {
-    memories: memories.some((m) => canShow(m.ready)),
-    journeys: visibleJourneys().length > 0,
-    stories: hasStories || showPlaceholders,
-  };
   let k = 0;
   const n = () => String(++k).padStart(2, "0");
   return (
     <>
       <JsonLd data={travelAgencyLd()} />
+      <JsonLd data={websiteLd()} />
+      <JsonLd data={homeDestinationsLd()} />
       <HomeMotion />
+      <ScrollFx />
       <FloatingYoutubePlayer />
       <Hero />
-      <TrendingDestinations n={n()} />
       <LookingFor n={n()} />
+      <RoyalCities n={n()} />
+      <TrendingDestinations n={n()} />
+      <FeaturedTours n={n()} />
+      <ExperienceShowcase n={n()} />
       <Services n={n()} />
-      {on.memories && <Memories n={n()} />}
-      {on.journeys && <FeaturedTours n={n()} />}
-      {on.stories && <TravellerStories n={n()} />}
+      <TravelStories n={n()} />
       <FinalCta n={n()} />
     </>
   );

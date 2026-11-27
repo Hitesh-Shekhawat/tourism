@@ -1,7 +1,7 @@
 import "server-only";
 import { business, isPlaceholder } from "@/content/business";
-import { destinations } from "@/content/destinations";
-import { budgetBands, FLEXIBLE } from "./options";
+import { places } from "@/content/explorer";
+import { budgetBands, experienceOptions, FLEXIBLE } from "./options";
 import type { EnquiryValues } from "./schema";
 
 /* ── Config ─────────────────────────────────────────────────────────────────────────── */
@@ -77,13 +77,14 @@ export function summaryRows(v: EnquiryValues) {
     v.month === FLEXIBLE
       ? "Flexible / not sure yet"
       : new Date(`${v.month}-01T00:00:00Z`).toLocaleDateString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" });
-  const dest = v.destinations.map((s) => destinations.find((d) => d.slug === s)?.name ?? s).join(", ");
+  const dest = v.destinations.map((s) => places.find((p) => p.id === s)?.name ?? s).join(", ");
   return [
     ["Journey", v.tour || "Tailor-made"],
     ["Destinations", dest || "Open to suggestions"],
     ["When", month],
     ["Travellers", `${v.adults} adult${v.adults === 1 ? "" : "s"}${v.children ? `, ${v.children} child${v.children === 1 ? "" : "ren"}` : ""}`],
     ["Budget", budgetBands.find((b) => b.value === v.budget)?.label ?? "Not given"],
+    ["Experience", (v.experience && experienceOptions.find((o) => o.value === v.experience)?.label) || "Open to suggestions"],
     ["Name", v.name],
     ["Phone", v.phone ? `${v.phoneCode} ${v.phone}` : "Not given"],
     ["Email", v.email || "Not given"],

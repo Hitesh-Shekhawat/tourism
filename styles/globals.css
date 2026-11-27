@@ -5,19 +5,23 @@
 @import "./tokens.css";
 @import "./sections.css";
 @import "./state.css";
+@import "./v5.css";
 
 /* ── Design tokens (§3) ─────────────────────────────────────────────────────────────── */
 @theme {
-  --color-ivory: #f7f1e6;
+  /* Palette v5 (design brief): Ivory #F5EFE5 · Charcoal #292725 · Terracotta #873F32 · Sand Gold #C18B52 · Deep Green #182A2B */
+  --color-ivory: #f5efe5;
   --color-sandstone: #ede2cf;
   --color-dune: #d9c3a0;
-  --color-ink: #1e1a16;
-  --color-ink-muted: #5c5248; /* 6.8:1 on ivory, 5.9:1 on sandstone */
-  /* Brief value #B5562F measures 4.31:1 on ivory (fails AA); nudged darker to 5.17:1 / 4.54:1 on sandstone. */
-  --color-terracotta: #a14d2a;
-  --color-terracotta-deep: #8f3f1f;
+  --color-ink: #292725; /* Charcoal: 13.0:1 on ivory */
+  --color-ink-muted: #5c5248; /* 6.7:1 on ivory, 5.9:1 on sandstone */
+  --color-terracotta: #873f32; /* 6.6:1 on ivory, 5.9:1 on sandstone */
+  --color-terracotta-deep: #6e3127;
   --color-maroon: #5e1a1a;
-  --color-brass: #b08d57; /* decorative only (rules, ornaments): 2.75:1 on ivory */
+  --color-brass: #c18b52; /* Sand Gold. Decorative only on light grounds (2.6:1); 5.0:1 on forest, so fine for labels there */
+  --color-sand: #c18b52;
+  --color-forest: #182a2b; /* Deep Green: dark sections and the footer. Ivory on it: 13.1:1 */
+  --color-forest-soft: #213a3b;
   --color-brass-text: #78603b; /* brass for small numerals: 5.3:1 on ivory, 4.6:1 on sandstone */
   --color-indigo: #2f4a6d;
 
@@ -40,10 +44,10 @@
 }
 
 :root {
-  --paper: #f7f1e6;
-  --ink: #1e1a16;
+  --paper: #f5efe5;
+  --ink: #292725;
   --muted: #5c5248;
-  --accent: #a14d2a;
+  --accent: #873f32;
   --sky: #cfdfe4;
   --gutter: clamp(20px, 5vw, 80px);
   --section-y: clamp(72px, 14vw, 200px);
@@ -242,7 +246,7 @@
   }
   .on-dark .btn-secondary:hover {
     background: var(--color-ivory);
-    color: var(--color-maroon);
+    color: var(--color-forest);
   }
 
   /* Text link: underline draws in from the left */
