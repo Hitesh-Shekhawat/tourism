@@ -6,4 +6,4 @@ export const PREF_KEY = "motion.pref";
  * and html.splash so the splash screen covers the page from the first paint until <Splash> lifts it
  * (html.splash-quick: pages without 3D, where CSS alone lifts it a beat after first paint, never waiting on JS).
  */
-export const motionBootScript = `(function(){var d=document.documentElement;d.classList.add("js","splash");if(location.pathname!=="/story")d.classList.add("splash-quick");try{var p=null;try{p=sessionStorage.getItem("${PREF_KEY}")}catch(e){}var r=matchMedia("(prefers-reduced-motion: reduce)").matches;var m=(p==="calm"||(r&&p!=="full"))?"reduced":"desktop";d.dataset.motion=m}catch(e){}})();`;
+export const motionBootScript = `(function(){var d=document.documentElement;d.classList.add("js","splash");if(location.pathname!=="/story")d.classList.add("splash-quick");try{var p=null;try{p=sessionStorage.getItem("${PREF_KEY}")}catch(e){}var r=matchMedia("(prefers-reduced-motion: reduce)").matches;var m=(p==="calm"||(r&&p!=="full"))?"reduced":(matchMedia("(min-width: 1024px)").matches?"desktop":"compact");d.dataset.motion=m}catch(e){}})();`;

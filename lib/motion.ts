@@ -9,11 +9,11 @@ export const EASE = { out: "cubic-bezier(.22,1,.36,1)", inOut: "cubic-bezier(.65
 export const GSAP_EASE = { out: "expo.out", inOut: "power2.inOut" } as const;
 export const STAGGER = 0.06;
 
-/** Breakpoints shared by gsap.matchMedia: horizontal choreography only on wide, motion-allowed screens. */
+/** Breakpoints shared by gsap.matchMedia: pinned horizontal choreography only on wide, motion-allowed screens. */
 export const MQ_MOTION = {
   wide: "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
   narrow: "(max-width: 1023px)",
   reduced: "(prefers-reduced-motion: reduce)",
-  /** Any viewport with motion enabled: horizontal tracks follow vertical page scrolling. */
-  pin: "(prefers-reduced-motion: no-preference)",
+  /** Desktop horizontal tracks follow vertical page scrolling; compact viewports keep native swipe. */
+  pin: "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
 } as const;

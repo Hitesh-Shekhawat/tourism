@@ -9,7 +9,7 @@ import { computeMode, readPref, useStory } from "@/lib/story/store";
  * Site-wide motion runtime (§4, §10):
  * - the motion mode (desktop / compact / reduced), honouring the session's "Motion: full / calm" override,
  *   mirrored to html[data-motion] (the pre-paint boot script sets the first value)
- * - Lenis on desktop and touch (lerp .075, syncTouch on, so touch scrolling is eased too), never in reduced mode.
+ * - Lenis on desktop (lerp .075); compact viewports use native touch scrolling, and reduced mode uses native scrolling.
  *   On the home page the story engine hands Lenis' clock to GSAP's ticker.
  * - [data-reveal] / [data-reveal-mask] reveals via IntersectionObserver + CSS transitions
  * - [data-parallax] light parallax (≤ 6%)
@@ -37,7 +37,7 @@ export function Motion() {
 
   // Lenis
   useEffect(() => {
-    if (mode === "reduced") return;
+    if (mode !== "desktop") return;
     let cancelled = false;
     let mine: import("lenis").default | null = null;
     const start = async () => {

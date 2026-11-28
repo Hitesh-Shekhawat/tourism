@@ -5,6 +5,7 @@
  */
 export function TrainWheels({ xs, cy, r = 19 }: { xs: number[]; cy: number; r?: number }) {
   const spokes = Array.from({ length: 6 }, (_, i) => (i * Math.PI) / 3);
+  const spokeEnd = (value: number) => Number(value.toFixed(4));
   return (
     <g className="t2d-wheels">
       {xs.map((x) => (
@@ -14,7 +15,7 @@ export function TrainWheels({ xs, cy, r = 19 }: { xs: number[]; cy: number; r?: 
           <g className="t2d-wheel">
             <circle r={r - 4.5} fill="#463f3b" />
             {spokes.map((a) => (
-              <line key={a} x1={0} y1={0} x2={(r - 5) * Math.cos(a)} y2={(r - 5) * Math.sin(a)} stroke="#6f6660" strokeWidth={2.2} strokeLinecap="round" />
+              <line key={a} x1={0} y1={0} x2={spokeEnd((r - 5) * Math.cos(a))} y2={spokeEnd((r - 5) * Math.sin(a))} stroke="#6f6660" strokeWidth={2.2} strokeLinecap="round" />
             ))}
             <circle r={r - 11} fill="#3a3431" />
             {/* balance weight: makes the rotation readable */}

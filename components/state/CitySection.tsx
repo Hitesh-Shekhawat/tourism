@@ -9,8 +9,8 @@ import { CityReveal } from "./CityReveal";
 
 /**
  * One city on the state page: its name and story, then its sights in a GSAP horizontal track
- * (pinned and scroll-driven at every width with motion allowed; a native swipe / scroll-snap row with
- * reduced motion). The track ends on a card that leads on to the city's guide or itinerary.
+ * (pinned and scroll-driven on wide screens; a native swipe / scroll-snap row on compact screens
+ * and with reduced motion). The track ends on a card that leads on to the city's guide or itinerary.
  */
 export function CitySection({ place: p, sights, n, tone }: { place: Place; sights: Sight[]; n: string; tone: "ivory" | "sandstone" }) {
   const { itinerary, destination } = placeLinks(p);
