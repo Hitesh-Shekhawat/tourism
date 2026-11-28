@@ -8,12 +8,12 @@ import { MQ_MOTION } from "@/lib/motion";
 
 /**
  * An editorial horizontal track.
- * - With motion allowed: GSAP pins the track for exactly the distance its cards need, and
+ * - On wide screens with motion allowed: GSAP pins the track for exactly the distance its cards need, and
  *   vertical scrolling (smoothed by Lenis) carries them sideways; the last card always stops fully in view
  *   with the gutter after it. Cards are sized to the viewport height so the heading and every card fit on
  *   screen. Arrow buttons step the scroll; a hairline shows progress.
- * - With reduced motion: a native overflow-x list with scroll-snap (touch, trackpad, Tab),
- *   plus drag-with-momentum on mouse.
+ * - On compact screens and with reduced motion: a native overflow-x list with scroll-snap (touch,
+ *   trackpad, Tab), plus drag-with-momentum on mouse.
  * The floating contact button stays hidden while a track is on screen (data-no-float), so it never covers a card.
  */
 export function HorizontalTrack({ label, children, head, className = "", dark = false }: { label: string; children: ReactNode; head?: ReactNode; className?: string; dark?: boolean }) {
@@ -88,7 +88,13 @@ export function HorizontalTrack({ label, children, head, className = "", dark = 
   useEffect(() => {
     const el = list.current!;
     const pinned = () => root.current?.classList.contains("is-pinned");
-    const update = () => !pinned() && setEdge({ start: el.scrollLeft < 8, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 8 });
+    const update = () => {
+      if (pinned()) return;
+      setEdge((current) => {
+        const next = { start: el.scrollLeft < 8, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 8 };
+        return next.start === current.start && next.end === current.end ? current : next;
+      });
+    };
     update();
     el.addEventListener("scroll", update, { passive: true });
     const ro = new ResizeObserver(update);

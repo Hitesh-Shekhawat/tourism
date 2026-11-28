@@ -8,8 +8,9 @@ import type { Tour } from "./tours/types";
  */
 
 /**
- * Home hero footage. The supplied clip is self-hosted; add srcMobile or srcWebm when alternate
- * encodes are available. It is muted, loops, and is omitted for reduced motion or Save-Data.
+ * Home hero footage. Compact screens prefer srcMobile and otherwise use src; add srcMobile or
+ * srcWebm when alternate encodes are available. It is muted, loops, and is omitted for reduced
+ * motion or Save-Data.
  */
 export const heroVideo: { src?: string; srcWebm?: string; srcMobile?: string } = {
   src: "/Create_side_move_drone_shot_50b52d83.mp4",

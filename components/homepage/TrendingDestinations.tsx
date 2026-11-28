@@ -215,16 +215,35 @@ export function TrendingDestinations({ n }: { n: string }) {
     media.add("(max-width: 767px)", () => {
       const frame = trainEl.current?.parentElement;
       if (!frame) return;
-      const ride = ScrollTrigger.create({
-        trigger: frame,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 0.5,
-        onUpdate: (self) => paint(self.progress),
-        onRefresh: (self) => paint(self.progress),
+      const mobileProgress = { value: 0 };
+      const ride = gsap.to(mobileProgress, {
+        value: 1,
+        ease: "none",
+        onUpdate: () => {
+          setStage(mobileProgress.value);
+          paint(mobileProgress.value);
+        },
+        scrollTrigger: {
+          trigger: frame,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.2,
+          onRefresh: () => {
+            setStage(mobileProgress.value);
+            paint(mobileProgress.value);
+          },
+          onLeaveBack: () => {
+            mobileProgress.value = 0;
+            setStage(0);
+            paint(0);
+          },
+        },
       });
       return () => {
+        ride.scrollTrigger?.kill();
         ride.kill();
+        mobileProgress.value = 0;
+        setStage(0);
         unpaint();
       };
     });

@@ -59,13 +59,12 @@ export function writePref(v: MotionPref) {
 export function computeMode(pref: MotionPref): Mode {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (pref === "calm" || (reduce && pref !== "full")) return "reduced";
-  // the full film on every viewport; story.css sizes the pinned stages for phones
-  return "desktop";
+  return window.matchMedia("(min-width: 1024px)").matches ? "desktop" : "compact";
 }
 
-/** One WebGL context on desktop and mobile alike; off in reduced mode and on very weak devices (§13 GPU rule). */
+/** WebGL is reserved for capable desktop viewports; compact and reduced modes use the 2D scenes. */
 export function canRunGl(mode: Mode) {
-  if (mode === "reduced") return false;
+  if (mode !== "desktop" || !window.matchMedia("(min-width: 1024px)").matches) return false;
   if ((navigator.hardwareConcurrency || 8) <= 2) return false;
   if (new URLSearchParams(location.search).has("nogl")) return false;
   try {

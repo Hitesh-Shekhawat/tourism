@@ -2,7 +2,7 @@
 
 import type Lenis from "lenis";
 
-/** Lenis singleton (desktop and touch, syncTouch on). Null in reduced mode. */
+/** Lenis singleton for desktop motion. Null in compact and reduced modes, which use native scrolling. */
 let lenis: Lenis | null = null;
 let rafId = 0;
 let lockCount = 0;
